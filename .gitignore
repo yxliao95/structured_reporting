@@ -2,6 +2,8 @@ logs/
 *.log
 pylintrc
 
+cim-misspelling/
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
