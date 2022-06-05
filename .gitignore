@@ -3,6 +3,7 @@ logs/
 pylintrc
 cim-misspelling/
 mimic_cxr_reports_core.*
+statistic/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
