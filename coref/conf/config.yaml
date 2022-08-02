@@ -1,0 +1,18 @@
+log_dir: logs/coref
+dataset_dir: /Users/liao/Desktop/DBMI c2b2 2011-coref
+
+defaults:
+  - override hydra/job_logging: logging
+
+hydra:
+  run:
+    dir: ${log_dir}
+  verbose: true
+
+paths:
+  beth_train: ${paths.dataset_dir}/Beth_Train
+  beth_test: ${paths.dataset_dir}/i2b2_Test/i2b2_Beth_Test
+  beth_test_ground_truth: ${paths.dataset_dir}/Tack_1C_to_be_released_10_02_2011/i2b2_Beth_Test
+  partners_train: ${paths.dataset_dir}/Partners_Train
+  partners_test: ${paths.dataset_dir}/i2b2_Test/i2b2_Partners_Test
+  partners_test_ground_truth: ${paths.dataset_dir}/Tack_1C_to_be_released_10_02_2011/i2b2_Partners_Test
