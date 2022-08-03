@@ -1,5 +1,12 @@
-log_dir: logs/coref
+log_dir: /Users/liao/myProjects/VSCode_workspace/structured_reporting/logs/coref
 dataset_dir: /Users/liao/Desktop/DBMI c2b2 2011-coref
+data_split:
+  # If false, then only one file with prefix "all" will be output.
+  # If false, ${data_split.output_name_prefix} and ${data_split.proportion} will be ignored. 
+  require_split: true 
+  output_name_prefix: train,dev,test # Should match to the length of ${data_split.proportion}
+  proportion: 7,4,1
+shuffle_seed: 42
 
 defaults:
   - override hydra/job_logging: logging
@@ -7,12 +14,12 @@ defaults:
 hydra:
   run:
     dir: ${log_dir}
-  verbose: true
+  verbose: false
 
 paths:
-  beth_train: ${paths.dataset_dir}/Beth_Train
-  beth_test: ${paths.dataset_dir}/i2b2_Test/i2b2_Beth_Test
-  beth_test_ground_truth: ${paths.dataset_dir}/Tack_1C_to_be_released_10_02_2011/i2b2_Beth_Test
-  partners_train: ${paths.dataset_dir}/Partners_Train
-  partners_test: ${paths.dataset_dir}/i2b2_Test/i2b2_Partners_Test
-  partners_test_ground_truth: ${paths.dataset_dir}/Tack_1C_to_be_released_10_02_2011/i2b2_Partners_Test
+  beth_train: ${dataset_dir}/Beth_Train
+  beth_test: ${dataset_dir}/i2b2_Test/i2b2_Beth_Test
+  beth_test_ground_truth: ${dataset_dir}/Tack_1C_to_be_released_10_02_2011/i2b2_Beth_Test
+  partners_train: ${dataset_dir}/Partners_Train
+  partners_test: ${dataset_dir}/i2b2_Test/i2b2_Partners_Test
+  partners_test_ground_truth: ${dataset_dir}/Tack_1C_to_be_released_10_02_2011/i2b2_Partners_Test
