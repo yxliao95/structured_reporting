@@ -1,20 +1,43 @@
-log_dir: /Users/liao/myProjects/VSCode_workspace/structured_reporting/logs/coref
 dataset_dir: /Users/liao/Desktop/DBMI c2b2 2011-coref
+output_dir: ${dataset_dir}
+log_dir: ./logs/coref
+logging_level: INFO # DEBUG
+# 0 to use random seed to shuffle the dataset; -1 to disable the shuffle; Or any int value as static seed.
+shuffle_seed: -1
+
+###
+# You don't need to modify the below configs
+###
+output:
+  root_dir_name: conll
+  temp_dir_name: temp
+  suffix: .conll
+
+input:
+  chain_suffix: .chains
+  doc_dir_name: docs
+  chain_dir_name: chains
+  
+
 data_split:
-  # If false, then only one file with prefix "all" will be output.
-  # If false, ${data_split.output_name_prefix} and ${data_split.proportion} will be ignored. 
-  require_split: true 
-  output_name_prefix: train,dev,test # Should match to the length of ${data_split.proportion}
-  proportion: 7,4,1
-shuffle_seed: 42
-
-defaults:
-  - override hydra/job_logging: logging
-
-hydra:
-  run:
-    dir: ${log_dir}
-  verbose: false
+  # Will be used when either {cross_validation} or {random_shuffle} is true, as files need to be split.
+  if_split:
+    output_name_prefix: train,dev,test # Should match to the length of ${data_split.proportion}
+    proportion: 7,2,1
+  # It will create datasets for 10-folds cross-validation. 
+  # The source files will be shuffled after spliting the tran/test sets, which means the test set of each fold will not overlap.
+  cross_validation: true
+  if_cross_validation:
+    folds: 10 # The dir_name will be the index of the folds
+  # It will create a dataset that shuffle the source files. 
+  random_shuffle: true
+  if_random_shuffle:
+    dir_name: random
+  # It will only create one file with prefix "all" without spliting the source files.
+  unsplit: true
+  if_unsplit:
+    dir_name: all
+    output_name_prefix: all
 
 paths:
   beth_train: ${dataset_dir}/Beth_Train
@@ -23,3 +46,14 @@ paths:
   partners_train: ${dataset_dir}/Partners_Train
   partners_test: ${dataset_dir}/i2b2_Test/i2b2_Partners_Test
   partners_test_ground_truth: ${dataset_dir}/Tack_1C_to_be_released_10_02_2011/i2b2_Partners_Test
+
+defaults:
+  - override hydra/job_logging: logging
+
+hydra:
+  run:
+    dir: ${log_dir}
+  verbose: false
+  job_logging:
+    root:
+      level: ${logging_level}
