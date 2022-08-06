@@ -1,7 +1,8 @@
-dataset_dir: /Users/liao/Desktop/DBMI c2b2 2011-coref
+# Should not contain space symbol in the path.
+dataset_dir: /Users/liao/Desktop/DBMI_c2b2_2011_coref
 output_dir: ${dataset_dir}
-log_dir: ./logs/coref
-logging_level: INFO # DEBUG
+log_dir: /Users/liao/myProjects/VSCode_workspace/structured_reporting/logs/coref # [./logs/coref]. Use [.] to prevent logging output
+logging_level: DEBUG # DEBUG, INFO
 # 0 to use random seed to shuffle the dataset; -1 to disable the shuffle; Or any int value as static seed.
 shuffle_seed: -1
 
@@ -54,6 +55,7 @@ hydra:
   run:
     dir: ${log_dir}
   verbose: false
+  output_subdir: null # To prevent saving the files into .hydra
   job_logging:
     root:
       level: ${logging_level}

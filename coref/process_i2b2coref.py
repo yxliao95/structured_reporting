@@ -7,6 +7,7 @@ import logging
 from natsort import natsorted
 import random
 from tqdm import tqdm
+import re
 
 from sympy import print_rcode
 
@@ -84,6 +85,26 @@ def get_file_name_prefix(txt_file_name):
     return os.path.basename(txt_file_name).rstrip(".txt")
 
 
+def clean_and_split_line(sentence: str, debug_doc="", debug_sent=""):
+    """ Clean process including: 
+    remove multiple space symbols; 
+    remove the appending sapce symbol; 
+    remove the appending new line symbol. 
+    """
+    # if re.search(" {2,}", sentence):
+    #     logger.debug(f"[{debug_doc}] has multiple space symbols at line {debug_sent}")
+    # Remove multiple space symbols. See clinical-68 .txt and .chains line 13 as example.
+    sentence = re.sub(r" +", " ", sentence)
+    sentence = sentence.rstrip("\n")
+    # if sentence == "":
+    #     logger.debug(f"[{debug_doc}] is empty at line [{debug_sent}]")
+    # elif sentence[-1] == " ":
+    #     logger.debug(f"[{debug_doc}] has an appending space symbol at line {debug_sent}")
+    # Remove the right most space symbol
+    sentence = sentence.strip()
+    return sentence.split(" ")
+
+
 def convert_each(doc_file_path, chain_file_path, output_file_path):
     """ Convert the source doc and chain files into the conll file """
     doc_id = get_file_name_prefix(doc_file_path)
@@ -121,7 +142,9 @@ def convert_each(doc_file_path, chain_file_path, output_file_path):
     with open(doc_file_path, "r") as doc:
         for doc_line_id, doc_line in enumerate(doc.readlines()):
             token_list: list[Token] = []
-            for doc_token_id, token_str in enumerate(doc_line.split(" ")):
+            for doc_token_id, token_str in enumerate(
+                clean_and_split_line(doc_line, debug_doc=doc_id, debug_sent=doc_line_id)
+            ):
                 token_list.append(Token(doc_id, doc_line_id, doc_token_id, token_str))
             sentenc_list.append(token_list)
 
@@ -149,6 +172,9 @@ def convert_each(doc_file_path, chain_file_path, output_file_path):
     with open(output_file_path, "a") as out:
         out.write(BEGIN)
         for sent in sentenc_list:
+            # Skip empty sentence
+            if len(sent) == 1 and sent[0].tokenStr == "":
+                continue
             for tok in sent:
                 out.write(tok.get_conll_str() + "\n")
             out.write(SENTENCE_SEPARATOR)

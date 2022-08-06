@@ -5,6 +5,7 @@ cim-misspelling/
 mimic_cxr_reports_core.*
 statistic/
 test.py
+coref/fast-coref/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
