@@ -1,0 +1,106 @@
+metrics:
+- MUC
+- Bcub
+- CEAFE
+keep_singletons: false
+seed: 45
+train: true
+use_wandb: false
+override_encoder: true
+override_memory: false
+copy_from_pretrained_model: false
+continue_training: false
+paths:
+  resource_dir: ${infra.project_dir}/coref_resources
+  base_data_dir: ${paths.resource_dir}/data
+  conll_scorer: ${paths.resource_dir}/reference-coreference-scorers/scorer.pl
+  base_model_dir: ${infra.project_dir}/models
+  model_dir: null
+  best_model_dir: null
+  model_filename: model.pth
+  model_name: null
+  model_name_prefix: coref_
+  model_path: null
+  best_model_path: null
+  doc_encoder_dirname: doc_encoder
+  pretrain_model_dir: ${paths.base_model_dir}/joint_best
+datasets:
+  litbank:
+    name: LitBank
+    cluster_threshold: 1
+    canonical_cluster_threshold: 1
+    cross_val_split: 0
+    targeted_eval: false
+    num_train_docs: 80
+    num_dev_docs: 10
+    num_test_docs: 10
+    has_conll: true
+model:
+  doc_encoder:
+    transformer:
+      name: longformer
+      model_size: large
+      model_str: /home/yuxiangliao/PhD/workspace/git_clone_repos/fast-coref/models/longformer_coreference_joint
+      max_encoder_segment_len: 4096
+      max_segment_len: 4096
+    chunking: independent
+    finetune: true
+    add_speaker_tokens: false
+    speaker_start: '[SPEAKER_START]'
+    speaker_end: '[SPEAKER_END]'
+  memory:
+    mem_type:
+      name: unbounded
+      max_ents: null
+      eval_max_ents: null
+    emb_size: 20
+    mlp_size: 3000
+    mlp_depth: 1
+    sim_func: hadamard
+    entity_rep: wt_avg
+    num_feats: 2
+  mention_params:
+    max_span_width: 20
+    ment_emb: attn
+    use_gold_ments: false
+    use_topk: false
+    top_span_ratio: 0.4
+    emb_size: 20
+    mlp_size: 3000
+    mlp_depth: 1
+    ment_emb_to_size_factor:
+      attn: 3
+      endpoint: 2
+      max: 1
+  metadata_params:
+    use_genre_feature: false
+    default_genre: nw
+    genres:
+    - bc
+    - bn
+    - mz
+    - nw
+    - pt
+    - tc
+    - wb
+optimizer:
+  init_lr: 0.0003
+  fine_tune_lr: 1.0e-05
+  max_gradient_norm: 1.0
+  lr_decay: linear
+trainer:
+  dropout_rate: 0.3
+  label_smoothing_wt: 0.1
+  ment_loss: all
+  normalize_loss: false
+  max_evals: 20
+  to_save_model: true
+  log_frequency: 10
+  patience: 5
+  eval_per_k_steps: 400
+  num_training_steps: null
+  max_training_segments: 1
+infra:
+  is_local: true
+  project_dir: /home/yuxiangliao/PhD/workspace/git_clone_repos/fast-coref
+  work_dir: ${project_dir}/src/

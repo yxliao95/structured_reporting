@@ -2,12 +2,14 @@
 dataset_dir: /Users/liao/Desktop/DBMI_c2b2_2011_coref
 output_dir: ${dataset_dir}
 log_dir: /Users/liao/myProjects/VSCode_workspace/structured_reporting/logs/coref # [./logs/coref]. Use [.] to prevent logging output
-logging_level: DEBUG # DEBUG, INFO
+logging_level: INFO # DEBUG, INFO
 # 0 to use random seed to shuffle the dataset; -1 to disable the shuffle; Or any int value as static seed.
-shuffle_seed: -1
+shuffle_seed: 0
+# In safe mode, the conflict dirs during the raw2conll processing need to be removed manually.
+safe_mode: false
 
 ###
-# You don't need to modify the below configs
+# Users don't have to modify the below configs
 ###
 output:
   root_dir_name: conll
@@ -21,20 +23,20 @@ input:
   
 
 data_split:
-  # Will be used when either {cross_validation} or {random_shuffle} is true, as files need to be split.
+  # Will be used when either ${data_split.cross_validation} or ${data_split.random_shuffle} is true, as files need to be *split*.
   if_split:
     output_name_prefix: train,dev,test # Should match to the length of ${data_split.proportion}
-    proportion: 7,2,1
-  # It will create datasets for 10-folds cross-validation. 
-  # The source files will be shuffled after spliting the tran/test sets, which means the test set of each fold will not overlap.
+    proportion: 7,2,1 # In which proportion to split the source files.
+  # It will create datasets for 10-folds cross-validation. The source files will be *split*.
+  # The source files will be shuffled after spliting the tran+dev and test sets, which means the test set of each fold will not overlap.
   cross_validation: true
   if_cross_validation:
     folds: 10 # The dir_name will be the index of the folds
-  # It will create a dataset that shuffle the source files. 
+  # It will create a dataset that shuffle the source files. The source files will be *split*.
   random_shuffle: true
   if_random_shuffle:
     dir_name: random
-  # It will only create one file with prefix "all" without spliting the source files.
+  # It will only create one file with prefix "all" without spliting the source files. The source files will NOT be *split*.
   unsplit: true
   if_unsplit:
     dir_name: all
@@ -55,7 +57,7 @@ hydra:
   run:
     dir: ${log_dir}
   verbose: false
-  output_subdir: null # To prevent saving the files into .hydra
+  # output_subdir: null # To prevent saving the files into .hydra
   job_logging:
     root:
       level: ${logging_level}

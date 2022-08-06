@@ -1,15 +1,10 @@
-from pydoc import doc
-from tkinter import SEPARATOR
-import pandas
-import os, sys, shutil
+import os, shutil
 import hydra
 import logging
 from natsort import natsorted
 import random
 from tqdm import tqdm
 import re
-
-from sympy import print_rcode
 
 logger = logging.getLogger()
 
@@ -282,10 +277,16 @@ def check_and_make_dir(dir, raiseExceptionIfExist=False, errMsg=""):
             raise Exception(f"The directory {dir} already exists. {errMsg}")
 
 
-@hydra.main(version_base=None, config_path="conf", config_name="config")
-def main(config):
+def remove_all(dir):
+    if os.path.exists(dir):
+        shutil.rmtree(dir)
+
+
+def invoke(config):
     # Copy files from source folders to temp directory. Only the files under /docs and /chains will be copied
     temp_dir = os.path.join(config.dataset_dir, config.output.temp_dir_name)
+    if not config.safe_mode:
+        remove_all(temp_dir)
     check_and_make_dir(
         temp_dir,
         raiseExceptionIfExist=True,
@@ -295,6 +296,8 @@ def main(config):
 
     # Convert source files to .conll files
     conll_dir = os.path.join(config.output_dir, config.output.root_dir_name)
+    if not config.safe_mode:
+        remove_all(conll_dir)
     check_and_make_dir(
         conll_dir,
         raiseExceptionIfExist=True,
@@ -305,7 +308,15 @@ def main(config):
     if os.path.exists(temp_dir):
         logger.debug(f"Removed the temporary directory: {temp_dir}")
         shutil.rmtree(temp_dir)
+
     logger.info("Done.")
+
+    return conll_dir
+
+
+@hydra.main(version_base=None, config_path="config", config_name="config")
+def main(config):
+    invoke(config)
 
 
 if __name__ == "__main__":
