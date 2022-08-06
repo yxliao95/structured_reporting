@@ -1,5 +1,5 @@
-import c2b2_raw2conll as c2b2_raw2conll
-import c2b2_conll2jsonlines as c2b2_conll2jsonlines
+import i2b2_raw2conll as i2b2_raw2conll
+import i2b2_conll2jsonlines as i2b2_conll2jsonlines
 import logging, os, hydra, timeit
 
 logger = logging.getLogger()
@@ -16,20 +16,20 @@ def main(config):
         raise Exception(f"Lacking the fast-coref repo in {current}")
 
     start1 = timeit.default_timer()
-    conll_output_dir = c2b2_raw2conll.invoke(config)
+    conll_output_dir = i2b2_raw2conll.invoke(config)
     stop1 = timeit.default_timer()
 
     start2 = timeit.default_timer()
-    json_output_dir = c2b2_conll2jsonlines.invoke(conll_output_dir)
+    json_output_dir = i2b2_conll2jsonlines.invoke(conll_output_dir)
     stop2 = timeit.default_timer()
 
-    logger.info("*" * 30)
+    logger.info("*" * 60)
     logger.info(f"CoNLL format dir: {conll_output_dir}")
     logger.info(f"Time: {stop1-start1:.2f}s")
     logger.info(f"JSON format dir: {json_output_dir}")
     logger.info(f"Time: {stop2-start2:.2f}s")
     logger.info(f"Total time: {stop2-start1}s")
-    logger.info("*" * 30)
+    logger.info("*" * 60)
 
 
 if __name__ == "__main__":
