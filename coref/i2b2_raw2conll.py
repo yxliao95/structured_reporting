@@ -11,7 +11,9 @@ logger = logging.getLogger()
 
 def shuffle_list(file_list, seed=42):
     """ Sort the list by file name numerically, then shuffle the list. 
-    seed: 0 to use random seed to shuffle the dataset; -1 to disable shuffle.
+
+    Args:
+        seed: 0 to use random seed to shuffle the dataset; -1 to disable shuffle.
     """
     file_list = natsorted(file_list)  # Sort by file name numerically
     if seed != -1:
@@ -27,10 +29,11 @@ def split_and_shuffle_list(doc_files, testset_size, fold_id: int, seed=42):
     Move the test set to the end of the list.
     Shuffle the train set and test set separately.
 
-    doc_files: Source file name list.
-    testset_size: The size of the test set.
-    fold_id: The index of the current cross-validation fold.
-    seed: Random seed for shuffling.
+    Args:
+        doc_files: Source file name list.
+        testset_size: The size of the test set.
+        fold_id: The index of the current cross-validation fold.
+        seed: Random seed for shuffling.
     """
     doc_files = natsorted(doc_files)  # Sort by file name numerically
     doc_files_test = doc_files[fold_id * testset_size : (fold_id + 1) * testset_size]
@@ -48,8 +51,9 @@ def split_and_shuffle_list(doc_files, testset_size, fold_id: int, seed=42):
 def get_data_split(doc_files_shuffled, data_split_name, data_split_num):
     """ Split the dataset. The output is a list of dict:
 
-    output_name_prefix: The names specifed in ${data_split.output_name_prefix} (comma split).
-    file_list: The file name in /temp/docs, e.g. clinical-1.txt. The size is computed according to the ${data_split.proportion} (comma split).
+    Args:
+        output_name_prefix: The names specifed in ${data_split.output_name_prefix} (comma split).
+        file_list: The file name in /temp/docs, e.g. clinical-1.txt. The size is computed according to the ${data_split.proportion} (comma split).
     """
     data_split: list[dict] = []
     curr_index = 0
@@ -112,7 +116,7 @@ def convert_each(doc_file_path, chain_file_path, output_file_path):
             self.docId = docId
             self.sentenceId = sentenceId
             self.tokenId = tokenId
-            self.tokenStr = tokenStr.rstrip("\n")
+            self.tokenStr = tokenStr
             self.corefMark = ""
 
         def add_coref_mark(self, mark):
@@ -122,10 +126,17 @@ def convert_each(doc_file_path, chain_file_path, output_file_path):
                 self.corefMark = f"{self.corefMark}|{mark}"
 
         def get_conll_str(self):
+            # IMPORTANT! Any tokens that trigger regex: \((\d+) or (\d+)\) will also
+            # trigger "conll/reference-coreference-scorers" unexpectedly,
+            # which will either cause execution error or wrong metric score.
+            # See coref/wrong_conll_scorer_example for details.
+            tok_str = self.tokenStr
+            if re.search("\(?[^A-Za-z]+\)?", tok_str):
+                tok_str = tok_str.replace("(", "[").replace(")", "]")
             if self.corefMark:
-                return f"{self.docId}\t0\t{self.tokenId}\t{self.tokenStr}\t" + "_\t" * 8 + self.corefMark
+                return f"{self.docId}\t0\t{self.tokenId}\t{tok_str}\t" + "_\t" * 8 + self.corefMark
             else:
-                return f"{self.docId}\t0\t{self.tokenId}\t{self.tokenStr}\t" + "_\t" * 7 + "_"
+                return f"{self.docId}\t0\t{self.tokenId}\t{tok_str}\t" + "_\t" * 7 + "_"
 
         def __str__(self) -> str:
             return f"{self.tokenStr}({self.sentenceId}:{self.tokenId})|[{self.corefMark}]"

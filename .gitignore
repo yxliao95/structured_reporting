@@ -4,7 +4,7 @@ pylintrc
 cim-misspelling/
 mimic_cxr_reports_core.*
 statistic/
-test.py
+test.*
 coref/fast-coref/
 
 # Byte-compiled / optimized / DLL files

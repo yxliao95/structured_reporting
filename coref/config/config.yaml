@@ -1,6 +1,6 @@
 # Should not contain space symbol in the path.
 dataset_dir: /Users/liao/Desktop/DBMI_c2b2_2011_coref
-output_dir: ${dataset_dir}
+output_dir: /Users/liao/Desktop/i2b2
 log_dir: /Users/liao/myProjects/VSCode_workspace/structured_reporting/logs/coref # [./logs/coref]. Use [.] to prevent logging output
 logging_level: INFO # DEBUG, INFO
 # 0 to use random seed to shuffle the dataset; -1 to disable the shuffle; Or any int value as static seed.
