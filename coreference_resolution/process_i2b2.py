@@ -5,13 +5,13 @@ import logging, os, hydra, timeit
 logger = logging.getLogger()
 
 
-@hydra.main(version_base=None, config_path="config", config_name="config")
+@hydra.main(version_base=None, config_path="../config", config_name="coreference_resolution")
 def main(config):
     current = os.path.dirname(os.path.realpath(__file__))
     src = os.path.join(current, "fast-coref", "src")
     if not os.path.exists(src):
         logger.error(
-            f"Directory ./coref/fast-coref not found. Please clone the 'fast-coref' repo to {current}, e.g.: git clone git@github.com:liaoooyx/fast-coref.git"
+            f"Directory 'fast-coref/' not found. Please clone the 'fast-coref' repo to {current}, e.g.: git clone git@github.com:liaoooyx/fast-coref.git"
         )
         raise Exception(f"Lacking the fast-coref repo in {current}")
 

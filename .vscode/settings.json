@@ -1,6 +1,7 @@
 {
     "jupyter.jupyterServerType": "remote",
     "python.analysis.extraPaths": [
-        "./coref/fast-coref/src"
+        "./coref/fast-coref/src",
+        "./utils"
     ]
 }

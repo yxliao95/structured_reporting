@@ -1,12 +1,15 @@
 # Should not contain space symbol in the path.
 dataset_dir: /Users/liao/Desktop/DBMI_c2b2_2011_coref
 output_dir: /Users/liao/Desktop/i2b2
-log_dir: /Users/liao/myProjects/VSCode_workspace/structured_reporting/logs/coref # [./logs/coref]. Use [.] to prevent logging output
-logging_level: INFO # DEBUG, INFO
 # 0 to use random seed to shuffle the dataset; -1 to disable the shuffle; Or any int value as static seed.
 shuffle_seed: 0
 # In safe mode, the conflict dirs during the raw2conll processing need to be removed manually.
 safe_mode: false
+
+defaults:
+  - common
+  - hydra/custom_logging
+  - _self_
 
 ###
 # Users don't have to modify the below configs
@@ -49,15 +52,3 @@ paths:
   partners_train: ${dataset_dir}/Partners_Train
   partners_test: ${dataset_dir}/i2b2_Test/i2b2_Partners_Test
   partners_test_ground_truth: ${dataset_dir}/Tack_1C_to_be_released_10_02_2011/i2b2_Partners_Test
-
-defaults:
-  - override hydra/job_logging: logging
-
-hydra:
-  run:
-    dir: ${log_dir}
-  verbose: false
-  # output_subdir: null # To prevent saving the files into .hydra
-  job_logging:
-    root:
-      level: ${logging_level}

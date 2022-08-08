@@ -1,0 +1,31 @@
+run:
+  dir: ${log_dir}
+verbose: false
+# output_subdir: null # To prevent saving the files into .hydra
+job:
+  chdir: False
+job_logging:
+  version: 1
+  formatters:
+    simple:
+      format: '[%(asctime)s][%(name)s][%(levelname)s] - %(message)s'
+  handlers:
+    console:
+      class: logging.StreamHandler
+      # level: INFO
+      formatter: simple
+      stream: ext://sys.stdout
+    file:
+      class: logging.FileHandler
+      formatter: simple
+      # level: INFO
+      filename: ${hydra.runtime.output_dir}/${hydra.job.name}.log
+      encoding: utf8
+      mode: w
+  root:
+    # If set to INFO, handler level=DEBUG will not work
+    level: ${logging_level}
+    handlers:
+    - console
+    - file
+  disable_existing_loggers: false

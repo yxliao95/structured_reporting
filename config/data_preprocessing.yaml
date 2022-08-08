@@ -1,0 +1,6 @@
+# Should not contain space symbol in the path.
+
+defaults:
+  - common
+  - hydra/custom_logging
+  - _self_
