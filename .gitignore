@@ -4,9 +4,10 @@ pylintrc
 cim-misspelling/
 mimic_cxr_reports_core.*
 statistic/
-test.*
+test*.*
 fast-coref/
 statistic/
+output/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

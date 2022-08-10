@@ -1,0 +1,3 @@
+# Works the same as .gitignore
+.DS_Store
+.*

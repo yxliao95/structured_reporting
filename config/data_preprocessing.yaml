@@ -1,6 +1,20 @@
-# Should not contain space symbol in the path.
+data_dir: /Users/liao/Desktop/mimic-cxr
+output_dir: ${work_dir}/output
+
+in_process:
+  # If True, then replace the corresponding records with 54 manually processed records in ${data_preprocessing.resource_paths.manually_processed_records}
+  use_artefact: True
+
+output:
+  json: True # Output json file
+  mysql: True # Output to mysql
 
 defaults:
   - common
   - hydra/custom_logging
+  - data_preprocessing/resource
+  - data_preprocessing/output/name_style
+  - data_preprocessing/output/db
   - _self_
+
+module_dir_name: data_preprocessing

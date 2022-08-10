@@ -1,4 +1,7 @@
 # If use a relative path, it will base on the path that we execute the python command.
 work_dir: /Users/liao/myProjects/VSCode_workspace/structured_reporting
+output_dir: ${work_dir}/output
 log_dir: ${work_dir}/logs/${hydra.job.config_name}
-logging_level: INFO # DEBUG, INFO
+logging_level: DEBUG # DEBUG, INFO
+
+ignore_source_path: ${work_dir}/config/ignore/common_ignore
