@@ -7,7 +7,7 @@ statistic/
 test*.*
 fast-coref/
 statistic/
-output/
+/output
 manually_processed_records.json
 
 # Byte-compiled / optimized / DLL files

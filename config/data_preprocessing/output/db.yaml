@@ -1,0 +1,8 @@
+mysql:
+  host: 127.0.0.1 
+  port: 3306 
+  user: root 
+  password: 1121 
+  db: radiology_datasets 
+  # The name of the table in db to be drop and created
+  table_name: mimic_cxr_manual
