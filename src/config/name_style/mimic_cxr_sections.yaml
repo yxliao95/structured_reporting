@@ -1,0 +1,14 @@
+mimic_cxr:
+  section_name:
+    PID: pid
+    SID: sid
+    FINDINGS: findings
+    IMPRESSION: impression
+    PFI: provisional_findings_impression
+    FAI: findings_and_impression
+    CLINICAL_INFO: clinical_information
+    PROCEDURE_INFO: procedure_information
+    COMPARISON: comparison
+    WET_READ: wet_read
+    ADDENDUM: addendum
+    UNKNOWN: unknown

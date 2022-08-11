@@ -1,0 +1,9 @@
+stanza:
+  processor:
+    tokenize: mimic,
+    pos: mimic,
+    lemma: mimic,
+    depparse: mimic,
+    # 'sentiment':'sstplus', # Sentiment scores of 0, 1, or 2 (negative, neutral, positive).
+    constituency: wsj,  # wsj, wsj_bert, wsj_roberta
+    ner: radiology,

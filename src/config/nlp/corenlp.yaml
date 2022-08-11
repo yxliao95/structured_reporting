@@ -1,0 +1,2 @@
+corenlp:
+  request_url: 'http://[::]:8801/?properties={"annotators":"coref","coref.algorithm":"statistical","outputFormat":"json"}'

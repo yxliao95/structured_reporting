@@ -19,7 +19,7 @@ def init_package(config):
 
 
 def read_raw_data(config):
-    """ Read from the raw files """
+    """Read from the raw files"""
     dataList = []
     patientCounter = 0
     studyCounter = 0
@@ -46,7 +46,7 @@ def read_raw_data(config):
 
 
 def resolve(dataList):
-    """ The raw data will be converted into MetaReport and StructuredReport and appended to dataList. """
+    """The raw data will be converted into MetaReport and StructuredReport and appended to dataList."""
     logger.info(f"Resolving the reports.")
     start0 = time.time()
     for reportItem in tqdm(dataList):
@@ -77,7 +77,7 @@ def resolve(dataList):
 
 
 def convert(config, dataList):
-    """ 1. Perform the final step for the identification of section content. 
+    """1. Perform the final step for the identification of section content.
     2. If ``config.use_artefact`` is True, then the corresponding records will be replaced by the manually preprocessed records.
     """
     logger.info(f"Converting the output data.")
@@ -154,7 +154,7 @@ def output_json(config, output_list):
     start0 = time.time()
     with open(ourput_file_path, "w") as f:
         for data_item in tqdm(output_list):
-            column_name = config.data_preprocessing.output.column_name
+            column_name = config.name_style.mimic_cxr.section_name
             formatted_reocrd = {
                 column_name.PID: data_item["PID"],
                 column_name.SID: data_item["SID"],
@@ -179,8 +179,8 @@ def output_mysql(config, output_list):
     import pymysql
 
     start0 = time.time()
-    mysql_config = config.data_preprocessing.output.mysql
-    column_name = config.data_preprocessing.output.column_name
+    mysql_config = config.data_preprocessing.mysql
+    column_name = config.name_style.mimic_cxr.section_name
     db = pymysql.connect(
         host=str(mysql_config.host),
         port=int(mysql_config.port),

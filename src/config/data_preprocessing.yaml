@@ -13,8 +13,8 @@ defaults:
   - common
   - hydra/custom_logging
   - data_preprocessing/resource
-  - data_preprocessing/output/name_style
-  - data_preprocessing/output/db
+  - data_preprocessing/db
+  - name_style/mimic_cxr_sections
   - _self_
 
 module_dir_name: data_preprocessing

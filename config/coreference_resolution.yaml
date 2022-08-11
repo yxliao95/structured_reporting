@@ -1,6 +1,0 @@
-defaults:
-  - hydra/custom_logging
-  - common
-  - coref_data_preprocessing/i2b2
-  - coref_data_preprocessing/mimic_cxr
-  - _self_

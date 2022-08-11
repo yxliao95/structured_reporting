@@ -1,0 +1,14 @@
+# ${work_dir}/${module_dir_name}/fast-coref
+fast_coref_dir: /home/yuxiangliao/PhD/workspace/git_clone_repos/fast-coref
+
+defaults:
+  - hydra/custom_logging
+  - common
+  - coref_data_preprocessing/i2b2
+  - coref_data_preprocessing/mimic_cxr
+  - name_style/mimic_cxr_sections
+  - multiprocessing/multiprocessing
+  - nlp/corenlp
+  - _self_
+
+module_dir_name: coreference_resolution

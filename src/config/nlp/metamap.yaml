@@ -1,0 +1,2 @@
+metamap:
+  command: metamap -V NLM -Z 2022AA -A --silent
