@@ -1,6 +1,5 @@
 # Usage
 
 ```bash
-cd src/
-export PYTHONPATH=.
+export PYTHONPATH=src/
 ```

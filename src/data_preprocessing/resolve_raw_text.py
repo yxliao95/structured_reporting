@@ -1,21 +1,12 @@
 import logging, os, sys, hydra, time, json
 from tqdm import tqdm
-
+from utils.file_checker import FileChecker
 from utils_and_rules.data_holder_class import MetaReport, StructuredReport
 from utils_and_rules.rules import *
 
 
 logger = logging.getLogger()
-FILE_CHECKER = None
-
-
-def init_package(config):
-
-    sys.path.append(os.path.join(config.work_dir))
-    from utils.file_checker import FileChecker
-
-    global FILE_CHECKER
-    FILE_CHECKER = FileChecker()
+FILE_CHECKER = FileChecker()
 
 
 def read_raw_data(config):
@@ -243,8 +234,6 @@ def output_mysql(config, output_list):
 
 @hydra.main(version_base=None, config_path="../config", config_name="data_preprocessing")
 def main(config):
-
-    init_package(config)
 
     dataList = read_raw_data(config)
     dataList = resolve(dataList)
