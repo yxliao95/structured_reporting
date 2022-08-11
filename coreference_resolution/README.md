@@ -7,5 +7,5 @@ Please register and download the 2011 - Coreference (Clinical) dataset from [her
 ```bash
 cd /coref
 git clone git@github.com:liaoooyx/fast-coref.git
-python process_i2b2.py
+python format_dataset/process_i2b2.py
 ```

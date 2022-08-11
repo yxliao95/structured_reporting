@@ -1,0 +1,3 @@
+mimic_cxr:
+  dataset_path: ${output_dir}/mimic_cxr_sections.jsonlines
+  output_dir: ${output_dir}/coref/mimic_cxr

@@ -5,7 +5,7 @@ from os import path
 import json
 
 current = path.dirname(path.realpath(__file__))
-src = path.join(current, "fast-coref", "src")
+src = path.join(path.dirname(current), "fast-coref", "src")
 sys.path.append(path.join(src))
 from coref_utils import conll
 from data_processing.utils import (
