@@ -1,5 +1,5 @@
 resource_paths:
-  root: ${work_dir}/${module_dir_name}/resources
+  root: ${src_dir}/${module_dir_name}/resources
   heading_affiliation_map: ${data_preprocessing.resource_paths.root}/HeadingAffiliationMapping_slim.txt
   technique_procedureinfo: ${data_preprocessing.resource_paths.root}/Technique_ProcedureInfo.txt
   ignore_heading: ${data_preprocessing.resource_paths.root}/IgnoreHeading.txt

@@ -1,0 +1,18 @@
+spacy:
+  prefix: "[sp]"
+  column_name:
+    token: ${name_style.spacy.prefix}token
+    token_offset: ${name_style.spacy.prefix}token_offset
+    sentence_group: ${name_style.spacy.prefix}sentence_group
+    noun_chunk: ${name_style.spacy.prefix}noun_chunk
+    lemma: ${name_style.spacy.prefix}lemma
+    pos_core: ${name_style.spacy.prefix}pos_core
+    pos_feature: ${name_style.spacy.prefix}pos_feature
+    dependency_tag: ${name_style.spacy.prefix}dependency 
+    dependency_head: ${name_style.spacy.prefix}dep_head|idx
+    dependency_children: ${name_style.spacy.prefix}dep_children|idx
+    morphology: ${name_style.spacy.prefix}morphology
+    is_alpha: ${name_style.spacy.prefix}is_alpha
+    is_stop: ${name_style.spacy.prefix}is_stop
+    is_pronoun: ${name_style.spacy.prefix}is_pronoun
+    trailing_space: ${name_style.spacy.prefix}trailing_space

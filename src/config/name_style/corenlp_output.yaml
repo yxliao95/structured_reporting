@@ -1,0 +1,11 @@
+corenlp:
+  prefix: "[co]"
+  column_name:
+    token: ${name_style.corenlp.prefix}token
+    pos: ${name_style.corenlp.prefix}pos
+    lemma: ${name_style.corenlp.prefix}lemma
+    coref_mention: ${name_style.corenlp.prefix}corefId|corefType
+    coref_group: ${name_style.corenlp.prefix}coref_group
+    dependency: ${name_style.corenlp.prefix}dep_tag|dep_head|head_index
+    dependency+: ${name_style.corenlp.prefix}(+)dep_tag|dep_head|head_index
+    dependency++: ${name_style.corenlp.prefix}(++)dep_tag|dep_head|head_index

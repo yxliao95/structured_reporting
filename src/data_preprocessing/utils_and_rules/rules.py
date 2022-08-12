@@ -1,7 +1,7 @@
 import re
-from utils_and_rules.utils import *
-from utils_and_rules.data_holder_class import MetaReport, StructuredReport
-from utils_and_rules.rule_prerequisites import *
+from data_preprocessing.utils_and_rules.utils import *
+from data_preprocessing.utils_and_rules.data_holder_class import MetaReport, StructuredReport
+from data_preprocessing.utils_and_rules.rule_prerequisites import *
 
 
 def finalAddendum_identifyRule(contentRow: str, metaReport: MetaReport, structuredReport: StructuredReport):
@@ -75,9 +75,7 @@ def nonFinalReportSection_concatenateRule(metaReport: MetaReport, structuredRepo
                 continue
             if hasLineFeed(content) and contentRow == "\n":
                 continue
-            # Whether add a space at the begining of a new line
-            # (a new line means having an empty line ahead in its source file)
-            content += contentRow
+            content += " " + contentRow
         content = content.strip()
         structuredReport.append(heading=heading, headingAffiliation=mapHeading(heading), content=content)
 
@@ -101,9 +99,7 @@ def finalReportSection_concatenateRule(metaReport: MetaReport, structuredReport:
                 contentRow = "\n"
             if hasLineFeed(content) and contentRow == "\n":
                 continue
-            # Whether add a space at the begining of a new line
-            # (a new line means having an empty line ahead in its source file)
-            content += contentRow
+            content += " " + contentRow
         content = content.strip()
         if isProcedureInfo_Findings_Heading(heading):
             # Add an extra section for those that used prcedure_info content as headings

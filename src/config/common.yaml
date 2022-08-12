@@ -5,6 +5,6 @@ work_dir: /home/yuxiangliao/PhD/workspace/VSCode_workspace/structured_reporting
 src_dir: ${work_dir}/src
 output_dir: ${work_dir}/output
 log_dir: ${work_dir}/logs/${hydra.job.config_name}
-logging_level: DEBUG # DEBUG, INFO
+logging_level: INFO # DEBUG, INFO
 
 ignore_source_path: ${work_dir}/config/ignore/common_ignore

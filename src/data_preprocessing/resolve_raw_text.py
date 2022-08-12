@@ -1,12 +1,19 @@
-import logging, os, sys, hydra, time, json
+import logging
+import os
+import hydra
+import time
+import json
 from tqdm import tqdm
-from utils.file_checker import FileChecker
-from utils_and_rules.data_holder_class import MetaReport, StructuredReport
-from utils_and_rules.rules import *
+from common_utils.file_checker import FileChecker
+from data_preprocessing.utils_and_rules.data_holder_class import MetaReport, StructuredReport
+from data_preprocessing.utils_and_rules.rules import *
 
 
 logger = logging.getLogger()
 FILE_CHECKER = FileChecker()
+
+module_path = os.path.dirname(__file__)
+config_path = os.path.join(os.path.dirname(module_path), "config")
 
 
 def read_raw_data(config):
@@ -30,15 +37,13 @@ def read_raw_data(config):
                             contentList = f.readlines()
                             dataList.append({"pid": pid, "sid": sid, "contentList": contentList})
                         pbar.update(1)
-    logger.info(
-        f"Time cost: {time.time()-start0:.2f}s. Loaded {studyCounter} files - {patientCounter} (patients) | {studyCounter} (studies). "
-    )
+    logger.info("Time cost: %.2fs. Loaded %s files - %s (patients) | %s (studies). ", time.time()-start0, studyCounter, patientCounter, studyCounter)
     return dataList
 
 
 def resolve(dataList):
     """The raw data will be converted into MetaReport and StructuredReport and appended to dataList."""
-    logger.info(f"Resolving the reports.")
+    logger.info("Resolving the reports.")
     start0 = time.time()
     for reportItem in tqdm(dataList):
         metaReport = MetaReport()
@@ -63,7 +68,7 @@ def resolve(dataList):
             handler(contentRow, metaReport, structuredReport)
         finalReportSection_concatenateRule(metaReport, structuredReport)
 
-    logger.info(f"Time cost: {time.time()-start0:.2f}s")
+    logger.info("Time cost: %.2fs", time.time()-start0)
     return dataList
 
 
@@ -71,7 +76,7 @@ def convert(config, dataList):
     """1. Perform the final step for the identification of section content.
     2. If ``config.use_artefact`` is True, then the corresponding records will be replaced by the manually preprocessed records.
     """
-    logger.info(f"Converting the output data.")
+    logger.info("Converting the output data.")
     start0 = time.time()
     output_list = []
     for dataItem in tqdm(dataList):
@@ -133,12 +138,12 @@ def convert(config, dataList):
 
         output_list.append(data_item)
 
-    logger.info(f"Time cost: {time.time()-start0:.1f}s")
+    logger.info("Time cost: %.1fs", time.time()-start0)
     return output_list
 
 
 def output_json(config, output_list):
-    logger.info(f"Writing the output in JSON format.")
+    logger.info("Writing the output in JSON format.")
     if not os.path.exists(config.output_dir):
         os.makedirs(config.output_dir)
     ourput_file_path = os.path.join(config.output_dir, "mimic_cxr_sections.jsonlines")
@@ -162,11 +167,11 @@ def output_json(config, output_list):
             }
             f.write(json.dumps(formatted_reocrd))
             f.write("\n")
-    logger.info(f"Time cost: {time.time()-start0:.1f}s. Output: {ourput_file_path}.")
+    logger.info("Time cost: %.2fs. Output: %s.", time.time()-start0, ourput_file_path)
 
 
 def output_mysql(config, output_list):
-    logger.info(f"Writing the output to mysql.")
+    logger.info("Writing the output to mysql.")
     import pymysql
 
     start0 = time.time()
@@ -205,7 +210,7 @@ def output_mysql(config, output_list):
     cursor.execute(create_table)
     cursor.connection.commit()
 
-    logger.info(f"Created TABLE `{mysql_config.db}`.`{mysql_config.table_name}`, writing data:")
+    logger.info("Created TABLE `%s`.`%s`, writing data:", mysql_config.db, mysql_config.table_name)
     for data_item in tqdm(output_list):
         sql = f"""INSERT INTO `{mysql_config.db}`.`{mysql_config.table_name}`(
         `{column_name.PID}`,`{column_name.SID}`,
@@ -227,12 +232,10 @@ def output_mysql(config, output_list):
     cursor.connection.commit()
     cursor.close()
     db.close()
-    logger.info(
-        f"Time cost: {time.time()-start0:.1f}s. Output: mysql: `{mysql_config.db}`.`{mysql_config.table_name}`."
-    )
+    logger.info("Time cost: %.2fs. Output: mysql: `%s`.`%s`.", time.time()-start0, mysql_config.db, mysql_config.table_name)
 
 
-@hydra.main(version_base=None, config_path="../config", config_name="data_preprocessing")
+@hydra.main(version_base=None, config_path=config_path, config_name="data_preprocessing")
 def main(config):
 
     dataList = read_raw_data(config)
@@ -245,4 +248,4 @@ def main(config):
 
 
 if __name__ == "__main__":
-    main()
+    main()  # pylint: disable=no-value-for-parameter

@@ -1,5 +1,7 @@
-import logging, os, hydra, time
-import mimic_cxr_raw2conll
+import logging
+import os
+import hydra
+import time
 
 
 logger = logging.getLogger()
@@ -39,4 +41,4 @@ def main(config):
 
 
 if __name__ == "__main__":
-    main()
+    main()  # pylint: disable=no-value-for-parameter

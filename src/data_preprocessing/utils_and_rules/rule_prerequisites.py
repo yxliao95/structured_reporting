@@ -1,5 +1,5 @@
 import json
-from utils_and_rules.utils import *
+from data_preprocessing.utils_and_rules.utils import *
 from hydra import compose
 
 

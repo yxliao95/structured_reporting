@@ -7,6 +7,8 @@ defaults:
   - coref_data_preprocessing/i2b2
   - coref_data_preprocessing/mimic_cxr
   - name_style/mimic_cxr_sections
+  - name_style/corenlp_output
+  - name_style/spacy_output
   - multiprocessing/multiprocessing
   - nlp/corenlp
   - _self_

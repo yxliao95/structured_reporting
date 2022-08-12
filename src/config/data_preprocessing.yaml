@@ -1,4 +1,4 @@
-data_dir: /Users/liao/Desktop/mimic-cxr
+data_dir: /home/yuxiangliao/PhD/mimic-cxr
 output_dir: ${work_dir}/output
 
 in_process:
@@ -7,7 +7,7 @@ in_process:
 
 output:
   json: True # Output json file
-  mysql: True # Output to mysql
+  mysql: False # Output to mysql
 
 defaults:
   - common

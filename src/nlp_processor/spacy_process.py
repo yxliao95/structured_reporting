@@ -1,6 +1,8 @@
-import time, random
-import spacy, logging
 from multiprocessing import Process
+import logging
+import time
+import random
+import spacy
 
 SPACY_NLP = spacy.load("en_core_web_md", disable=["ner"])
 logger = logging.getLogger()
@@ -16,7 +18,7 @@ class SpacyProcess(Process):
         self.input_sid_list = input_sid_list
 
     def run(self):
-        logger.debug(f"Spacy Process [{self.processId}-{self.id}] started.")
+        logger.debug("Spacy Process [%s-%s] started.", self.processId, self.id)
         time0 = time.time()
         text_tuples = [(text, {"sid": sid}) for text, sid in zip(self.input_text_list, self.input_sid_list)]
         spacy_output_list = []
@@ -25,5 +27,5 @@ class SpacyProcess(Process):
             spacy_output_list.append({"sid": sid, "doc": doc})
         data = {"processId": self.id, "data": spacy_output_list}
         time1 = time.time()
-        logger.debug(f"Spacy Process [{self.processId}-{self.id}] finished in {time1-time0}s")
+        logger.debug("Spacy Process [%s-%s] finished in %ss", self.processId, self.id, time1-time0)
         self.input_pipe.send(data)

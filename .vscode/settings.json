@@ -2,6 +2,9 @@
     "jupyter.jupyterServerType": "remote",
     "python.analysis.extraPaths": [
         "./coreference_resolution/fast-coref/src",
-        "./utils"
-    ]
+        "./src"
+    ],
+    "python.linting.pylintEnabled": true,
+    "python.linting.enabled": true,
+    "python.linting.flake8Enabled": false,
 }
