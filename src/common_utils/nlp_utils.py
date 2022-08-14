@@ -26,6 +26,45 @@ def align_byIndex_individually(length, inputIndexGroups):
     return alignment
 
 
+def align_byIndex_individually_nestedgruop(length, corefGroups):
+    """ For coref group, there are mention group inside the coref group """
+    alignment = [-1] * length
+    for _id, corefGroup in enumerate(corefGroups):
+        for mention in corefGroup:
+            for index in mention:
+                if alignment[index] == -1:
+                    alignment[index] = [_id]
+                else:
+                    alignment[index].append(_id)
+    return alignment
+
+
+def align_coref_groups_in_conll_format(length, corefGroups) -> list:
+    """ The coref groups are organized as CoNLL format. """
+    alignment = [-1] * length
+    for _id, corefGroup in enumerate(corefGroups):
+        for mentionTokens in corefGroup:
+            if len(mentionTokens) == 1:
+                index = mentionTokens[0]
+                if alignment[index] == -1:
+                    alignment[index] = [f"({_id})"]
+                else:
+                    alignment[index].append(f"({_id})")
+            else:
+                start_index = mentionTokens[0]
+                if alignment[start_index] == -1:
+                    alignment[start_index] = [f"({_id}"]
+                else:
+                    alignment[start_index].append(f"({_id}")
+
+                end_index = mentionTokens[-1]
+                if alignment[end_index] == -1:
+                    alignment[end_index] = [f"{_id})"]
+                else:
+                    alignment[end_index].append(f"{_id})")
+    return alignment
+
+
 def align_byIndex_individually_withData_noOverlap(tokNum, inputIndexGroups_withData):
     alignment = [-1] * tokNum
     for _id, indexGroup_withData in enumerate(inputIndexGroups_withData):

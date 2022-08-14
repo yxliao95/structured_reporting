@@ -2,3 +2,38 @@ mimic_cxr:
   dataset_path: ${output_dir}/mimic_cxr_sections.jsonlines
   output_dir: ${output_dir}/coref/data/mimic_cxr
   temp_dir: ${output_dir}/coref/data/mimic_cxr/temp
+
+  # 0 to use random seed to shuffle the dataset; -1 to disable the shuffle; Or any int value as static seed.
+  shuffle_seed: -1
+
+  # If true, then the history output dir will be deleted and created again.
+  clear_history: true
+  # The .csv files are stored in ``temp_dir``. To generate the all .csv files required 10 hours.
+  # If True, the `temp_dir`` will not be removed in any case.
+  remove_temp: false
+
+  # Assuming we already have ``temp_dir``, we skip stage 1 and reuse the existing .csv them.
+  reload_from_temp: false
+
+  output:
+    root_dir_name: conll
+    suffix: .conll
+
+  input:
+    suffix: .csv
+
+  data_split:
+    # Will be used when either ${data_split.cross_validation} or ${data_split.random_shuffle} is true, as files need to be *split*.
+    split: true
+    if_split:
+      log_hint: For_Finetuning
+      dir_name_suffix: null
+      output_name_prefix: train,dev,test # Should match to the length of ${data_split.if_split.proportion}
+      proportion: 7,2,1 # In which proportion to split the source files.
+    # It will only create one file with prefix "all" without spliting the source files. The source files will NOT be *split*.
+    unsplit: true
+    if_unsplit:
+      log_hint: For_Testing
+      dir_name_suffix: all
+      output_name_prefix: test
+      proportion: null

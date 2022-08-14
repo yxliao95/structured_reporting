@@ -1,6 +1,3 @@
-# ${work_dir}/${module_dir_name}/fast-coref
-fast_coref_dir: /home/yuxiangliao/PhD/workspace/git_clone_repos/fast-coref
-
 defaults:
   - hydra/custom_logging
   - common

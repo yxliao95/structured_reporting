@@ -2,7 +2,8 @@
     "jupyter.jupyterServerType": "remote",
     "python.analysis.extraPaths": [
         "./coreference_resolution/fast-coref/src",
-        "./src"
+        "/home/yuxiangliao/PhD/workspace/git_clone_repos/fast-coref/src",
+        "./src",
     ],
     "python.linting.pylintEnabled": true,
     "python.linting.enabled": true,

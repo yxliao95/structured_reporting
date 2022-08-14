@@ -1,18 +1,17 @@
 import json
 import logging
 import os
-import random
 import time
 from concurrent.futures import ProcessPoolExecutor, as_completed
-from multiprocessing import Lock, Pipe, Pool, Process
+from multiprocessing import Pipe
 import traceback
 
 import hydra
 import pandas as pd
-import spacy
 from omegaconf import OmegaConf
 from tqdm import tqdm
-from common_utils.nlp_utils import align, getTokenOffset, align_byIndex_individually, align_byIndex_individually_withData_noOverlap, align_byIndex_individually_withData_dictInList
+from common_utils.coref_utils import remove_tag_from_list
+from common_utils.nlp_utils import align, align_byIndex_individually_nestedgruop, align_coref_groups_in_conll_format, getTokenOffset, align_byIndex_individually_withData_noOverlap
 from nlp_processor.spacy_process import SpacyProcess
 from nlp_processor.corenlp_process import CorenlpProcess, formatCorenlpDocument
 
@@ -23,19 +22,19 @@ config_path = os.path.join(os.path.dirname(coref_module_path), "config")
 
 
 def load_data(file_path, section_name):
-    """Load data from ``file_path``."""
+    """Load data from ``file_path``. ``section_name`` is the config load from ``config/name_style/mimic_cxr_section.yaml``"""
     df = pd.read_json(file_path, orient="records", lines=True)
     df = df.sort_values(by=[section_name.PID, section_name.SID])
     pid_list = df.loc[:, section_name.PID].to_list()
     sid_list = df.loc[:, section_name.SID].to_list()
-    findings_list = df.loc[:, section_name.FINDINGS].to_list()
-    impression_list = df.loc[:, section_name.IMPRESSION].to_list()
-    pfi_list = df.loc[:, section_name.PFI].to_list()
-    fai_list = df.loc[:, section_name.FAI].to_list()
+    findings_list = remove_tag_from_list(df.loc[:, section_name.FINDINGS].to_list())
+    impression_list = remove_tag_from_list(df.loc[:, section_name.IMPRESSION].to_list())
+    pfi_list = remove_tag_from_list(df.loc[:, section_name.PFI].to_list())
+    fai_list = remove_tag_from_list(df.loc[:, section_name.FAI].to_list())
     return len(sid_list), pid_list, sid_list, findings_list, impression_list, pfi_list, fai_list
 
 
-def batch_processing(input_text_list, input_sid_list, input_pid_list, sectionName, progressId, config) -> tuple[int, str, int]:
+def batch_processing(input_text_list: list, input_sid_list: list, input_pid_list: list, sectionName: str, progressId: int, config) -> tuple[int, str, int]:
     """ The task of multiprocessing.
     Args:
         input_text_list: A batch of list of the corresponding section text
@@ -107,7 +106,8 @@ def batch_processing(input_text_list, input_sid_list, input_pid_list, sectionNam
                 {
                     corenlp_nametyle["token"]: [token["originalText"] for sentence in corenlp_json["sentences"] for token in sentence["tokens"]],
                     corenlp_nametyle["coref_mention"]: align_byIndex_individually_withData_noOverlap(df_corenlp_rowsNum, corefMentionInfo),
-                    corenlp_nametyle["coref_group"]: align_byIndex_individually(df_corenlp_rowsNum, corefGroupInfo),
+                    corenlp_nametyle["coref_group"]: align_byIndex_individually_nestedgruop(df_corenlp_rowsNum, corefGroupInfo),
+                    corenlp_nametyle["coref_group_conll"]: align_coref_groups_in_conll_format(df_corenlp_rowsNum, corefGroupInfo),
                 },
                 index=referTo_spacy,
             )
@@ -120,11 +120,14 @@ def batch_processing(input_text_list, input_sid_list, input_pid_list, sectionNam
         for _sid, _df in batch_data.items():
             df_all = _df["df_spacy"]
             df_all = df_all.join(_df["df_corenlp"])
-            temp = os.path.join(config.coref_data_preprocessing.mimic_cxr.temp_dir, "sectionName")
+            temp = os.path.join(config.coref_data_preprocessing.mimic_cxr.temp_dir, sectionName)
             if not os.path.exists(temp):
                 os.makedirs(temp)
+            # If the section is empty, then skip.
+            if input_text_list[input_sid_list.index(_sid)] == "None":
+                continue
             df_all.to_csv(os.path.join(temp, f"{_sid}.csv"))
-            print(f"Batch Process [{progressId}] output: sid:{_sid}, df_shape:{df_all.shape}")
+            logger.debug("Batch Process [%s] output: sid:%s, df_shape:%s", progressId, _sid, df_all.shape)
         return progressId, "Done", len(batch_data)
     except Exception:
         logger.error("Error occured in batch Process [%s]:", progressId)
@@ -133,8 +136,12 @@ def batch_processing(input_text_list, input_sid_list, input_pid_list, sectionNam
         return progressId, "Error occured", 0
 
 
-def invoke(config):
-    """ Use multiprocessing to process data. Data are split into batches. """
+def run(config) -> str:
+    """ Use multiprocessing to process data. Data are split into batches. 
+
+    Return:
+        temp_output_dir
+    """
     # Load data
     mimic_cfg = config.coref_data_preprocessing.mimic_cxr
     section_name = config.name_style.mimic_cxr.section_name
@@ -142,7 +149,7 @@ def invoke(config):
     data_size, pid_list, sid_list, findings_list, impression_list, pfi_list, fai_list = load_data(mimic_cfg.dataset_path, section_name)
 
     # We create a batch of records at each time and submit a task
-    logger.info("Main process started")
+    logger.debug("Main process started.")
     section_list: list[tuple] = []
     multiprocessing_cfg = config.multiprocessing
     # Sections to be processed
@@ -184,13 +191,15 @@ def invoke(config):
                     logger.debug("Result from batch_processing [%s] : %s", processId, msg)
             executor.shutdown(wait=True, cancel_futures=False)
             logger.info("Done.")
-    logger.info("Main process finished")
+    logger.debug("Main process finished.")
+    logger.info("Temp output dir: %s", config.coref_data_preprocessing.mimic_cxr.temp_dir)
+    return config.coref_data_preprocessing.mimic_cxr.temp_dir
 
 
 @hydra.main(version_base=None, config_path=config_path, config_name="coreference_resolution")
 def main(config):
     print(OmegaConf.to_yaml(config))
-    invoke(config)
+    run(config)
 
 
 if __name__ == "__main__":

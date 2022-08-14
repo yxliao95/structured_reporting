@@ -118,6 +118,7 @@ def formatCorenlpDocument(tokenOffset_base: DataFrame, corenlp_json):
             corefMetionGroups_withData.append(
                 {"indices": mentionIndices, "extra_str": mentionType, }
             )
-        corefGroup_flatten = [indices for mention in corefGroup for indices in mention]
-        corefGroups.append(corefGroup_flatten)
+        # If flatten, then we can't not recognize the boundaries of the mentions
+        # corefGroup_flatten = [indices for mention in corefGroup for indices in mention]
+        corefGroups.append(corefGroup)
     return referTo_base, tokenTotalNum, corefMetionGroups_withData, corefGroups, dependency_list, depPlus_list, depPlusPlus_list

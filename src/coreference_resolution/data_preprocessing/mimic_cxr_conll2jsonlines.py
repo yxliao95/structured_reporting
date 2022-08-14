@@ -1,12 +1,13 @@
 """ This file is a modified version of fast-coref/src/data-processing/prrocessing-litbank.py """
 import collections
+import json
 import logging
 import re
-import os
 import sys
-from os import path
-import json
+import os
 
+import hydra
+from tqdm import tqdm
 # pylint: disable=import-error
 from coref_utils import conll
 from data_processing.utils import (
@@ -16,6 +17,7 @@ from data_processing.utils import (
 )
 from data_processing.process_ontonotes import OntoNotesDocumentState
 from common_utils.file_checker import FileChecker
+
 
 logger = logging.getLogger()
 pkg_path = os.path.dirname(__file__)
@@ -95,31 +97,40 @@ def minimize_partition(input_path, output_path, tokenizer, seg_len):
     logger.info("Wrote %s documents to %s", count, output_path)
 
 
-def minimize_split(args):
+def minimize_split(config, args):
     for subdir_entry in os.scandir(args.input_dir):
-        if FILE_CHECKER.ignore(subdir_entry.name):
+        # Ignore temp and hidden dirs
+        if FILE_CHECKER.ignore(subdir_entry.name) or subdir_entry.path == config.coref_data_preprocessing.mimic_cxr.temp_dir:
             continue
-        else:
-            output_dir = path.join(args.output_dir, subdir_entry.name)
-            if not path.exists(output_dir):
-                os.makedirs(output_dir)
-        for file_entry in os.scandir(subdir_entry.path):
+        output_dir = os.path.join(subdir_entry.path, os.path.basename(args.output_dir))
+        if not os.path.exists(output_dir):
+            os.makedirs(output_dir)
+        for file_entry in os.scandir(os.path.join(subdir_entry.path, config.coref_data_preprocessing.mimic_cxr.output.root_dir_name)):
             input_path = file_entry.path
-            output_path = path.join(
-                args.output_dir, subdir_entry.name, f"{file_entry.name.removesuffix('.conll')}.{args.seg_len}.jsonlines"
+            output_path = os.path.join(
+                output_dir, f"{file_entry.name.removesuffix(config.coref_data_preprocessing.mimic_cxr.output.suffix)}.{args.seg_len}.jsonlines"
             )
             minimize_partition(input_path, output_path, args.tokenizer, args.seg_len)
     logger.info("Done.")
-    return args.output_dir
-
-
-def invoke(conll_dir):
-    sys.argv.append(conll_dir)
-    output_dir = minimize_split(parse_args())
     return output_dir
 
 
-# if __name__ == "__main__":
-#     input_dir = "/Users/liao/Desktop/DBMI_c2b2_2011_coref/conll"
-#     sys.argv.append(input_dir)
-#     minimize_split(parse_args())
+def invoke(config, input_dir):
+    sys.argv.append(input_dir)
+    args = parse_args()
+    output_dir = minimize_split(config, args)
+    # We dont output the files to ``args.output_dir``. Here, the ``args.output_dir`` folder is empty and safe to delete.
+    if os.path.exists(args.output_dir):
+        os.removedirs(args.output_dir)
+
+    return output_dir
+
+
+@hydra.main(version_base=None, config_path=config_path, config_name="coreference_resolution")
+def main(config):
+    input_dir = "/home/yuxiangliao/PhD/workspace/VSCode_workspace/structured_reporting/output/coref/data/mimic_cxr/"
+    invoke(config, input_dir)
+
+
+if __name__ == "__main__":
+    main()  # pylint: disable=no-value-for-parameter
