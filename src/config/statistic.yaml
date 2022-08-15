@@ -1,8 +1,13 @@
 coref:
   target_dir: ${coref_data_preprocessing.mimic_cxr.temp_dir}
-  output_dir: ${output_dir}/statistic
+  output_dir: ${output_dir}/statistic/coref
+  clear_history: true
+
+thread:
+  workers: 10
 
 defaults:
   - common
   - coref_data_preprocessing/mimic_cxr
+  - name_style/corenlp_output
   - _self_

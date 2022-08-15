@@ -7,7 +7,6 @@ import sys
 import os
 
 import hydra
-from tqdm import tqdm
 # pylint: disable=import-error
 from coref_utils import conll
 from data_processing.utils import (
