@@ -9,6 +9,7 @@ fast-coref/
 statistic/
 /output
 manually_processed_records.json
+.vscode/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

@@ -120,13 +120,14 @@ def batch_processing(input_text_list: list, input_sid_list: list, input_pid_list
         for _sid, _df in batch_data.items():
             df_all = _df["df_spacy"]
             df_all = df_all.join(_df["df_corenlp"])
-            temp = os.path.join(config.coref_data_preprocessing.mimic_cxr.temp_dir, sectionName)
-            if not os.path.exists(temp):
-                os.makedirs(temp)
+            # Output csv for later converting to conll
+            csv_temp_dir = os.path.join(config.coref_data_preprocessing.mimic_cxr.temp_dir, sectionName)
+            if not os.path.exists(csv_temp_dir):
+                os.makedirs(csv_temp_dir)
             # If the section is empty, then skip.
             if input_text_list[input_sid_list.index(_sid)] == "None":
                 continue
-            df_all.to_csv(os.path.join(temp, f"{_sid}.csv"))
+            df_all.to_csv(os.path.join(csv_temp_dir, f"{_sid}.csv"))
             logger.debug("Batch Process [%s] output: sid:%s, df_shape:%s", progressId, _sid, df_all.shape)
         return progressId, "Done", len(batch_data)
     except Exception:

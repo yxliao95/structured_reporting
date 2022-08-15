@@ -3,7 +3,7 @@ workers_in_pool: 6
 batch_size: 10
 
 data_start_pos: 0
-data_end_pos: 1000
+data_end_pos: 227835
 
 target_section:
   findings: true

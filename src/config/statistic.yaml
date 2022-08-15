@@ -1,0 +1,8 @@
+coref:
+  target_dir: ${coref_data_preprocessing.mimic_cxr.temp_dir}
+  output_dir: ${output_dir}/statistic
+
+defaults:
+  - common
+  - coref_data_preprocessing/mimic_cxr
+  - _self_
