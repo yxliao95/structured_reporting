@@ -6,14 +6,14 @@ mimic_cxr:
   # 0 to use random seed to shuffle the dataset; -1 to disable the shuffle; Or any int value as static seed.
   shuffle_seed: -1
 
-  # If true, then the history output dir will be deleted and created again.
+  # If true, then the history output dir (except for the temp_dir) will be deleted and created again.
   clear_history: true
-  # The .csv files are stored in ``temp_dir``. To generate the all .csv files required 10 hours.
-  # If True, the `temp_dir`` will not be removed in any case.
+  # The .csv files are stored in ``temp_dir``. To generate the all .csv files required 15 hours for 6 workers.
+  # If false, the `temp_dir`` will not be removed in any case.
   remove_temp: false
 
   # Assuming we already have ``temp_dir``, we skip stage 1 and reuse the existing .csv them.
-  reload_from_temp: false
+  reload_from_temp: true
 
   output:
     root_dir_name: conll
