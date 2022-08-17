@@ -178,8 +178,6 @@ def run(config) -> str:
                 # Submit the task for one batch
                 all_task.append(executor.submit(batch_processing, input_text_list, input_sid_list, input_pid_list, _sectionName, progressId, config))
                 # We found that the tqdm progress bar will stuck somehow somewhere during this progress, without error raised.
-                # We assume the reason behind is the limited speed of allocatng memory space.
-                # Because when we invoke print() at this loop, everything is working fine.
                 if progressId % 100 == 0:
                     time.sleep(0.01)
             # When a submitted task finished, the output is received here.

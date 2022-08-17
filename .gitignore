@@ -1,15 +1,17 @@
-logs/
-*.log
-pylintrc
-cim-misspelling/
-mimic_cxr_reports_core.*
-statistic/
-test*.*
-fast-coref/
-statistic/
+/statistic
 /output
-manually_processed_records.json
+/outputs
+
+logs/
+cim-misspelling/
+fast-coref/
 .vscode/
+
+mimic_cxr_reports_core.*
+test*.*
+pylintrc
+manually_processed_records.json
+
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
