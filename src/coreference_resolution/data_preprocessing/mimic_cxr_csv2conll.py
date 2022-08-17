@@ -103,7 +103,7 @@ def convert_to_conll(config, sectionName, output_base_dir, docs_dir):
 
 def invoke(config, temp_output_dir: str):
     section_name = config.name_style.mimic_cxr.section_name
-    multiprocessing_cfg = config.multiprocessing
+    multiprocessing_cfg = config.coref_data_preprocessing.mimic_cxr.multiprocessing
     mimic_cfg = config.coref_data_preprocessing.mimic_cxr
 
     # Sections that required to process.

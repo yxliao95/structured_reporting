@@ -34,7 +34,7 @@ def load_data(file_path, section_name):
     return len(sid_list), pid_list, sid_list, findings_list, impression_list, pfi_list, fai_list
 
 
-def batch_processing(input_text_list: list, input_sid_list: list, input_pid_list: list, sectionName: str, progressId: int, config) -> tuple[int, str, int]:
+def batch_processing(input_text_list: list, input_sid_list: list, input_pid_list: list, sectionName: str, progressId: int, config) -> tuple[int, str, int]:  # pylint: disable=unused-argument
     """ The task of multiprocessing.
     Args:
         input_text_list: A batch of list of the corresponding section text
@@ -130,7 +130,7 @@ def batch_processing(input_text_list: list, input_sid_list: list, input_pid_list
             df_all.to_csv(os.path.join(csv_temp_dir, f"{_sid}.csv"))
             logger.debug("Batch Process [%s] output: sid:%s, df_shape:%s", progressId, _sid, df_all.shape)
         return progressId, "Done", len(batch_data)
-    except Exception:
+    except Exception:  # pylint: disable=broad-except
         logger.error("Error occured in batch Process [%s]:", progressId)
         logger.error("Keys in batch_data: %s", batch_data.keys())
         logger.error(traceback.format_exc())
@@ -152,7 +152,7 @@ def run(config) -> str:
     # We create a batch of records at each time and submit a task
     logger.debug("Main process started.")
     section_list: list[tuple] = []
-    multiprocessing_cfg = config.multiprocessing
+    multiprocessing_cfg = config.coref_data_preprocessing.mimic_cxr.multiprocessing
     # Sections to be processed
     if multiprocessing_cfg.target_section.findings:
         section_list.append((section_name.FINDINGS, findings_list))
