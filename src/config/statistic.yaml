@@ -4,7 +4,7 @@ coref:
   clear_history: true
 
 thread:
-  workers: 10
+  workers: 15
 
 defaults:
   - common

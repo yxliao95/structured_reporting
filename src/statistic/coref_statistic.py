@@ -3,6 +3,7 @@ from collections import Counter
 from concurrent.futures import ProcessPoolExecutor, as_completed
 import json
 import logging
+from multiprocessing import Event
 import os
 import shutil
 import time
@@ -21,17 +22,6 @@ src = os.path.dirname(pkg_dir)
 config_path = os.path.join(src, "config")
 
 FILE_CHECKER = FileChecker()
-
-
-def statistic(config, input_file_path, sid):
-    """ Read the csv files and return the sid (filename) and the number of coref groups. """
-    df = pd.read_csv(input_file_path)
-    df_coref_group = df[~df.loc[:, config.name_style.corenlp.column_name.coref_group].isin(["-1", -1.0, np.nan])]
-    coref_group_set = set()
-    for list_str in df_coref_group.loc[:, config.name_style.corenlp.column_name.coref_group].to_list():
-        coref_group_set.update(ast.literal_eval(list_str))
-    coerf_group_num = len(coref_group_set)
-    return sid, coerf_group_num
 
 
 class StatisticOutput:
@@ -58,6 +48,21 @@ class StatisticOutput:
         return json.dumps(out, indent=2)
 
 
+START_EVENT = Event()
+
+
+def statistic(config, input_file_path, sid):
+    """ Read the csv files and return the sid (filename) and the number of coref groups. """
+    START_EVENT.wait()
+    df = pd.read_csv(input_file_path)
+    df_coref_group = df[~df.loc[:, config.name_style.corenlp.column_name.coref_group].isin(["-1", -1.0, np.nan])]
+    coref_group_set = set()
+    for list_str in df_coref_group.loc[:, config.name_style.corenlp.column_name.coref_group].to_list():
+        coref_group_set.update(ast.literal_eval(list_str))
+    coerf_group_num = len(coref_group_set)
+    return sid, coerf_group_num
+
+
 def main_process(config):
     input_dir = config.coref.target_dir
     for section_entry in os.scandir(input_dir):
@@ -73,17 +78,17 @@ def main_process(config):
                 out.notEmpty_file_num += 1
                 sid = report_entry.name.rstrip(config.coref_data_preprocessing.mimic_cxr.input.suffix)
                 tasks.append(executor.submit(statistic, config, report_entry.path, sid))
-                if out.notEmpty_file_num % 100 == 0:
-                    time.sleep(0.01)
-        # Receive results from multiprocessing. Individual statistic.
-        for future in tqdm(as_completed(tasks)):
-            sid, coerf_group_num = future.result()
-            out.add_coerf_group_num(coerf_group_num)
-            with open(os.path.join(config.coref.output_dir, f"{out.section_name}"), "a", encoding="UTF-8") as f:
-                f.write(f"{sid} {coerf_group_num}\n")
-        # Overall statistic
-        with open(os.path.join(config.coref.output_dir, "overall"), "a", encoding="UTF-8") as f:
-            f.write(f"{out.get_final_output()}\n")
+            START_EVENT.set()
+            # Receive results from multiprocessing. Individual statistic.
+            for future in tqdm(as_completed(tasks)):
+                sid, coerf_group_num = future.result()
+                out.add_coerf_group_num(coerf_group_num)
+                with open(os.path.join(config.coref.output_dir, f"{out.section_name}"), "a", encoding="UTF-8") as f:
+                    f.write(f"{sid} {coerf_group_num}\n")
+            # Overall statistic
+            with open(os.path.join(config.coref.output_dir, "overall"), "a", encoding="UTF-8") as f:
+                f.write(f"{out.get_final_output()}\n")
+            START_EVENT.clear()
 
 
 @hydra.main(version_base=None, config_path=config_path, config_name="statistic")
