@@ -5,12 +5,12 @@ from multiprocessing import Process
 
 import requests
 from pandas import DataFrame
-from common_utils.nlp_utils import resolveTokenIndices_byPosition
+from common_utils.nlp_utils import resolveTokenIndices_byPosition  # pylint: disable=import-error
 
 logger = logging.getLogger()
 
 
-class CorenlpProcess(Process):
+class CorenlpUrlProcess(Process):
     def __init__(self, request_url, progressId, input_pipe, input_text_list, input_sid_list):
         super().__init__()
         self.request_url = request_url

@@ -1,0 +1,9 @@
+spacy:
+  model: en_core_web_md
+  components:
+    tok2vec: true 
+    tagger: true 
+    parser: true 
+    attribute_ruler: true 
+    lemmatizer: true 
+    ner: false

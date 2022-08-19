@@ -10,10 +10,11 @@ import hydra
 import pandas as pd
 from omegaconf import OmegaConf
 from tqdm import tqdm
+# pylint: disable=import-error,wrong-import-order
 from common_utils.coref_utils import remove_tag_from_list
 from common_utils.nlp_utils import align, align_byIndex_individually_nestedgruop, align_coref_groups_in_conll_format, getTokenOffset, align_byIndex_individually_withData_noOverlap
 from nlp_processor.spacy_process import SpacyProcess
-from nlp_processor.corenlp_process import CorenlpProcess, formatCorenlpDocument
+from nlp_processor.corenlp_process import CorenlpUrlProcess, formatCorenlpDocument
 
 logger = logging.getLogger()
 pkg_path = os.path.dirname(__file__)
@@ -60,7 +61,7 @@ def batch_processing(input_text_list: list, input_sid_list: list, input_pid_list
         # 3. For CoreNLP
         corenlp_url = config.nlp.corenlp.request_url
         corenlp_outPipe, corenlp_inPipe = Pipe(False)
-        corenlp_process = CorenlpProcess(corenlp_url, progressId, corenlp_inPipe, input_text_list, input_sid_list)
+        corenlp_process = CorenlpUrlProcess(corenlp_url, progressId, corenlp_inPipe, input_text_list, input_sid_list)
         corenlp_process.start()
         # corenlp_dict = corenlp_outPipe.recv()
 
@@ -162,6 +163,7 @@ def run(config) -> str:
         section_list.append((section_name.PFI, pfi_list))
     if multiprocessing_cfg.target_section.findings_and_impression:
         section_list.append((section_name.FAI, fai_list))
+
     # Loop sections
     for _sectionName, text_list in section_list:
         all_task = []

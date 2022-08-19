@@ -1,0 +1,22 @@
+corenlp:
+  #?properties={"annotators":"coref","coref.algorithm":"statistical","outputFormat":"json"}
+  request_url: 'http://0.0.0.0:8802/' 
+
+  server:
+    memory: 4G
+    threads: 8
+    endpoint: http://localhost:8802
+    outputFormat: json
+    be_quiet: True
+
+  server_properties:
+    default:
+      annotators: tokenize, ssplit, pos, lemma, ner, depparse
+    scoref:
+      annotators: tokenize, ssplit, pos, lemma, ner, depparse, coref
+      coref_algorithm: statistical
+    ncoref:
+      annotators: tokenize, ssplit, pos, lemma, ner, parse, coref
+      coref_algorithm: neural
+    dcoref:
+      annotators: tokenize, ssplit, pos, lemma, ner, parse, dcoref

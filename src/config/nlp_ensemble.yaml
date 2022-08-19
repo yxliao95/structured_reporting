@@ -1,0 +1,60 @@
+input:
+  path: ${output_dir}/mimic_cxr_sections.jsonlines
+
+clear_history: true
+
+output:
+  dir: ${output_dir}/nlp_ensemble
+  log_path: ${output.dir}/run.log
+  section:
+    findings: true
+    impression: true
+    provisional_findings_impression: true
+    findings_and_impression: true
+
+multiprocessing:
+  workers_in_pool: 10
+
+  data_start_pos: 0
+  data_end_pos: 100
+  batch_size: 10
+
+
+# This is the alignment base. It means that any model/library/tool outputs are aligned to the spaCy outputs (tokens).
+spacy:
+  # Spacy is always activated
+  activate: true
+  load_previous: false # If True, we don't process the raw data from scratch but load from the previously saved outputs e.g. the CSV files in ${output_dir}.
+
+
+corenlp:
+  activate: true
+  load_previous: false
+  
+  require_coref: true # If false, we will use the default properties specified in /nlp_properties/corenlp.yaml
+  use_coref_pipeline: # If require_coref is true, we need to specify a main pipeline to use. For the others, we will only keep its coref annotator's output.
+    scoref: true # Containing the statistical (ML-based) coref annotator.
+    ncoref: true # Containing the neural coref annotator
+    dcoref: true # Containing the deterministic (Rule-based) coref annotator.
+  default_pipeline_provider: scoref #  By default we use the pipeline of scoref. Should not change this.
+
+metamap: 
+  activate: false
+  load_previous: false
+
+stanza:
+  activate: false
+  load_previous: false
+
+fast_joint_best: 
+  activate: false
+  load_previous: false
+
+defaults:
+  - common
+  - name_style/mimic_cxr_sections
+  - name_style/corenlp_output
+  - name_style/spacy_output
+  - nlp_properties/spacy
+  - nlp_properties/corenlp
+  - _self_

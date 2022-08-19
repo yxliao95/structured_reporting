@@ -1,12 +1,25 @@
 corenlp:
   prefix: "[co]"
+  statistical_coref_prefix: "[ml]"
+  nerual_coref_prefix: "[nn]"
+  deterministic_coref_prefix: "[rb]"
+  
   column_name:
     token: ${name_style.corenlp.prefix}token
     pos: ${name_style.corenlp.prefix}pos
     lemma: ${name_style.corenlp.prefix}lemma
-    coref_mention: ${name_style.corenlp.prefix}corefId|corefType
-    coref_group: ${name_style.corenlp.prefix}coref_group
-    coref_group_conll: ${name_style.corenlp.prefix}coref_group_conll
     dependency: ${name_style.corenlp.prefix}dep_tag|dep_head|head_index
     dependency+: ${name_style.corenlp.prefix}(+)dep_tag|dep_head|head_index
     dependency++: ${name_style.corenlp.prefix}(++)dep_tag|dep_head|head_index
+
+    scoref_mention: ${name_style.corenlp.prefix}${name_style.corenlp.statistical_coref_prefix}corefId|corefType
+    scoref_group: ${name_style.corenlp.prefix}${name_style.corenlp.statistical_coref_prefix}coref_group
+    scoref_group_conll: ${name_style.corenlp.prefix}${name_style.corenlp.statistical_coref_prefix}coref_group_conll
+        
+    ncoref_mention: ${name_style.corenlp.prefix}${name_style.corenlp.nerual_coref_prefix}corefId|corefType
+    ncoref_group: ${name_style.corenlp.prefix}${name_style.corenlp.nerual_coref_prefix}coref_group
+    ncoref_group_conll: ${name_style.corenlp.prefix}${name_style.corenlp.nerual_coref_prefix}coref_group_conll
+        
+    dcoref_mention: ${name_style.corenlp.prefix}${name_style.corenlp.deterministic_coref_prefix}corefId|corefType
+    dcoref_group: ${name_style.corenlp.prefix}${name_style.corenlp.deterministic_coref_prefix}coref_group
+    dcoref_group_conll: ${name_style.corenlp.prefix}${name_style.corenlp.deterministic_coref_prefix}coref_group_conll

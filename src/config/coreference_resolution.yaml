@@ -5,8 +5,8 @@ defaults:
   - name_style/mimic_cxr_sections
   - name_style/corenlp_output
   - name_style/spacy_output
-  - multiprocessing/multiprocessing
-  - nlp/corenlp
+  - nlp_properties/corenlp
+  - coref/ensemble
   - _self_
 
 module_dir_name: coreference_resolution

@@ -4,8 +4,8 @@ import time
 import random
 import spacy
 
-SPACY_NLP = spacy.load("en_core_web_md", disable=["ner"])
 logger = logging.getLogger()
+SPACY_NLP = None
 
 
 class SpacyProcess(Process):
@@ -29,3 +29,22 @@ class SpacyProcess(Process):
         time1 = time.time()
         logger.debug("Spacy Process [%s-%s] finished in %ss", self.processId, self.id, time1-time0)
         self.input_pipe.send(data)
+
+
+def init_spacy(spacy_properties_cfg):
+    """ Remenber the invoke this method before """
+    global SPACY_NLP
+    model = spacy_properties_cfg.model
+    enable_component = []
+    disable_component = []
+    for component_name, is_enable in spacy_properties_cfg.components.items():
+        if is_enable:
+            enable_component.append(component_name)
+        else:
+            disable_component.append(component_name)
+    logger.info("SpaCy model: %s, pipeline: enable=%s, disable=%s", model, enable_component, disable_component)
+    if not SPACY_NLP:
+        SPACY_NLP = spacy.load(model, enable=enable_component, disable=disable_component)
+    else:
+        logger.info("SpaCy has initialized.")
+    return model, enable_component, disable_component
