@@ -8,13 +8,13 @@ output:
   log_path: ${output.dir}/run.log
   section:
     findings: true
-    impression: true
-    provisional_findings_impression: true
-    findings_and_impression: true
+    impression: false
+    provisional_findings_impression: false
+    findings_and_impression: false
 
-multiprocessing:
-  workers_in_pool: 8
 
+
+batch_process:
   data_start_pos: 0
   data_end_pos: 227835
   batch_size: 10
@@ -25,11 +25,12 @@ spacy:
   # Spacy is always activated
   activate: true
   load_previous: false # If True, we don't process the raw data from scratch but load from the previously saved outputs e.g. the CSV files in ${output_dir}.
-
+  multiprocess_workers: 15
 
 corenlp:
   activate: true
   load_previous: false
+  multiprocess_workers: 14
   
   require_coref: true # If false, we will use the default properties specified in /nlp_properties/corenlp.yaml
   use_coref_pipeline: # If require_coref is true, we need to specify a main pipeline to use. For the others, we will only keep its coref annotator's output.

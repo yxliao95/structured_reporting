@@ -19,7 +19,7 @@ config_path = os.path.join(os.path.dirname(module_path), "config")
 
 
 def run_corenlp(config, sid_list, section_list):
-    multiprocessing_cfg = config.multiprocessing
+    batch_process_cfg = config.batch_process
     corenlp_cfg = config.nlp_properties.corenlp
     startTime = time.time()
 
@@ -51,7 +51,7 @@ def run_corenlp(config, sid_list, section_list):
                     "Properties": OmegaConf.to_object(server_properties_cfg),
                     "Output": "All annotators' results" if coref_component_name is None or config.corenlp.default_pipeline_provider == coref_component_name else "Only the last coref annotator's results"
                 },
-                "Number of input records": multiprocessing_cfg.data_end_pos - multiprocessing_cfg.data_start_pos,
+                "Number of input records": batch_process_cfg.data_end_pos - batch_process_cfg.data_start_pos,
                 "Number of not empty records": log_not_empty_records,
                 "Time cost": f"{time.time() - startTime:2f}"
             }
@@ -60,7 +60,7 @@ def run_corenlp(config, sid_list, section_list):
 
 
 def run_spacy(config, sid_list, section_list):
-    multiprocessing_cfg = config.multiprocessing
+    batch_process_cfg = config.batch_process
     startTime = time.time()
 
     # Init spacy
@@ -79,7 +79,7 @@ def run_spacy(config, sid_list, section_list):
                 "Pipeline enable": str(enable_component),
                 "Pipeline disable": str(disable_component)
             },
-            "Number of input records": multiprocessing_cfg.data_end_pos - multiprocessing_cfg.data_start_pos,
+            "Number of input records": batch_process_cfg.data_end_pos - batch_process_cfg.data_start_pos,
             "Number of not empty records": log_not_empty_records,
             "Time cost": f"{time.time() - startTime:2f}"
         }

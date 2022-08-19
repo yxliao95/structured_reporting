@@ -115,9 +115,9 @@ def batch_processing(input_text_list: list, input_sid_list: list, sectionName: s
                     index=referTo_spacy,
                 )
 
-            if df_corenlp is not None and df_corenlp_coref is not None :
+            if df_corenlp is not None and df_corenlp_coref is not None:
                 df_corenlp = df_corenlp.join(df_corenlp_coref)
-            elif df_corenlp_coref is not None :
+            elif df_corenlp_coref is not None:
                 df_corenlp = df_corenlp_coref
 
             batch_data[sid]["df_corenlp"] = df_corenlp
@@ -148,26 +148,26 @@ def batch_processing(input_text_list: list, input_sid_list: list, sectionName: s
 
 
 def run(config, coref_component_name, sid_list, section_list):
-    multiprocessing_cfg = config.multiprocessing
+    batch_process_cfg = config.batch_process
     log_not_empty_records = {}
 
     for _sectionName, text_list in section_list:
         all_task = []
 
-        with ProcessPoolExecutor(max_workers=multiprocessing_cfg.workers_in_pool) as executor:
+        with ProcessPoolExecutor(max_workers=config.corenlp.multiprocess_workers) as executor:
             logger.info("Processing section: [%s]", _sectionName)
             progressId = 0
             input_text_list, input_sid_list = [], []
             not_empty_num = 0
 
             # Submit tasks
-            for currentIdx in tqdm(range(multiprocessing_cfg.data_start_pos, multiprocessing_cfg.data_end_pos)):
+            for currentIdx in tqdm(range(batch_process_cfg.data_start_pos, batch_process_cfg.data_end_pos)):
                 # Construct batch data and skip empty record
                 if text_list[currentIdx]:
                     input_text_list.append(text_list[currentIdx])
                     input_sid_list.append(sid_list[currentIdx])
                 # Submit task for this batch data
-                if len(input_text_list) == multiprocessing_cfg.batch_size or (currentIdx + 1 == multiprocessing_cfg.data_end_pos and input_text_list):
+                if len(input_text_list) == batch_process_cfg.batch_size or (currentIdx + 1 == batch_process_cfg.data_end_pos and input_text_list):
                     all_task.append(executor.submit(batch_processing, input_text_list, input_sid_list, _sectionName, progressId, config, coref_component_name))
                     progressId += 1
                     not_empty_num += len(input_text_list)
@@ -200,7 +200,7 @@ def main(config):
     print(OmegaConf.to_yaml(config))
 
     section_name_cfg = config.name_style.mimic_cxr.section_name
-    multiprocessing_cfg = config.multiprocessing
+    batch_process_cfg = config.batch_process
     output_section_cfg = config.output.section
     nlp_cfg = config.nlp_properties.corenlp
 
@@ -238,7 +238,7 @@ def main(config):
                     "Library": "CoreNLP",
                     "Properties": OmegaConf.to_object(server_properties_cfg),
                 },
-                "Number of input records": multiprocessing_cfg.data_end_pos - multiprocessing_cfg.data_start_pos,
+                "Number of input records": batch_process_cfg.data_end_pos - batch_process_cfg.data_start_pos,
                 "Number of not empty records": log_not_empty_records,
                 "Time cost": time.time() - startTime
             }
