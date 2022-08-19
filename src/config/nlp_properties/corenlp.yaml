@@ -3,7 +3,7 @@ corenlp:
   request_url: 'http://0.0.0.0:8802/' 
 
   server:
-    memory: 4G
+    memory: 8G
     threads: 8
     endpoint: http://localhost:8802
     outputFormat: json
