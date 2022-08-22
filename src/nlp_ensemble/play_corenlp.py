@@ -41,7 +41,7 @@ def start_server(client_cfg, server_properties):
 ######
 
 
-def batch_processing(input_text_list: list, input_sid_list: list, sectionName: str, progressId: int, config, coref_component_name) -> tuple[int, str, int]:
+def batch_processing(input_text_list: list, input_sid_list: list, sectionName: str, progressId: int, config, coref_server_name) -> tuple[int, str, int]:
     """ The task of multiprocessing.
     Args:
         input_text_list: A batch of list of the corresponding section text
@@ -49,7 +49,7 @@ def batch_processing(input_text_list: list, input_sid_list: list, sectionName: s
         sectionName: The name of the section to which the input_text_list belongs.
         progressId: Start from 0
         config: hydra config
-        coref_component_name: scoref, ncoref, dcoref. It is used to locate the config.name_style.corenlp.column_name.
+        coref_server_name: scoref, ncoref, dcoref. It is used to locate the config.name_style.corenlp.column_name.
 
     Return:
         progressId: The ``progressId`` of this process
@@ -79,7 +79,7 @@ def batch_processing(input_text_list: list, input_sid_list: list, sectionName: s
                 batch_data[sid] = {"df_from_disk": df_from_disk}
             except Exception:
                 logger.error("Failed when reading the csv file")
-                logger.error("Section: %s, coref-component: %s, sid: %s", sectionName, coref_component_name, sid)
+                logger.error("Section: %s, coref-component: %s, sid: %s", sectionName, coref_server_name, sid)
                 logger.error(traceback.format_exc())
                 raise
 
@@ -99,7 +99,7 @@ def batch_processing(input_text_list: list, input_sid_list: list, sectionName: s
                 df_corenlp_rowsNum = tokenTotalNum
 
                 df_corenlp = None
-                if coref_component_name is None or config.corenlp.default_pipeline_provider == coref_component_name:
+                if coref_server_name is None or config.corenlp.default_server_properties == coref_server_name:
                     df_corenlp = pd.DataFrame(
                         {
                             corenlp_nametyle["token"]: [str(token["originalText"]) for sentence in corenlp_json["sentences"] for token in sentence["tokens"]],
@@ -116,9 +116,9 @@ def batch_processing(input_text_list: list, input_sid_list: list, sectionName: s
                 if config.corenlp.require_coref:
                     df_corenlp_coref = pd.DataFrame(
                         {
-                            corenlp_nametyle[coref_component_name + "_mention"]: [str(i) for i in align_byIndex_individually_withData_noOverlap(df_corenlp_rowsNum, corefMentionInfo)],
-                            corenlp_nametyle[coref_component_name + "_group"]: [str(i) for i in align_byIndex_individually_nestedgruop(df_corenlp_rowsNum, corefGroupInfo)],
-                            corenlp_nametyle[coref_component_name + "_group_conll"]: [str(i) for i in align_coref_groups_in_conll_format(df_corenlp_rowsNum, corefGroupInfo)],
+                            corenlp_nametyle[coref_server_name + "_mention"]: [str(i) for i in align_byIndex_individually_withData_noOverlap(df_corenlp_rowsNum, corefMentionInfo)],
+                            corenlp_nametyle[coref_server_name + "_group"]: [str(i) for i in align_byIndex_individually_nestedgruop(df_corenlp_rowsNum, corefGroupInfo)],
+                            corenlp_nametyle[coref_server_name + "_group_conll"]: [str(i) for i in align_coref_groups_in_conll_format(df_corenlp_rowsNum, corefGroupInfo)],
                         },
                         index=referTo_spacy,
                     )
@@ -131,7 +131,7 @@ def batch_processing(input_text_list: list, input_sid_list: list, sectionName: s
                 batch_data[sid]["df_corenlp"] = df_corenlp
             except Exception:
                 logger.error("Failed when processing the CoreNLP server output")
-                logger.error("Section: %s, coref-component: %s, sid: %s", sectionName, coref_component_name, sid)
+                logger.error("Section: %s, coref-component: %s, sid: %s", sectionName, coref_server_name, sid)
                 logger.error("Server output (corenlp_dict[sid]): %s", corenlp_dict[sid])
                 logger.error(traceback.format_exc())
                 raise
@@ -154,7 +154,7 @@ def batch_processing(input_text_list: list, input_sid_list: list, sectionName: s
                 logger.debug("Batch Process [%s] output: sid:%s, df_shape:%s", progressId, _sid, df_all.shape)
             except Exception:
                 logger.error("Failed when saving the DataFrame")
-                logger.error("Section: %s, coref-component: %s, sid: %s", sectionName, coref_component_name, _sid)
+                logger.error("Section: %s, coref-component: %s, sid: %s", sectionName, coref_server_name, _sid)
                 logger.error("_df list: %s", _df)
                 logger.error(traceback.format_exc())
                 raise
@@ -164,12 +164,12 @@ def batch_processing(input_text_list: list, input_sid_list: list, sectionName: s
         logger.error("Error occured in batch Process [%s]:", progressId)
         logger.error("Keys in batch_data: %s", batch_data.keys())
         logger.error(traceback.format_exc())
-        with open(config.output.unfinished_records_path, "a", encoding="UTF-8") as f:
-            f.write(f"{sectionName}-{coref_component_name}: {batch_data.keys()}\n")
+        with open(config.corenlp.unfinished_records_path, "a", encoding="UTF-8") as f:
+            f.write(f"{sectionName}-{coref_server_name}: {batch_data.keys()}\n")
         return progressId, "Error occured", 0
 
 
-def run(config, coref_component_name, sid_list, section_list):
+def run(config, coref_server_name, sid_list, section_list):
     batch_process_cfg = config.batch_process
     log_not_empty_records = {}
 
@@ -190,7 +190,7 @@ def run(config, coref_component_name, sid_list, section_list):
                     input_sid_list.append(sid_list[currentIdx])
                 # Submit task for this batch data
                 if len(input_text_list) == batch_process_cfg.batch_size or (currentIdx + 1 == batch_process_cfg.data_end_pos and input_text_list):
-                    all_task.append(executor.submit(batch_processing, input_text_list, input_sid_list, _sectionName, progressId, config, coref_component_name))
+                    all_task.append(executor.submit(batch_processing, input_text_list, input_sid_list, _sectionName, progressId, config, coref_server_name))
                     progressId += 1
                     not_empty_num += len(input_text_list)
                     input_text_list, input_sid_list = [], []
@@ -236,7 +236,7 @@ def main(config):
     # Init CoreNLP server config
     properties_list: list[tuple[str, list]] = []  # (coref_name, coref_properties)
     if config.corenlp.require_coref:
-        for coref_component_name, is_required in config.corenlp.use_coref_pipeline.items():
+        for coref_component_name, is_required in config.corenlp.use_server_properties.items():
             if is_required:
                 properties_list.append((coref_component_name, nlp_cfg.server_properties.get(coref_component_name)))
     else:

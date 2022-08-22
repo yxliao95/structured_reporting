@@ -1,6 +1,6 @@
 # Output
 
-```
+```JSON
 {
   "Using": {
     "Library": "spaCy",
