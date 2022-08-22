@@ -5,14 +5,15 @@ clear_history: true
 
 output:
   dir: ${output_dir}/nlp_ensemble
+
   log_path: ${output.dir}/run.log
+  unfinished_records_path: ${output.dir}/unfinished_records.log
+
   section:
     findings: true
-    impression: false
-    provisional_findings_impression: false
-    findings_and_impression: false
-
-
+    impression: true
+    provisional_findings_impression: true
+    findings_and_impression: true
 
 batch_process:
   data_start_pos: 0

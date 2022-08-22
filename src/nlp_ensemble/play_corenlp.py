@@ -31,7 +31,8 @@ def start_server(client_cfg, server_properties):
     logger.debug("Server properties: %s", prop)
     if server_properties.get('coref_algorithm', None) is not None:
         prop['coref.algorithm'] = server_properties.coref_algorithm
-    client = CoreNLPClient(memory=client_cfg.memory, threads=client_cfg.threads, endpoint=client_cfg.endpoint, be_quiet=client_cfg.be_quiet, output_format=client_cfg.outputFormat, properties=prop)
+    client = CoreNLPClient(memory=client_cfg.memory, threads=client_cfg.threads, endpoint=client_cfg.endpoint,
+                           be_quiet=client_cfg.be_quiet, timeout=client_cfg.timeout, output_format=client_cfg.outputFormat, properties=prop)
     client.start()
     client.ensure_alive()
     return client
@@ -72,9 +73,15 @@ def batch_processing(input_text_list: list, input_sid_list: list, sectionName: s
         # 1. Load previous output (mainly the spacy output)
         logger.debug("Loading previous output from disk.")
         for sid in input_sid_list:
-            file_path = os.path.join(config.output.dir, sectionName, f"{sid}.csv")
-            df_from_disk = pd.read_csv(file_path)
-            batch_data[sid] = {"df_from_disk": df_from_disk}
+            try:
+                file_path = os.path.join(config.output.dir, sectionName, f"{sid}.csv")
+                df_from_disk = pd.read_csv(file_path)
+                batch_data[sid] = {"df_from_disk": df_from_disk}
+            except Exception:
+                logger.error("Failed when reading the csv file")
+                logger.error("Section: %s, coref-component: %s, sid: %s", sectionName, coref_component_name, sid)
+                logger.error(traceback.format_exc())
+                raise
 
         # 3. CoreNLP
         corenlp_output = corenlp_outPipe.recv()
@@ -83,67 +90,82 @@ def batch_processing(input_text_list: list, input_sid_list: list, sectionName: s
         logger.debug("Batch Process [%s] received CoreNLP [%s]", progressId, corenlp_processId)
         time5 = time.time()
         for sid in input_sid_list:
-            corenlp_json = json.loads(corenlp_dict[sid])
-            df_base = batch_data[sid]["df_from_disk"]
-            tokenOffset_base = df_base.loc[:, spacy_nametyle["token_offset"]].tolist()
-            referTo_spacy, tokenTotalNum, corefMentionInfo, corefGroupInfo, dependenceInfo, depPlusInfo, depPlusPlusInfo = formatCorenlpDocument(tokenOffset_base, corenlp_json)
-            # Align each item to coreNLP token first, then algin the whole df to spacy df by index mapping (referTo_spacy).
-            df_corenlp_rowsNum = tokenTotalNum
+            try:
+                corenlp_json = json.loads(corenlp_dict[sid])
+                df_base = batch_data[sid]["df_from_disk"]
+                tokenOffset_base = df_base.loc[:, spacy_nametyle["token_offset"]].tolist()
+                referTo_spacy, tokenTotalNum, corefMentionInfo, corefGroupInfo, dependenceInfo, depPlusInfo, depPlusPlusInfo = formatCorenlpDocument(tokenOffset_base, corenlp_json)
+                # Align each item to coreNLP token first, then algin the whole df to spacy df by index mapping (referTo_spacy).
+                df_corenlp_rowsNum = tokenTotalNum
 
-            df_corenlp = None
-            if coref_component_name is None or config.corenlp.default_pipeline_provider == coref_component_name:
-                df_corenlp = pd.DataFrame(
-                    {
-                        corenlp_nametyle["token"]: [str(token["originalText"]) for sentence in corenlp_json["sentences"] for token in sentence["tokens"]],
-                        corenlp_nametyle["pos"]: [str(token["pos"]) for sentence in corenlp_json["sentences"] for token in sentence["tokens"]],
-                        corenlp_nametyle["lemma"]: [str(token["lemma"]) for sentence in corenlp_json["sentences"] for token in sentence["tokens"]],
-                        corenlp_nametyle["dependency"]: [str(i) for i in align_byIndex_individually_withData_dictInList(df_corenlp_rowsNum, dependenceInfo)],
-                        corenlp_nametyle["dependency+"]: [str(i) for i in align_byIndex_individually_withData_dictInList(df_corenlp_rowsNum, depPlusInfo)],
-                        corenlp_nametyle["dependency++"]: [str(i) for i in align_byIndex_individually_withData_dictInList(df_corenlp_rowsNum, depPlusPlusInfo)],
-                    },
-                    index=referTo_spacy,
-                )
+                df_corenlp = None
+                if coref_component_name is None or config.corenlp.default_pipeline_provider == coref_component_name:
+                    df_corenlp = pd.DataFrame(
+                        {
+                            corenlp_nametyle["token"]: [str(token["originalText"]) for sentence in corenlp_json["sentences"] for token in sentence["tokens"]],
+                            corenlp_nametyle["pos"]: [str(token["pos"]) for sentence in corenlp_json["sentences"] for token in sentence["tokens"]],
+                            corenlp_nametyle["lemma"]: [str(token["lemma"]) for sentence in corenlp_json["sentences"] for token in sentence["tokens"]],
+                            corenlp_nametyle["dependency"]: [str(i) for i in align_byIndex_individually_withData_dictInList(df_corenlp_rowsNum, dependenceInfo)],
+                            corenlp_nametyle["dependency+"]: [str(i) for i in align_byIndex_individually_withData_dictInList(df_corenlp_rowsNum, depPlusInfo)],
+                            corenlp_nametyle["dependency++"]: [str(i) for i in align_byIndex_individually_withData_dictInList(df_corenlp_rowsNum, depPlusPlusInfo)],
+                        },
+                        index=referTo_spacy,
+                    )
 
-            df_corenlp_coref = None
-            if config.corenlp.require_coref:
-                df_corenlp_coref = pd.DataFrame(
-                    {
-                        corenlp_nametyle[coref_component_name + "_mention"]: [str(i) for i in align_byIndex_individually_withData_noOverlap(df_corenlp_rowsNum, corefMentionInfo)],
-                        corenlp_nametyle[coref_component_name + "_group"]: [str(i) for i in align_byIndex_individually_nestedgruop(df_corenlp_rowsNum, corefGroupInfo)],
-                        corenlp_nametyle[coref_component_name + "_group_conll"]: [str(i) for i in align_coref_groups_in_conll_format(df_corenlp_rowsNum, corefGroupInfo)],
-                    },
-                    index=referTo_spacy,
-                )
+                df_corenlp_coref = None
+                if config.corenlp.require_coref:
+                    df_corenlp_coref = pd.DataFrame(
+                        {
+                            corenlp_nametyle[coref_component_name + "_mention"]: [str(i) for i in align_byIndex_individually_withData_noOverlap(df_corenlp_rowsNum, corefMentionInfo)],
+                            corenlp_nametyle[coref_component_name + "_group"]: [str(i) for i in align_byIndex_individually_nestedgruop(df_corenlp_rowsNum, corefGroupInfo)],
+                            corenlp_nametyle[coref_component_name + "_group_conll"]: [str(i) for i in align_coref_groups_in_conll_format(df_corenlp_rowsNum, corefGroupInfo)],
+                        },
+                        index=referTo_spacy,
+                    )
 
-            if df_corenlp is not None and df_corenlp_coref is not None:
-                df_corenlp = df_corenlp.join(df_corenlp_coref)
-            elif df_corenlp_coref is not None:
-                df_corenlp = df_corenlp_coref
+                if df_corenlp is not None and df_corenlp_coref is not None:
+                    df_corenlp = df_corenlp.join(df_corenlp_coref)
+                elif df_corenlp_coref is not None:
+                    df_corenlp = df_corenlp_coref
 
-            batch_data[sid]["df_corenlp"] = df_corenlp
-            # print(f"sid:{sid}, df_corenlp.shape:{df_corenlp.shape}")
+                batch_data[sid]["df_corenlp"] = df_corenlp
+            except Exception:
+                logger.error("Failed when processing the CoreNLP server output")
+                logger.error("Section: %s, coref-component: %s, sid: %s", sectionName, coref_component_name, sid)
+                logger.error("Server output (corenlp_dict[sid]): %s", corenlp_dict[sid])
+                logger.error(traceback.format_exc())
+                raise
+
         time6 = time.time()
         logger.debug("Batch Process [%s] finished processing CoreNLP [%s], cost: %ss", progressId, corenlp_processId, time6-time5)
 
         # Write to the disk
         for _sid, _df in batch_data.items():
-            df_all = _df["df_from_disk"]
-            df_all = df_all.join(_df["df_corenlp"])
+            try:
+                df_all = _df["df_from_disk"]
+                df_all = df_all.join(_df["df_corenlp"])
 
-            # Output csv for later usage
-            output_dir = os.path.join(config.output.dir, sectionName)
-            if not os.path.exists(output_dir):
-                os.makedirs(output_dir)
+                # Output csv for later usage
+                output_dir = os.path.join(config.output.dir, sectionName)
+                if not os.path.exists(output_dir):
+                    os.makedirs(output_dir)
 
-            df_all.to_csv(os.path.join(output_dir, f"{_sid}.csv"))
-
-            logger.debug("Batch Process [%s] output: sid:%s, df_shape:%s", progressId, _sid, df_all.shape)
+                df_all.to_csv(os.path.join(output_dir, f"{_sid}.csv"))
+                logger.debug("Batch Process [%s] output: sid:%s, df_shape:%s", progressId, _sid, df_all.shape)
+            except Exception:
+                logger.error("Failed when saving the DataFrame")
+                logger.error("Section: %s, coref-component: %s, sid: %s", sectionName, coref_component_name, _sid)
+                logger.error("_df list: %s", _df)
+                logger.error(traceback.format_exc())
+                raise
         return progressId, "Done", len(batch_data)
 
     except Exception:  # pylint: disable=broad-except
         logger.error("Error occured in batch Process [%s]:", progressId)
         logger.error("Keys in batch_data: %s", batch_data.keys())
         logger.error(traceback.format_exc())
+        with open(config.output.unfinished_records_path, "a", encoding="UTF-8") as f:
+            f.write(f"{sectionName}-{coref_component_name}: {batch_data.keys()}\n")
         return progressId, "Error occured", 0
 
 
@@ -221,10 +243,10 @@ def main(config):
         properties_list.append((None, nlp_cfg.server_properties.default))
 
     for coref_component_name, server_properties_cfg in properties_list:
-        logger.info("Starting server:")
+        logger.info("Starting server: %s", coref_component_name)
         client = start_server(nlp_cfg.server, server_properties_cfg)
 
-        # The main processing method.
+        # The main processing method.@hydra.main(version_base=None, config_path=config_path, config_name="nlp_ensemble")
         log_not_empty_records = run(config, coref_component_name, sid_list, section_list)
 
         # Shutdown CoreNLP server

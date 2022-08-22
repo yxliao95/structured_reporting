@@ -8,6 +8,7 @@ corenlp:
     endpoint: http://localhost:8802
     outputFormat: json
     be_quiet: True
+    timeout: 600000 # milliseconds. 60000ms would not be enough for batch_size = 10
 
   server_properties:
     default:

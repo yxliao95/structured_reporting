@@ -53,7 +53,7 @@ def run_corenlp(config, sid_list, section_list):
                 },
                 "Number of input records": batch_process_cfg.data_end_pos - batch_process_cfg.data_start_pos,
                 "Number of not empty records": log_not_empty_records,
-                "Time cost": f"{time.time() - startTime:2f}"
+                "Time cost": f"{time.time() - startTime:.2f}s"
             }
             f.write(json.dumps(log_out, indent=2))
             f.write("\n\n")
@@ -81,7 +81,7 @@ def run_spacy(config, sid_list, section_list):
             },
             "Number of input records": batch_process_cfg.data_end_pos - batch_process_cfg.data_start_pos,
             "Number of not empty records": log_not_empty_records,
-            "Time cost": f"{time.time() - startTime:2f}"
+            "Time cost": f"{time.time() - startTime:.2f}s"
         }
         f.write(json.dumps(log_out, indent=2))
         f.write("\n\n")
