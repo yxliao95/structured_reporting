@@ -78,6 +78,7 @@ def run_corenlp(config, sid_list, section_list):
             log_out = {
                 "Using": {
                     "Library": "CoreNLP",
+                    "Server name": coref_server_name,
                     "Properties": OmegaConf.to_object(server_properties_cfg),
                     "Output": "All annotators' results" if coref_server_name is None or config.corenlp.default_server_properties == coref_server_name else "Only the last coref annotator's results"
                 },
@@ -100,8 +101,7 @@ def rerun_corenlp_for_unfinished_records(config, sid_list, section_list):
         # Extract info from the log file.
         unfinished_records: dict[str, dict[str, list[str]]] = {}  # {server_name: {section_name: [sid, ...], ...}, ...}
         for line in records_log:
-            log_text = line.strip()
-            res = re.match(r"(.*)-(.*): dict_keys\((.*)\)", log_text)
+            res = re.match(r"(.*)-(.*): dict_keys\((.*)\)", line.strip())
             try:
                 _section_name = res.group(1)
                 assert _section_name in config.name_style.mimic_cxr.section_name.values()
@@ -125,40 +125,38 @@ def rerun_corenlp_for_unfinished_records(config, sid_list, section_list):
             logger.info("Starting server: %s", coref_server_name)
             client = play_corenlp.start_server(corenlp_cfg.server, corenlp_cfg.server_properties[coref_server_name])
 
-            # Construct unfinished record dataset.
-            new_section_list: list[tuple] = []  # (section_name:str, section_text_list:list)
-            new_sid_list = []
+            # Process only one section per time.
             for _sectionName, _sidList in section_list_dict.items():
                 new_sid_list = _sidList
-                # section_list is a list of tuple, this line is using both its key and value to find the target values.
-                _text_list = [section_list[[sName for sName, tList in section_list].index(_sectionName)][1][sid_list.index(sid)] for sid in _sidList]
-                new_section_list.append((_sectionName, _text_list))
+                # section_list is a list of tuple, this line is using both the key names and value indices to find the target values.
+                _text_list = [section_list[[sectName for sectName, _ in section_list].index(_sectionName)][1][sid_list.index(sid)] for sid in _sidList]
+                new_section_list = [(_sectionName, _text_list)]
 
-            # Modify config
-            config.batch_process.data_end_pos = len(new_sid_list)
+                # Modify config
+                config.batch_process.data_end_pos = len(new_sid_list)
 
-            # Run
-            log_not_empty_records = play_corenlp.run(config, coref_server_name, new_sid_list, new_section_list)
+                # Run
+                log_not_empty_records = play_corenlp.run(config, coref_server_name, new_sid_list, new_section_list)
+
+                # Log runtime information
+                with open(config.output.log_path, "a", encoding="UTF-8") as f:
+                    log_out = {
+                        "Using (Re-run)": {
+                            "Library": "CoreNLP",
+                            "Which server": coref_server_name,
+                        },
+                        "Which section": _sectionName,
+                        "Number of unfinished records re-processed": config.batch_process.data_end_pos - config.batch_process.data_start_pos,
+                        "The sid of the unfinished records re-processed": str(new_sid_list),
+                        "Number of not empty records within": log_not_empty_records,
+                        "Time cost": f"{time.time() - startTime:.2f}s"
+                    }
+                    f.write(json.dumps(log_out, indent=2))
+                    f.write("\n\n")
 
             # Shutdown CoreNLP server
             logger.info("Shutdown server: %s", coref_server_name)
             client.stop()
-
-            # Log runtime information
-            with open(config.output.log_path, "a", encoding="UTF-8") as f:
-                log_out = {
-                    "Using": {
-                        "Library": "CoreNLP",
-                        "Properties": OmegaConf.to_object(corenlp_cfg.server_properties[coref_server_name]),
-                        "Output": "All annotators' results" if coref_server_name is None or config.corenlp.default_server_properties == coref_server_name else "Only the last coref annotator's results"
-                    },
-                    "Number of unfinished records re-processed": config.batch_process.data_end_pos - config.batch_process.data_start_pos,
-                    "The sid of the unfinished records re-processed:": new_sid_list,
-                    "Number of not empty records within": log_not_empty_records,
-                    "Time cost": f"{time.time() - startTime:.2f}s"
-                }
-                f.write(json.dumps(log_out, indent=2))
-                f.write("\n\n")
     else:
         logger.info("No unfinished records detected. Done.")
 
