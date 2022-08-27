@@ -35,7 +35,8 @@ def init_coref_model(config):
 
     # Load model training config
     model_cfg = OmegaConf.create(checkpoint["config"])
-    logger.debug("Model config %s", OmegaConf.to_yaml(model_cfg))
+    model_cfg.model.doc_encoder.transformer.model_str = doc_encoder_dir
+    print("Model config %s", OmegaConf.to_yaml(model_cfg))
 
     # Load fast-coref model
     model = EntityRankingModel(model_cfg.model, model_cfg.trainer)
