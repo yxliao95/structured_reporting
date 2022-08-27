@@ -35,6 +35,7 @@ def init_coref_model(config):
 
     # Load model training config
     model_cfg = OmegaConf.create(checkpoint["config"])
+    # In case ARCCA cannot use offline mode via terminal command, we use the encoder's local path instead of its name to prevent automatic downloading from huggingface.
     model_cfg.model.doc_encoder.transformer.model_str = doc_encoder_dir
     print("Model config %s", OmegaConf.to_yaml(model_cfg))
 
@@ -99,7 +100,7 @@ def run(config, use_sections: list, model: EntityRankingModel, subword_tokenizer
     processed_record_num_per_section = {}
 
     for section_name in use_sections:
-        logger.info("Processing section %s", section_name)
+        logger.info("Processing section: %s", section_name)
         processed_record_num_per_section[section_name] = {"Succeeded": 0, "Failed": 0}
 
         # CSV files base dir for each sections
@@ -138,9 +139,9 @@ def run(config, use_sections: list, model: EntityRankingModel, subword_tokenizer
                     },
                 )
 
-                # Write csv
+                # Overwrite csv
                 df_all = df_base.join(df_corenlp_coref)
-                # df_all.to_csv(file_entry.path)
+                df_all.to_csv(file_entry.path)
 
                 processed_record_num_per_section[section_name]["Succeeded"] += 1
 
