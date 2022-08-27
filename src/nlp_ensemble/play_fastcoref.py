@@ -139,7 +139,8 @@ def run(config, use_sections: list, model: EntityRankingModel, subword_tokenizer
 
                 # Write csv
                 df_all = df_base.join(df_corenlp_coref)
-                df_all.to_csv(file_entry.path)
+                print(df_all.shape)
+                # df_all.to_csv(file_entry.path)
 
                 processed_record_num_per_section[section_name]["Succeeded"] += 1
 
