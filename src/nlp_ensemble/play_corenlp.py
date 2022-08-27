@@ -75,7 +75,7 @@ def batch_processing(input_text_list: list, input_sid_list: list, sectionName: s
         for sid in input_sid_list:
             try:
                 file_path = os.path.join(config.output.dir, sectionName, f"{sid}.csv")
-                df_from_disk = pd.read_csv(file_path)
+                df_from_disk = pd.read_csv(file_path, index_col=0)
                 batch_data[sid] = {"df_from_disk": df_from_disk}
             except Exception:
                 logger.error("Failed when reading the csv file")

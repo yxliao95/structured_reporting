@@ -54,7 +54,7 @@ START_EVENT = Event()
 def statistic(config, input_file_path, sid):
     """ Read the csv files and return the sid (filename) and the number of coref groups. """
     START_EVENT.wait()
-    df = pd.read_csv(input_file_path)
+    df = pd.read_csv(input_file_path, index_col=0)
     df_coref_group = df[~df.loc[:, config.name_style.corenlp.column_name.coref_group].isin(["-1", -1.0, np.nan])]
     coref_group_set = set()
     for list_str in df_coref_group.loc[:, config.name_style.corenlp.column_name.coref_group].to_list():

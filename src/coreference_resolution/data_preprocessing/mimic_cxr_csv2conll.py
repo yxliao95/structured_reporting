@@ -27,7 +27,7 @@ def convert_each(config, sectionName, input_file_path, output_file_path):
 
     # Resolve CSV file
     sentenc_list: list[list[ConllToken]] = []
-    df = pd.read_csv(input_file_path)
+    df = pd.read_csv(input_file_path, index_col=0)
     sentence_id = 0
     while True:
         token_list: list[ConllToken] = []

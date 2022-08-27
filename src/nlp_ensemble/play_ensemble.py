@@ -14,6 +14,7 @@ from common_utils.common_utils import remove_all
 from nlp_processor.spacy_process import init_spacy
 import play_spacy
 import play_corenlp
+import play_fastcoref
 
 logger = logging.getLogger()
 module_path = os.path.dirname(__file__)
@@ -94,7 +95,7 @@ def rerun_corenlp_for_unfinished_records(config, sid_list, section_list):
     startTime = time.time()
 
     # Read the log file
-    with open(config.corenlp_for_unfinished_records.unfinish_log_path, "r", encoding="UTF-8") as f:
+    with open(config.corenlp_for_unfinished_records.unfinished_records_path, "r", encoding="UTF-8") as f:
         records_log = f.readlines()
 
     if records_log:
@@ -116,7 +117,7 @@ def rerun_corenlp_for_unfinished_records(config, sid_list, section_list):
                     else:
                         unfinished_records[_server_name][_section_name] += ast.literal_eval(_sid_list_str)
             except Exception:
-                print("Can not correctly resolve %s. The content should be like: findings-scoref: dict_keys(['s50333362', ...]", config.corenlp_for_unfinished_records.unfinish_log_path)
+                print("Can not correctly resolve %s. The content should be like: findings-scoref: dict_keys(['s50333362', ...]", config.corenlp_for_unfinished_records.unfinished_records_path)
                 raise
 
         corenlp_cfg = config.nlp_properties.corenlp
@@ -161,6 +162,36 @@ def rerun_corenlp_for_unfinished_records(config, sid_list, section_list):
         logger.info("No unfinished records detected. Done.")
 
 
+def run_fastcoref_joint(config):
+
+    use_sections = [_sectionName for _sectionName, _trueORfalse in config.output.section.items() if _trueORfalse]
+    startTime = time.time()
+
+    # Init fast-coref-joint
+    logger.info("Initializing fast-coref-joint model")
+    model, subword_tokenizer, max_segment_len = play_fastcoref.init_coref_model(config)
+
+    # The main processing method.
+    processed_record_num_per_section = play_fastcoref.run(config, use_sections, model, subword_tokenizer, max_segment_len)
+
+    # Log runtime information
+    with open(config.output.log_path, "w", encoding="UTF-8") as f:
+        log_out = {
+            "Using": {
+                "Library": "fast-coref",
+                "Coref model": os.path.join(config.fastcoref_joint.model_dir, "model.pth"),
+                "Document encoder": config.fastcoref_joint.doc_encoder_dir,
+                "Base tokenizer": "SpaCy",
+                "Subword tokenizer": config.fastcoref_joint.doc_encoder_dir,
+                "Max segmentation length": max_segment_len,
+            },
+            "Number of processed records": processed_record_num_per_section,
+            "Time cost": f"{time.time() - startTime:.2f}s"
+        }
+        f.write(json.dumps(log_out, indent=2))
+        f.write("\n\n")
+
+
 @hydra.main(version_base=None, config_path=config_path, config_name="nlp_ensemble")
 def main(config):
     print(OmegaConf.to_yaml(config))
@@ -188,10 +219,15 @@ def main(config):
         logger.info("CoreNLP activated")
         run_corenlp(config, sid_list, section_list)
 
-    if config.corenlp_for_unfinished_records.activate and os.path.exists(config.corenlp_for_unfinished_records.unfinish_log_path):
+    if config.corenlp_for_unfinished_records.activate and os.path.exists(config.corenlp_for_unfinished_records.unfinished_records_path):
         logger.info("*" * 60)
         logger.info("CoreNLP re-activated for unfinished records")
         rerun_corenlp_for_unfinished_records(config, sid_list, section_list)
+
+    if config.fast_coref_joint.activate:
+        logger.info("*" * 60)
+        logger.info("fast-coref-joint model activated")
+        run_fastcoref_joint(config)
 
     logger.info("*" * 60)
     logger.info("Total time cost: %.2f", time.time() - startTime)

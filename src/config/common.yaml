@@ -9,5 +9,7 @@ logging_level: INFO # DEBUG, INFO
 
 ignore_source_path: ${work_dir}/config/ignore/common_ignore
 
+fast_coref_dir: /home/yuxiangliao/PhD/workspace/git_clone_repos/fast-coref/
+
 defaults:
   - hydra/custom_logging

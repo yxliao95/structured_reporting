@@ -29,7 +29,6 @@ spacy:
 corenlp:
   activate: false
   multiprocess_workers: 14
-  
   require_coref: true # If false, we will use the default server_properties specified in /nlp_properties/corenlp.yaml
   use_server_properties: # If require_coref is true, we need to specify a main pipeline to use. For the others, we will only keep its coref annotator's output.
     scoref: true # Containing the statistical (ML-based) coref annotator.
@@ -39,9 +38,15 @@ corenlp:
   unfinished_records_path: ${output.dir}/corenlp_unfinished_records.log
 
 corenlp_for_unfinished_records:
-  activate: true
+  activate: false
   multiprocess_workers: 10
-  unfinish_log_path: ${corenlp.unfinished_records_path}
+  unfinished_records_path: ${corenlp.unfinished_records_path}
+
+fastcoref_joint:
+  activate: true
+  model_dir: ${fast_coref_dir}/models/joint_best
+  doc_encoder_dir: ${fast_coref_dir}/models/longformer_coreference_joint
+  unfinished_records_path: ${output.dir}/fastcoref_unfinished_records.log
 
 metamap: 
   activate: false
@@ -49,14 +54,13 @@ metamap:
 stanza:
   activate: false
 
-fast_joint_best: 
-  activate: false
 
 defaults:
   - common
   - name_style/mimic_cxr_sections
   - name_style/corenlp_output
   - name_style/spacy_output
+  - name_style/fastcoref_joint_output
   - nlp_properties/spacy
   - nlp_properties/corenlp
   - _self_

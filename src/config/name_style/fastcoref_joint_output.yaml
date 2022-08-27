@@ -1,0 +1,5 @@
+fastcoref_joint:
+  prefix: "[fj]"
+  column_name:
+    coref_group: ${name_style.fastcoref_joint.prefix}coref_group
+    coref_group_conll: ${name_style.fastcoref_joint.prefix}coref_group_conll
