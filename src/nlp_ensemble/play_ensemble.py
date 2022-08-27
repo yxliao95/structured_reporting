@@ -224,7 +224,7 @@ def main(config):
         logger.info("CoreNLP re-activated for unfinished records")
         rerun_corenlp_for_unfinished_records(config, sid_list, section_list)
 
-    if config.fast_coref_joint.activate:
+    if config.fastcoref_joint.activate:
         logger.info("*" * 60)
         logger.info("fast-coref-joint model activated")
         run_fastcoref_joint(config)
