@@ -173,7 +173,7 @@ def main(config):
     processed_record_num_per_section = run(config, use_sections, model, subword_tokenizer, max_segment_len)
 
     # Log runtime information
-    with open(config.output.log_path, "w", encoding="UTF-8") as f:
+    with open(config.output.log_path, "a", encoding="UTF-8") as f:
         log_out = {
             "Using": {
                 "Library": "fast-coref",

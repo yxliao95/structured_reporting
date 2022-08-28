@@ -1,9 +1,5 @@
 # If use a relative path, it will base on the path that we execute the python command.
-# /home/yuxiangliao/PhD/workspace/VSCode_workspace
-# /Users/liao/myProjects/VSCode_workspace/structured_reporting
-# /scratch/c.c21051562/workspace
-# /home/yuxiangliao/PhD/workspace/VSCode_workspace/structured_reporting
-work_dir: /scratch/c.c21051562/workspace/structured_reporting
+work_dir: ${machine.work_dir}
 src_dir: ${work_dir}/src
 output_dir: ${work_dir}/output
 log_dir: ${work_dir}/logs/${hydra.job.config_name}
@@ -11,7 +7,9 @@ logging_level: INFO # DEBUG, INFO
 
 ignore_source_path: ${work_dir}/config/ignore/common_ignore
 
-fast_coref_dir: /scratch/c.c21051562/workspace/fast-coref
+fast_coref_dir: ${machine.fast_coref_dir}
 
 defaults:
   - hydra/custom_logging
+  - machine: linux
+  - _self_

@@ -1,0 +1,6 @@
+# If use a relative path, it will base on the path that we execute the python command.
+# /home/yuxiangliao/PhD/workspace/VSCode_workspace
+# /Users/liao/myProjects/VSCode_workspace/structured_reporting
+# /scratch/c.c21051562/workspace
+work_dir: /Users/liao/myProjects/VSCode_workspace/structured_reporting
+fast_coref_dir: /Users/liao/myProjects/VSCode_workspace/fast-coref/
