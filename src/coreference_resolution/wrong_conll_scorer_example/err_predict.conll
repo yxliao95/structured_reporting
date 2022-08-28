@@ -1,0 +1,11 @@
+#begin document (clinical-166); part 0
+clinical-166	0	0	(1)	_	_	_	_	_	_	_	_
+clinical-166	0	0	t1	_	_	_	_	_	_	_	_   (1)
+clinical-166	0	0	t2	_	_	_	_	_	_	_	_
+clinical-166	0	0	t3	_	_	_	_	_	_	_	_
+clinical-166	0	1	t4	_	_	_	_	_	_	_	_
+clinical-166	0	2	t5	_	_	_	_	_	_	_	_
+clinical-166	0	0	t6	_	_	_	_	_	_	_	_
+clinical-166	0	1	t7	_	_	_	_	_	_	_	_
+clinical-166	0	0	t8	_	_	_	_	_	_	_	_
+#end document

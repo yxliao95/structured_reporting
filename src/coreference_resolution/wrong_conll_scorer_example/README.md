@@ -8,7 +8,7 @@ cd path/to/fast-coref
 mkdir coref_resources; cd coref_resources/
 git clone https://github.com/conll/reference-coreference-scorers
 cd ../..
-fast-coref/coref_resources/reference-coreference-scorers/scorer.pl muc wrong_conll_scorer_example/test_gt.conll wrong_conll_scorer_example/test_predict.conll none
+fast-coref/coref_resources/reference-coreference-scorers/scorer.pl muc wrong_conll_scorer_example/err_gt.conll wrong_conll_scorer_example/err_predict.conll none
 ```
 
 # Error outputs
