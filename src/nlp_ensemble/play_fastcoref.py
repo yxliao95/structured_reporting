@@ -13,6 +13,7 @@ from transformers import AutoModel, AutoTokenizer
 
 # pylint: disable=import-error,wrong-import-order
 from common_utils.file_checker import FileChecker
+from common_utils.common_utils import check_and_create_dirs
 from common_utils.nlp_utils import align_byIndex_individually_nestedgruop, align_coref_groups_in_conll_format
 from model.utils import action_sequences_to_clusters
 from model.entity_ranking_model import EntityRankingModel
@@ -104,7 +105,7 @@ def run(config, use_sections: list, model: EntityRankingModel, subword_tokenizer
         processed_record_num_per_section[section_name] = {"Succeeded": 0, "Failed": 0}
 
         # CSV files base dir for each sections
-        csv_file_dir = os.path.join(config.output.dir, section_name)
+        csv_file_dir = os.path.join(config.spacy.output_dir, section_name)
 
         for file_entry in tqdm(os.scandir(csv_file_dir)):
             if FILE_CHECKER.ignore(file_entry.name):
@@ -132,16 +133,20 @@ def run(config, use_sections: list, model: EntityRankingModel, subword_tokenizer
                 coref_group_list = resolve_output(tokenized_doc, pred_mentions, pred_actions)
 
                 # To dataframe
-                df_corenlp_coref = pd.DataFrame(
+                df_fastcoref_joint = pd.DataFrame(
                     {
+                        fastcoref_joint_nametyle["token_from_spacy"]: [str(i) for i in tok_list],
+                        fastcoref_joint_nametyle["sentence_group"]: [int(i) for i in sentGroup_list],
                         fastcoref_joint_nametyle["coref_group"]: [str(i) for i in align_byIndex_individually_nestedgruop(len(tok_list), coref_group_list)],
                         fastcoref_joint_nametyle["coref_group_conll"]: [str(i) for i in align_coref_groups_in_conll_format(len(tok_list), coref_group_list)],
                     },
                 )
 
                 # Overwrite csv
-                df_all = df_base.join(df_corenlp_coref)
-                df_all.to_csv(file_entry.path)
+                output_dir = os.path.join(config.fastcoref_joint.output_dir, section_name)
+                check_and_create_dirs(output_dir)
+
+                df_fastcoref_joint.to_csv(os.path.join(output_dir, file_entry.name))
 
                 processed_record_num_per_section[section_name]["Succeeded"] += 1
 
@@ -173,7 +178,7 @@ def main(config):
     processed_record_num_per_section = run(config, use_sections, model, subword_tokenizer, max_segment_len)
 
     # Log runtime information
-    with open(config.output.log_path, "a", encoding="UTF-8") as f:
+    with open(os.path.join(config.fastcoref_joint.output_dir, config.output.log_file), "w", encoding="UTF-8") as f:
         log_out = {
             "Using": {
                 "Library": "fast-coref",

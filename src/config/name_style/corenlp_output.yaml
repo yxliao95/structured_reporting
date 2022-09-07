@@ -5,12 +5,16 @@ corenlp:
   deterministic_coref_prefix: "[rb]"
   
   column_name:
+    align_to_spacy: ${name_style.corenlp.prefix}align_to_spacy
     token: ${name_style.corenlp.prefix}token
+    token_offset: ${name_style.corenlp.prefix}token_offset
+    sentence_group: ${name_style.corenlp.prefix}sentence_group
     pos: ${name_style.corenlp.prefix}pos
     lemma: ${name_style.corenlp.prefix}lemma
-    dependency: ${name_style.corenlp.prefix}dep_tag|dep_head|head_index
-    dependency+: ${name_style.corenlp.prefix}(+)dep_tag|dep_head|head_index
-    dependency++: ${name_style.corenlp.prefix}(++)dep_tag|dep_head|head_index
+    dependency: ${name_style.corenlp.prefix}dep_type|dep_head|head_index
+    dependency+: ${name_style.corenlp.prefix}(+)dep_type|dep_head|head_index
+    dependency++: ${name_style.corenlp.prefix}(++)dep_type|dep_head|head_index
+
 
     scoref_mention: ${name_style.corenlp.prefix}${name_style.corenlp.statistical_coref_prefix}corefId|corefType
     scoref_group: ${name_style.corenlp.prefix}${name_style.corenlp.statistical_coref_prefix}coref_group

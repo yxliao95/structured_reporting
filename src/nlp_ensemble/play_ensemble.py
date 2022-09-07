@@ -10,7 +10,7 @@ from omegaconf import OmegaConf
 
 # pylint: disable=import-error,wrong-import-order
 from common_utils.ensemble_utils import load_data_bySection
-from common_utils.common_utils import remove_all
+from common_utils.common_utils import check_and_remove_dirs, remove_dirs
 from nlp_processor.spacy_process import init_spacy
 import play_spacy
 import play_corenlp
@@ -33,7 +33,7 @@ def run_spacy(config, sid_list, section_list):
     log_not_empty_records = play_spacy.run(config, sid_list, section_list)
 
     # Log runtime information
-    with open(config.output.log_path, "w", encoding="UTF-8") as f:
+    with open(os.path.join(config.spacy.output_dir, config.output.log_file), "w", encoding="UTF-8") as f:
         log_out = {
             "Using": {
                 "Library": "spaCy",
@@ -56,12 +56,9 @@ def run_corenlp(config, sid_list, section_list):
 
     # Init CoreNLP server config
     properties_list: list[tuple[str, list]] = []  # (coref_name, coref_properties)
-    if config.corenlp.require_coref:
-        for coref_server_name, is_required in config.corenlp.use_server_properties.items():
-            if is_required:
-                properties_list.append((coref_server_name, corenlp_cfg.server_properties.get(coref_server_name)))
-    else:
-        properties_list.append((None, corenlp_cfg.server_properties.default))
+    for coref_server_name, is_required in config.corenlp.use_server_properties.items():
+        if is_required:
+            properties_list.append((coref_server_name, corenlp_cfg.server_properties.get(coref_server_name)))
 
     for coref_server_name, server_properties_cfg in properties_list:
         logger.info("Starting server: %s", coref_server_name)
@@ -75,13 +72,13 @@ def run_corenlp(config, sid_list, section_list):
         client.stop()
 
         # Log runtime information
-        with open(config.output.log_path, "a", encoding="UTF-8") as f:
+        with open(os.path.join(config.corenlp.output_dir, config.output.log_file), "w", encoding="UTF-8") as f:
             log_out = {
                 "Using": {
                     "Library": "CoreNLP",
                     "Server name": coref_server_name,
                     "Properties": OmegaConf.to_object(server_properties_cfg),
-                    "Output": "All annotators' results" if coref_server_name is None or config.corenlp.default_server_properties == coref_server_name else "Only the last coref annotator's results"
+                    # "Output": "All annotators' results" if coref_server_name is None or config.corenlp.default_server_properties == coref_server_name else "Only the last coref annotator's results"
                 },
                 "Number of input records": batch_process_cfg.data_end_pos - batch_process_cfg.data_start_pos,
                 "Number of not empty records": log_not_empty_records,
@@ -175,7 +172,7 @@ def run_fastcoref_joint(config):
     processed_record_num_per_section = play_fastcoref.run(config, use_sections, model, subword_tokenizer, max_segment_len)
 
     # Log runtime information
-    with open(config.output.log_path, "w", encoding="UTF-8") as f:
+    with open(os.path.join(config.fastcoref_joint.output_dir, config.output.log_file), "w", encoding="UTF-8") as f:
         log_out = {
             "Using": {
                 "Library": "fast-coref",
@@ -199,8 +196,8 @@ def main(config):
     startTime = time.time()
 
     if config.clear_history:
-        logger.info("Deleting history dirs: %s", config.output.dir)
-        remove_all(config.output.dir)
+        logger.info("Deleted history dirs: %s", config.output.base_dir)
+        remove_dirs(config.output.base_dir)
 
     # Load data
     section_name_cfg = config.name_style.mimic_cxr.section_name
@@ -231,7 +228,7 @@ def main(config):
 
     logger.info("*" * 60)
     logger.info("Total time cost: %.2f", time.time() - startTime)
-    logger.info("Execution info: %s", config.output.log_path)
+    logger.info("Execution info: %s", config.output.log_file)
 
 
 if __name__ == "__main__":

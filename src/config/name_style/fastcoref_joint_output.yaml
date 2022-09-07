@@ -1,5 +1,7 @@
 fastcoref_joint:
   prefix: "[fj]"
   column_name:
+    token_from_spacy: ${name_style.fastcoref_joint.prefix}token_from_spacy
+    sentence_group: ${name_style.fastcoref_joint.prefix}sentence_group
     coref_group: ${name_style.fastcoref_joint.prefix}coref_group
     coref_group_conll: ${name_style.fastcoref_joint.prefix}coref_group_conll

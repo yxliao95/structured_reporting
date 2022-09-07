@@ -1,11 +1,11 @@
 input:
   path: ${output_dir}/mimic_cxr_sections.jsonlines
 
-clear_history: false
+clear_history: true
 
 output:
-  dir: ${output_dir}/nlp_ensemble
-  log_path: ${output.dir}/run.log
+  base_dir: ${output_dir}/nlp_ensemble
+  log_file: run.log
 
   section:
     findings: true
@@ -15,27 +15,27 @@ output:
 
 batch_process:
   data_start_pos: 0
-  data_end_pos: 227835
-  batch_size: 10
+  data_end_pos: 20
+  batch_size: 5
 
 
 # This is the alignment base. It means that any model/library/tool outputs are aligned to the spaCy outputs (tokens).
 spacy:
+  output_dir: ${output.base_dir}/spacy
   # Spacy is always activated
-  activate: false
+  activate: true
   # load_previous: false # If True, we don't process the raw data from scratch but load from the previously saved outputs e.g. the CSV files in ${output_dir}.
   multiprocess_workers: 15
 
 corenlp:
-  activate: false
+  output_dir: ${output.base_dir}/corenlp
+  activate: true
   multiprocess_workers: 14
-  require_coref: true # If false, we will use the default server_properties specified in /nlp_properties/corenlp.yaml
-  use_server_properties: # If require_coref is true, we need to specify a main pipeline to use. For the others, we will only keep its coref annotator's output.
+  use_server_properties: # At least one should be true
     scoref: true # Containing the statistical (ML-based) coref annotator.
-    ncoref: true # Containing the neural coref annotator
     dcoref: true # Containing the deterministic (Rule-based) coref annotator.
-  default_server_properties: scoref #  By default we use the pipeline of scoref. Should not change this.
-  unfinished_records_path: ${output.dir}/corenlp_unfinished_records.log
+    ncoref: false # Containing the neural coref annotator
+  unfinished_records_path: ${corenlp.output_dir}/corenlp_unfinished_records.log
 
 corenlp_for_unfinished_records:
   activate: false
@@ -43,10 +43,11 @@ corenlp_for_unfinished_records:
   unfinished_records_path: ${corenlp.unfinished_records_path}
 
 fastcoref_joint:
-  activate: true
+  output_dir: ${output.base_dir}/fast_coref_joint
+  activate: false
   model_dir: ${fast_coref_dir}/models/joint_best
   doc_encoder_dir: ${fast_coref_dir}/models/longformer_coreference_joint
-  unfinished_records_path: ${output.dir}/fastcoref_unfinished_records.log
+  unfinished_records_path: ${fastcoref_joint.output_dir}/fastcoref_unfinished_records.log
 
 metamap: 
   activate: false

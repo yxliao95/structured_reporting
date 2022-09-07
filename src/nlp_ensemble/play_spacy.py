@@ -14,6 +14,7 @@ from omegaconf import OmegaConf
 
 # pylint: disable=import-error,wrong-import-order
 from common_utils.ensemble_utils import load_data_bySection
+from common_utils.common_utils import check_and_create_dirs
 from common_utils.nlp_utils import align, getTokenOffset
 from nlp_processor.spacy_process import SpacyProcess, init_spacy
 
@@ -91,9 +92,8 @@ def batch_processing(input_text_list: list, input_sid_list: list, sectionName: s
             df_all = _df["df_spacy"]
 
             # Output csv for later usage
-            output_dir = os.path.join(config.output.dir, sectionName)
-            if not os.path.exists(output_dir):
-                os.makedirs(output_dir)
+            output_dir = os.path.join(config.spacy.output_dir, sectionName)
+            check_and_create_dirs(output_dir)
 
             df_all.to_csv(os.path.join(output_dir, f"{_sid}.csv"))
 
@@ -178,7 +178,7 @@ def main(config):
     log_not_empty_records = run(config, sid_list, section_list)
 
     # Log runtime information
-    with open(config.output.log_path, "w", encoding="UTF-8") as f:
+    with open(os.path.join(config.spacy.output_dir, config.output.log_file), "w", encoding="UTF-8") as f:
         log_out = {
             "Using": {
                 "Library": "spaCy",

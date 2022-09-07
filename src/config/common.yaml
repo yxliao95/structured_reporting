@@ -8,6 +8,7 @@ logging_level: INFO # DEBUG, INFO
 ignore_source_path: ${work_dir}/config/ignore/common_ignore
 
 fast_coref_dir: ${machine.fast_coref_dir}
+coref_scorer_dir: ${machine.fast_coref_dir}/coref_resources/reference-coreference-scorers # This is the scorer for CoNLL-2011/2012 shared tasks on coreference resolution
 
 defaults:
   - hydra/custom_logging

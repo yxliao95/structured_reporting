@@ -1,11 +1,19 @@
-#begin document (clinical-166); part 0
-clinical-166	0	0	token0	_	_	_	_	_	_	_	_
-clinical-166	0	0	t1	_	_	_	_	_	_	_	_   (1)
-clinical-166	0	0	t2	_	_	_	_	_	_	_	_
-clinical-166	0	0	t3	_	_	_	_	_	_	_	_
-clinical-166	0	1	t4	_	_	_	_	_	_	_	_
-clinical-166	0	2	t5	_	_	_	_	_	_	_	_
-clinical-166	0	0	t6	_	_	_	_	_	_	_	_
-clinical-166	0	1	t7	_	_	_	_	_	_	_	_
-clinical-166	0	0	t8	_	_	_	_	_	_	_	_
+#begin document (clinical-66); part 0
+clinical-66	0	0	A	_	_	_	_	_	_	_	_	(1
+clinical-66	0	1	chest	_	_	_	_	_	_	_	_
+clinical-66	0	2	X-Ray	_	_	_	_	_	_	_	_	1)
+clinical-66	0	3	demonstrated	_	_	_	_	_	_	_	_
+clinical-66	0	4	some	_	_	_	_	_	_	_	_
+clinical-66	0	5	pulmonary	_	_	_	_	_	_	_	_
+clinical-66	0	6	edema	_	_	_	_	_	_	_	_
+clinical-66 0	7	.	_	_	_	_	_	_	_	_  (1)
+
+clinical-66	0	0	A	_	_	_	_	_	_	_	_	(2)
+clinical-66	0	1	chest	_	_	_	_	_	_	_	_
+clinical-66	0	2	X-Ray	_	_	_	_	_	_	_	_   (2)
+clinical-66	0	3	demonstrated	_	_	_	_	_	_	_	_   (2)
+clinical-66	0	4	some	_	_	_	_	_	_	_	_
+clinical-66	0	5	pulmonary	_	_	_	_	_	_	_	_
+clinical-66	0	6	edema	_	_	_	_	_	_	_	_
+clinical-66 0	7	.	_	_	_	_	_	_	_	_
 #end document

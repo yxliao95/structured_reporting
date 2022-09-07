@@ -33,7 +33,7 @@ class CorenlpUrlProcess(Process):
         self.input_pipe.send(data)
 
 
-def formatCorenlpDocument(tokenOffset_base: DataFrame, corenlp_json):
+def formatCorenlpDocument(tokenOffset_base, corenlp_json):
     referTo_base = [
         resolveTokenIndices_byPosition(tokenOffset_base, token['characterOffsetBegin'], token['characterOffsetEnd'] - token['characterOffsetBegin'])[0]
         for sentence in corenlp_json['sentences']
@@ -41,11 +41,13 @@ def formatCorenlpDocument(tokenOffset_base: DataFrame, corenlp_json):
     ]
 
     tokenTotalNum = 0
+    sentenceGroups = []
     sentenceFirstTokenIndex_offset = [0]
     for sentId, sentence in enumerate(corenlp_json['sentences']):
         tokenNum = len(sentence['tokens'])
         tokenTotalNum += tokenNum
         nextOffset = sentenceFirstTokenIndex_offset[sentId] + tokenNum
+        sentenceGroups.extend([sentId]*tokenNum)
         sentenceFirstTokenIndex_offset.append(nextOffset)
 
     dependency_list = []
@@ -53,55 +55,55 @@ def formatCorenlpDocument(tokenOffset_base: DataFrame, corenlp_json):
     depPlusPlus_list = []
     for sentId, sentence in enumerate(corenlp_json['sentences']):
         for basicDep in sentence['basicDependencies']:
-            depTag = basicDep['dep']
-            headTok = basicDep['governorGloss']
-            headTokIdx = basicDep['governor'] - 1 + sentenceFirstTokenIndex_offset[sentId]
-            headTokIdx_inBase = referTo_base[headTokIdx]
-            currentTok = basicDep['dependentGloss']
-            currentTokIdx = basicDep['dependent'] - 1 + sentenceFirstTokenIndex_offset[sentId]
-            currentTokIdx_inBase = referTo_base[currentTokIdx]
+            depType = basicDep['dep']
+            headToken = basicDep['governorGloss']
+            headTokenIdx = basicDep['governor'] - 1 + sentenceFirstTokenIndex_offset[sentId]  # refer to corenlp token index
+            headToken_toSpacyIdx = referTo_base[headTokenIdx]  # refer to spacy token index
+            currentToken = basicDep['dependentGloss']
+            currentTokenIdx = basicDep['dependent'] - 1 + sentenceFirstTokenIndex_offset[sentId]  # refer to corenlp token index
+            currentToken_toSpacyIdx = referTo_base[currentTokenIdx]  # refer to spacy token index
             # Make the root dep token point to itself, just like what spacy did.
-            if depTag == "ROOT" and headTok == "ROOT" and basicDep['governor'] == 0:
-                headTok = currentTok
-                headTokIdx = currentTokIdx
-                headTokIdx_inBase = currentTokIdx_inBase
+            if depType == "ROOT" and headToken == "ROOT" and basicDep['governor'] == 0:
+                headToken = currentToken
+                headTokenIdx = currentTokenIdx
+                headToken_toSpacyIdx = currentToken_toSpacyIdx
             dependency_list.append({
-                'index': currentTokIdx,
-                'extra_str': f"{depTag}|{headTok}|{headTokIdx_inBase}",  # We use headTokIdx_inBase as all the rows/tokens will finally align to df_base (df_spacy)
+                'index': currentTokenIdx,
+                'extra_str': f"{depType}|{headToken}|{headTokenIdx}",  # headToken or headToken_toSpacyIdx
             })
         for depPlus in sentence['enhancedDependencies']:
-            depTag = depPlus['dep']
-            headTok = depPlus['governorGloss']
-            headTokIdx = depPlus['governor'] - 1 + sentenceFirstTokenIndex_offset[sentId]
-            headTokIdx_inBase = referTo_base[headTokIdx]
-            currentTok = depPlus['dependentGloss']
-            currentTokIdx = depPlus['dependent'] - 1 + sentenceFirstTokenIndex_offset[sentId]
-            currentTokIdx_inBase = referTo_base[currentTokIdx]
+            depType = depPlus['dep']
+            headToken = depPlus['governorGloss']
+            headTokenIdx = depPlus['governor'] - 1 + sentenceFirstTokenIndex_offset[sentId]
+            headToken_toSpacyIdx = referTo_base[headTokenIdx]
+            currentToken = depPlus['dependentGloss']
+            currentTokenIdx = depPlus['dependent'] - 1 + sentenceFirstTokenIndex_offset[sentId]
+            currentToken_toSpacyIdx = referTo_base[currentTokenIdx]
             # Make the root dep token point to itself, just like what spacy did.
-            if depTag == "ROOT" and headTok == "ROOT" and depPlus['governor'] == 0:
-                headTok = currentTok
-                headTokIdx = currentTokIdx
-                headTokIdx_inBase = currentTokIdx_inBase
+            if depType == "ROOT" and headToken == "ROOT" and depPlus['governor'] == 0:
+                headToken = currentToken
+                headTokenIdx = currentTokenIdx
+                headToken_toSpacyIdx = currentToken_toSpacyIdx
             depPlus_list.append({
-                'index': currentTokIdx,
-                'extra_str': f"{depTag}|{headTok}|{headTokIdx_inBase}",  # We use headTokIdx_inBase as all the rows/tokens will finally align to df_base (df_spacy)
+                'index': currentTokenIdx,
+                'extra_str': f"{depType}|{headToken}|{headTokenIdx}",  # We use headTokIdx_inBase as all the rows/tokens will finally align to df_base (df_spacy)
             })
         for depPlusPlus in sentence['enhancedPlusPlusDependencies']:
-            depTag = depPlusPlus['dep']
-            headTok = depPlusPlus['governorGloss']
-            headTokIdx = depPlusPlus['governor'] - 1 + sentenceFirstTokenIndex_offset[sentId]
-            headTokIdx_inBase = referTo_base[headTokIdx]
-            currentTok = depPlusPlus['dependentGloss']
-            currentTokIdx = depPlusPlus['dependent'] - 1 + sentenceFirstTokenIndex_offset[sentId]
-            currentTokIdx_inBase = referTo_base[currentTokIdx]
+            depType = depPlusPlus['dep']
+            headToken = depPlusPlus['governorGloss']
+            headTokenIdx = depPlusPlus['governor'] - 1 + sentenceFirstTokenIndex_offset[sentId]
+            headToken_toSpacyIdx = referTo_base[headTokenIdx]
+            currentToken = depPlusPlus['dependentGloss']
+            currentTokenIdx = depPlusPlus['dependent'] - 1 + sentenceFirstTokenIndex_offset[sentId]
+            currentToken_toSpacyIdx = referTo_base[currentTokenIdx]
             # Make the root dep token point to itself, just like what spacy did.
-            if depTag == "ROOT" and headTok == "ROOT" and depPlusPlus['governor'] == 0:
-                headTok = currentTok
-                headTokIdx = currentTokIdx
-                headTokIdx_inBase = currentTokIdx_inBase
+            if depType == "ROOT" and headToken == "ROOT" and depPlusPlus['governor'] == 0:
+                headToken = currentToken
+                headTokenIdx = currentTokenIdx
+                headToken_toSpacyIdx = currentToken_toSpacyIdx
             depPlusPlus_list.append({
-                'index': currentTokIdx,
-                'extra_str': f"{depTag}|{headTok}|{headTokIdx_inBase}",  # We use headTokIdx_inBase as all the rows/tokens will finally align to df_base (df_spacy)
+                'index': currentTokenIdx,
+                'extra_str': f"{depType}|{headToken}|{headTokenIdx}",  # We use headTokIdx_inBase as all the rows/tokens will finally align to df_base (df_spacy)
             })
 
     corefGroups = []
@@ -121,4 +123,4 @@ def formatCorenlpDocument(tokenOffset_base: DataFrame, corenlp_json):
         # If flatten, then we can't not recognize the boundaries of the mentions
         # corefGroup_flatten = [indices for mention in corefGroup for indices in mention]
         corefGroups.append(corefGroup)
-    return referTo_base, tokenTotalNum, corefMetionGroups_withData, corefGroups, dependency_list, depPlus_list, depPlusPlus_list
+    return referTo_base, tokenTotalNum, sentenceGroups, corefMetionGroups_withData, corefGroups, dependency_list, depPlus_list, depPlusPlus_list

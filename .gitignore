@@ -12,6 +12,7 @@ test*.*
 pylintrc
 manually_processed_records.json
 
+reference-coreference-scorers/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

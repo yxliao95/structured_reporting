@@ -11,8 +11,6 @@ corenlp:
     timeout: 600000 # milliseconds. 60000ms would not be enough for batch_size = 10
 
   server_properties:
-    default:
-      annotators: tokenize, ssplit, pos, lemma, ner, depparse
     scoref:
       annotators: tokenize, ssplit, pos, lemma, ner, depparse, coref
       coref_algorithm: statistical
