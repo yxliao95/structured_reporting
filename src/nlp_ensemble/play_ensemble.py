@@ -72,7 +72,7 @@ def run_corenlp(config, sid_list, section_list):
         client.stop()
 
         # Log runtime information
-        with open(os.path.join(config.corenlp.output_dir, config.output.log_file), "w", encoding="UTF-8") as f:
+        with open(os.path.join(config.corenlp.output_dir, config.output.log_file), "a", encoding="UTF-8") as f:
             log_out = {
                 "Using": {
                     "Library": "CoreNLP",
@@ -96,8 +96,8 @@ def rerun_corenlp_for_unfinished_records(config, sid_list, section_list):
         records_log = f.readlines()
 
     if records_log:
-        # Extract info from the log file.
-        unfinished_records: dict[str, dict[str, list[str]]] = {}  # {server_name: {section_name: [sid, ...], ...}, ...}
+        # Extract from the log file.
+        unfinished_record_dict: dict[str, dict[str, list[str]]] = {}  # {server_name: {section_name: [sid, ...], ...}, ...}
         for line in records_log:
             res = re.match(r"(.*)-(.*): dict_keys\((.*)\)", line.strip())
             try:
@@ -106,19 +106,19 @@ def rerun_corenlp_for_unfinished_records(config, sid_list, section_list):
                 _server_name = res.group(2)
                 assert _server_name in config.corenlp.use_server_properties.keys()
                 _sid_list_str = res.group(3)
-                if _server_name not in unfinished_records:
-                    unfinished_records[_server_name] = {_section_name: ast.literal_eval(_sid_list_str)}
+                if _server_name not in unfinished_record_dict:
+                    unfinished_record_dict[_server_name] = {_section_name: ast.literal_eval(_sid_list_str)}
                 else:
-                    if _section_name not in unfinished_records[_server_name]:
-                        unfinished_records[_server_name][_section_name] = ast.literal_eval(_sid_list_str)
+                    if _section_name not in unfinished_record_dict[_server_name]:
+                        unfinished_record_dict[_server_name][_section_name] = ast.literal_eval(_sid_list_str)
                     else:
-                        unfinished_records[_server_name][_section_name] += ast.literal_eval(_sid_list_str)
+                        unfinished_record_dict[_server_name][_section_name] += ast.literal_eval(_sid_list_str)
             except Exception:
                 print("Can not correctly resolve %s. The content should be like: findings-scoref: dict_keys(['s50333362', ...]", config.corenlp_for_unfinished_records.unfinished_records_path)
                 raise
 
         corenlp_cfg = config.nlp_properties.corenlp
-        for coref_server_name, section_list_dict in unfinished_records.items():
+        for coref_server_name, section_list_dict in unfinished_record_dict.items():
             # Start server
             logger.info("Starting server: %s", coref_server_name)
             client = play_corenlp.start_server(corenlp_cfg.server, corenlp_cfg.server_properties[coref_server_name])
@@ -137,7 +137,7 @@ def rerun_corenlp_for_unfinished_records(config, sid_list, section_list):
                 log_not_empty_records = play_corenlp.run(config, coref_server_name, new_sid_list, new_section_list)
 
                 # Log runtime information
-                with open(config.output.log_path, "a", encoding="UTF-8") as f:
+                with open(os.path.join(config.corenlp.output_dir, config.output.log_file), "a", encoding="UTF-8") as f:
                     log_out = {
                         "Using (Re-run)": {
                             "Library": "CoreNLP",
