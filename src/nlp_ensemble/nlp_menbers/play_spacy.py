@@ -16,10 +16,10 @@ from omegaconf import OmegaConf
 from common_utils.ensemble_utils import load_data_bySection
 from common_utils.common_utils import check_and_create_dirs
 from common_utils.nlp_utils import align, getTokenOffset
-from nlp_processor.spacy_process import SpacyProcess, init_spacy
+from nlp_ensemble.nlp_processor.spacy_process import SpacyProcess, init_spacy
 
 logger = logging.getLogger()
-module_path = os.path.dirname(__file__)
+module_path = os.path.dirname(os.path.dirname(__file__))
 config_path = os.path.join(os.path.dirname(module_path), "config")
 START_EVENT = Event()
 

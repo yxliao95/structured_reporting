@@ -1,0 +1,31 @@
+data_dir: /home/yuxiangliao/PhD/mimic-cxr
+
+output:
+  json: true
+  mysql: false
+
+json:
+  output_dir: ${mimic_cxr_output_dir}
+  file_name: mimic_cxr_sections.jsonlines # If this is modified, remember to modify the ${input.path} in /nlp_ensemble/mimic_cxr.yaml
+
+mysql:
+  host: 127.0.0.1
+  port: 3306
+  user: root
+  password: 1121
+  db: radiology_datasets
+  table_name: mimic_cxr_manual
+
+in_process:
+  use_artefact: true # It requires ${rules.manually_processed_records} exist if True.
+
+rules:
+  base_dir: ${work_dir}/resources/preprocessing_rules
+  heading_affiliation_map: ${rules.base_dir}/HeadingAffiliationMapping_slim.txt
+  technique_procedureinfo: ${rules.base_dir}/Technique_ProcedureInfo.txt
+  ignore_heading: ${rules.base_dir}/IgnoreHeading.txt
+  manually_processed_records: ${rules.base_dir}/manually_processed_records.json
+
+defaults:
+  - ../name_style/mimic_cxr_sections@name_style
+  - _self_

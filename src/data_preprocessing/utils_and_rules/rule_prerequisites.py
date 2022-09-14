@@ -1,6 +1,7 @@
 import json
-from data_preprocessing.utils_and_rules.utils import *
 from hydra import compose
+# pylint: disable=import-error
+from data_preprocessing.utils_and_rules.utils import removePunctuation
 
 
 class PrerequisiteResources:
@@ -12,8 +13,8 @@ class PrerequisiteResources:
 
     @staticmethod
     def _load_resources():
-        config = compose(config_name="data_preprocessing")
-        with open(config.data_preprocessing.resource_paths.heading_affiliation_map, "r") as f:
+        config = compose(config_name="mimic_cxr")
+        with open(config.rules.heading_affiliation_map, "r", encoding="UTF-8") as f:
             headingMap_list = f.readlines()
         for rawLine in headingMap_list:
             ele = rawLine.strip().split(":")
@@ -21,16 +22,16 @@ class PrerequisiteResources:
                 continue
             PrerequisiteResources._heading_affiliation_map[ele[0]] = ele[1]
 
-        with open(config.data_preprocessing.resource_paths.technique_procedureinfo, "r") as f:
+        with open(config.rules.technique_procedureinfo, "r", encoding="UTF-8") as f:
             for line in f:
                 PrerequisiteResources._procedure_info_list.append(line.strip())
                 PrerequisiteResources._techniqueContent_lower.append(removePunctuation(line).strip().lower())
 
-        with open(config.data_preprocessing.resource_paths.ignore_heading, "r") as f:
+        with open(config.rules.ignore_heading, "r", encoding="UTF-8") as f:
             for line in f:
                 PrerequisiteResources._ignoreHeading_list.append(line.strip())
 
-        with open(config.data_preprocessing.resource_paths.manually_processed_records, "r") as f:
+        with open(config.rules.manually_processed_records, "r", encoding="UTF-8") as f:
             j = json.load(f)
             PrerequisiteResources._manually_preprcessed_record_list = j["RECORDS"]
 
@@ -65,8 +66,7 @@ class PrerequisiteResources:
         return PrerequisiteResources._manually_preprcessed_record_list
 
 
-""" Headings Affiliation Mapping """
-
+# Headings Affiliation Mapping
 
 def mapHeading(heading: str):
     if heading == "UNKNOWN":
@@ -77,8 +77,9 @@ def mapHeading(heading: str):
     except KeyError:
         return "to_be_defined"
 
+###
 
-""" Procedure_Info Mapping """
+# Procedure_Info Mapping
 
 
 def isProcedureInfo_Findings_Heading(heading: str):
@@ -90,8 +91,9 @@ def eqToPredefinedTechniqueContent(content: str):
     techniqueContent_lower = PrerequisiteResources.get_techniqueContent_lower()
     return True if removePunctuation(content).strip().lower() in techniqueContent_lower else False
 
+###
 
-""" Ignore Heading List """
+# Ignore Heading List
 
 
 def ignoreHeading(heading: str):
@@ -101,19 +103,22 @@ def ignoreHeading(heading: str):
     else:
         return False
 
+###
 
-""" Manually preprocessed records """
+# Manually preprocessed records
 
 
 def check_and_get_manual_record(data_item):
-    """ If the corresponding manual record exists, then replace the ``data_item`` and retun the maunal record, 
-    otherwise return the original ``data_item`` 
+    """ If the corresponding manual record exists, then replace the ``data_item`` and retun the maunal record,
+    otherwise return the original ``data_item``
     """
     manual_records = PrerequisiteResources.get_manually_preprcessed_record_list()
     for manual_record in manual_records:
         if data_item["SID"] == manual_record["SID"]:
             return manual_record
     return data_item
+
+###
 
 
 if __name__ == "__main__":
@@ -124,6 +129,5 @@ if __name__ == "__main__":
     from hydra import compose, initialize
     from omegaconf import OmegaConf
 
-    with initialize(version_base=None, config_path="../../config"):
-        r = check_and_get_manual_record({"SID": "s111111"})
-        print(r)
+    with initialize(version_base=None, config_path="../../config/data_preprocessing"):
+        print(PrerequisiteResources.get_heading_affiliation_map())

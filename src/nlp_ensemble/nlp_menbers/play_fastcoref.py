@@ -21,7 +21,7 @@ from inference.tokenize_doc import tokenize_and_segment_doc
 
 
 logger = logging.getLogger()
-module_path = os.path.dirname(__file__)
+module_path = os.path.dirname(os.path.dirname(__file__))
 config_path = os.path.join(os.path.dirname(module_path), "config")
 FILE_CHECKER = FileChecker()
 

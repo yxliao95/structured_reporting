@@ -1,0 +1,19 @@
+clear_history: false
+  
+input:
+  path: ${mimic_cxr_output_dir}/mimic_cxr_sections.jsonlines
+
+output:
+  base_dir: ${mimic_cxr_output_dir}/nlp_ensemble
+  log_file: run.log
+
+  section:
+    findings: true
+    impression: true
+    provisional_findings_impression: true
+    findings_and_impression: true
+
+batch_process:
+  data_start_pos: 0
+  data_end_pos: 227835 # Max 227835
+  batch_size: 10

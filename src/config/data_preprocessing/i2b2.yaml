@@ -1,0 +1,13 @@
+data_dir: /home/yuxiangliao/PhD/DBMI_c2b2_2011_coref
+
+output:
+  json: true
+
+json:
+  output_dir: ${i2b2_output_dir}
+  file_name: i2b2_aggregrate.jsonlines
+
+
+defaults:
+  # - ../name_style/mimic_cxr_sections@name_style
+  - _self_

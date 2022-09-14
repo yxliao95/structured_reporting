@@ -1,7 +1,8 @@
 import re
-from data_preprocessing.utils_and_rules.utils import *
+# pylint: disable=import-error
 from data_preprocessing.utils_and_rules.data_holder_class import MetaReport, StructuredReport
-from data_preprocessing.utils_and_rules.rule_prerequisites import *
+from data_preprocessing.utils_and_rules.rule_prerequisites import PrerequisiteResources, ignoreHeading, isProcedureInfo_Findings_Heading, mapHeading
+from data_preprocessing.utils_and_rules.utils import extract, formatHeading, hasLineFeed, isEmptyRow, isLineSeparator
 
 
 def finalAddendum_identifyRule(contentRow: str, metaReport: MetaReport, structuredReport: StructuredReport):

@@ -1,7 +1,13 @@
 # If use a relative path, it will base on the path that we execute the python command.
 work_dir: ${machine.work_dir}
 src_dir: ${work_dir}/src
+
 output_dir: ${work_dir}/output
+
+base_output_dir: ${work_dir}/output
+mimic_cxr_output_dir: ${base_output_dir}/mimic_cxr
+i2b2_output_dir: ${base_output_dir}/i2b2
+
 log_dir: ${work_dir}/logs/${hydra.job.config_name}
 logging_level: INFO # DEBUG, INFO
 
@@ -12,5 +18,5 @@ coref_scorer_dir: ${machine.fast_coref_dir}/coref_resources/reference-coreferenc
 
 defaults:
   - hydra/custom_logging
-  - machine: arcca
+  - machine: linux
   - _self_

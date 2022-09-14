@@ -1,12 +1,22 @@
+###
+# This pre-processing script aims to identify and extract the sections (findings, impression, etc.) content from raw mimic-cxr reports.
+###
 import logging
 import os
-import hydra
+import sys
 import time
 import json
+import hydra
 from tqdm import tqdm
+from omegaconf import OmegaConf
+# pylint: disable=import-error
 from common_utils.file_checker import FileChecker
+from common_utils.common_utils import check_and_create_dirs
 from data_preprocessing.utils_and_rules.data_holder_class import MetaReport, StructuredReport
-from data_preprocessing.utils_and_rules.rules import *
+from data_preprocessing.utils_and_rules.rule_prerequisites import check_and_get_manual_record, eqToPredefinedTechniqueContent
+from data_preprocessing.utils_and_rules.rules import finalAddendum_identifyRule, finalReport_identifyRule
+from data_preprocessing.utils_and_rules.rules import finalReportSection_concatenateRule, noTitleSection_identifyRule, nonFinalReportSection_concatenateRule
+from data_preprocessing.utils_and_rules.utils import isComparison, isTechnique
 
 
 logger = logging.getLogger()
@@ -33,11 +43,11 @@ def read_raw_data(config):
                         studyCounter += 1
                         sid = fileName.removesuffix(".txt")
                         filePath = os.path.join(dirPath, fileName)
-                        with open(filePath, "r") as f:
+                        with open(filePath, "r", encoding="UTF-8") as f:
                             contentList = f.readlines()
                             dataList.append({"pid": pid, "sid": sid, "contentList": contentList})
                         pbar.update(1)
-    logger.info("Time cost: %.2fs. Loaded %s files - %s (patients) | %s (studies). ", time.time()-start0, studyCounter, patientCounter, studyCounter)
+    logger.info("Time cost: %.2fs. Loaded %s files: %s (patients) | %s (studies). ", time.time()-start0, studyCounter, patientCounter, studyCounter)
     return dataList
 
 
@@ -144,11 +154,12 @@ def convert(config, dataList):
 
 def output_json(config, output_list):
     logger.info("Writing the output in JSON format.")
-    if not os.path.exists(config.output_dir):
-        os.makedirs(config.output_dir)
-    ourput_file_path = os.path.join(config.output_dir, "mimic_cxr_sections.jsonlines")
+    json_output_cfg = config.json
+    check_and_create_dirs(json_output_cfg.output_dir)
+    ourput_file_path = os.path.join(json_output_cfg.output_dir, json_output_cfg.file_name)
+
     start0 = time.time()
-    with open(ourput_file_path, "w") as f:
+    with open(ourput_file_path, "w", encoding="UTF-8") as f:
         for data_item in tqdm(output_list):
             column_name = config.name_style.mimic_cxr.section_name
             formatted_reocrd = {
@@ -175,23 +186,24 @@ def output_mysql(config, output_list):
     import pymysql
 
     start0 = time.time()
-    mysql_config = config.data_preprocessing.mysql
+    mysql_cfg = config.mysql
     column_name = config.name_style.mimic_cxr.section_name
+
     db = pymysql.connect(
-        host=str(mysql_config.host),
-        port=int(mysql_config.port),
-        user=str(mysql_config.user),
-        password=str(mysql_config.password),
-        db=str(mysql_config.db),
+        host=str(mysql_cfg.host),
+        port=int(mysql_cfg.port),
+        user=str(mysql_cfg.user),
+        password=str(mysql_cfg.password),
+        db=str(mysql_cfg.db),
     )
     cursor = db.cursor()
-    drop = f"DROP TABLE IF EXISTS `{mysql_config.table_name}` ;"
+    drop = f"DROP TABLE IF EXISTS `{mysql_cfg.table_name}` ;"
     cursor.execute(drop)
     cursor.connection.commit()
-    flush = f"FLUSH TABLES `{mysql_config.table_name}` ;"
+    flush = f"FLUSH TABLES `{mysql_cfg.table_name}` ;"
     cursor.execute(flush)
     cursor.connection.commit()
-    create_table = f"""CREATE TABLE `{mysql_config.table_name}` (
+    create_table = f"""CREATE TABLE `{mysql_cfg.table_name}` (
     `{column_name.PID}` varchar(10) NOT NULL,
     `{column_name.SID}` varchar(10) NOT NULL,
     `{column_name.FINDINGS}` text,
@@ -210,9 +222,9 @@ def output_mysql(config, output_list):
     cursor.execute(create_table)
     cursor.connection.commit()
 
-    logger.info("Created TABLE `%s`.`%s`, writing data:", mysql_config.db, mysql_config.table_name)
+    logger.info("Created TABLE `%s`.`%s`, writing data:", mysql_cfg.db, mysql_cfg.table_name)
     for data_item in tqdm(output_list):
-        sql = f"""INSERT INTO `{mysql_config.db}`.`{mysql_config.table_name}`(
+        sql = f"""INSERT INTO `{mysql_cfg.db}`.`{mysql_cfg.table_name}`(
         `{column_name.PID}`,`{column_name.SID}`,
         `{column_name.FINDINGS}`,`{column_name.IMPRESSION}`,
         `{column_name.PFI}`,`{column_name.FAI}`,
@@ -232,11 +244,13 @@ def output_mysql(config, output_list):
     cursor.connection.commit()
     cursor.close()
     db.close()
-    logger.info("Time cost: %.2fs. Output: mysql: `%s`.`%s`.", time.time()-start0, mysql_config.db, mysql_config.table_name)
+    logger.info("Time cost: %.2fs. Output: mysql: `%s`.`%s`.", time.time()-start0, mysql_cfg.db, mysql_cfg.table_name)
 
 
 @hydra.main(version_base=None, config_path=config_path, config_name="data_preprocessing")
 def main(config):
+    """ The pre-processing aims to identify and split the sections (findings, impression, etc.) in raw mimic-cxr reports. """
+    print(OmegaConf.to_yaml(config))
 
     dataList = read_raw_data(config)
     dataList = resolve(dataList)
@@ -248,4 +262,5 @@ def main(config):
 
 
 if __name__ == "__main__":
+    sys.argv.append("data_preprocessing@_global_=mimic_cxr")
     main()  # pylint: disable=no-value-for-parameter

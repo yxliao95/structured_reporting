@@ -1,4 +1,4 @@
-# Process the i2b2 2011 - Coreference task dataset
+# Rule-based resolvation of MIMIC-CXR raw reports
 
 Check the config in `/config/data_preprocessing.yaml`.
 

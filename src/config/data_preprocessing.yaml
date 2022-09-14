@@ -1,19 +1,5 @@
-data_dir: /home/yuxiangliao/PhD/mimic-cxr
-output_dir: ${work_dir}/output
-
-in_process:
-  # If True, then replace the corresponding records with 54 manually processed records in ${data_preprocessing.resource_paths.manually_processed_records}
-  use_artefact: True
-
-output:
-  json: True # Output json file
-  mysql: False # Output to mysql
+# The config is in the files under the data_preprocessing/ folder
 
 defaults:
   - common
-  - data_preprocessing/resource
-  - data_preprocessing/db
-  - name_style/mimic_cxr_sections
-  - _self_
-
-module_dir_name: data_preprocessing
+  - data_preprocessing@_global_: mimic_cxr # The correct config file be chosen in the scripts. No need to modify here.

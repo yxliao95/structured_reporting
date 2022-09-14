@@ -13,8 +13,8 @@ from tqdm import tqdm
 # pylint: disable=import-error,wrong-import-order
 from common_utils.coref_utils import remove_tag_from_list
 from common_utils.nlp_utils import align, align_byIndex_individually_nestedgruop, align_coref_groups_in_conll_format, getTokenOffset, align_byIndex_individually_withData_noOverlap
-from nlp_processor.spacy_process import SpacyProcess
-from nlp_processor.corenlp_process import CorenlpUrlProcess, formatCorenlpDocument
+from nlp_ensemble.nlp_processor.spacy_process import SpacyProcess
+from nlp_ensemble.nlp_processor.corenlp_process import CorenlpUrlProcess, formatCorenlpDocument
 
 logger = logging.getLogger()
 pkg_path = os.path.dirname(__file__)
