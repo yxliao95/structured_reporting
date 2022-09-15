@@ -1,0 +1,12 @@
+i2b2:
+  prefix: "[gt]"
+  column_name:
+    original_token: ${name_style.i2b2.prefix}original_token
+    token_in_conll: ${name_style.i2b2.prefix}token_in_conll
+    sentence_group: ${name_style.i2b2.prefix}sentence_group
+    token_id_sentencewise: ${name_style.i2b2.prefix}token_id_sentencewise
+    token_id_docwise: ${name_style.i2b2.prefix}token_id_docwise
+    coref_group_conll: ${name_style.i2b2.prefix}coref_group_conll
+  json:
+    id: doc_id
+    text: text

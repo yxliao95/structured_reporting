@@ -1,13 +1,47 @@
+defaults:
+  - ../name_style/i2b2_gt@name_style
+  - _self_
+
 data_dir: /home/yuxiangliao/PhD/DBMI_c2b2_2011_coref
+
+output_base_dir: ${i2b2_output_dir}
+clear_history: true
+
+multiprocess_workers: 14
 
 output:
   json: true
+  csv: true
+  conll: true
 
 json:
   output_dir: ${i2b2_output_dir}
-  file_name: i2b2_aggregrate.jsonlines
+  file_name: i2b2_all.jsonlines
+
+csv:
+  output_dir: ${i2b2_output_dir}/ground_truth/csv
+
+conll:
+  # Output the aggregrate file
+  output_base_dir: ${i2b2_output_dir}/ground_truth
+  file_name: i2b2_all_gt.conll
+  # Output individual files
+  output_dir: ${i2b2_output_dir}/ground_truth/conll
 
 
-defaults:
-  # - ../name_style/mimic_cxr_sections@name_style
-  - _self_
+temp:
+  dir: ${i2b2_output_dir}/temp
+  delete: true
+
+input:
+  chain_suffix: .chains
+  doc_dir_name: docs
+  chain_dir_name: chains
+
+paths:
+  beth_train: ${data_dir}/Beth_Train
+  beth_test: ${data_dir}/i2b2_Test/i2b2_Beth_Test
+  beth_test_ground_truth: ${data_dir}/Tack_1C_to_be_released_10_02_2011/i2b2_Beth_Test
+  partners_train: ${data_dir}/Partners_Train
+  partners_test: ${data_dir}/i2b2_Test/i2b2_Partners_Test
+  partners_test_ground_truth: ${data_dir}/Tack_1C_to_be_released_10_02_2011/i2b2_Partners_Test

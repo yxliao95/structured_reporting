@@ -1,5 +1,10 @@
+# The scorer of CoNLL-2011/2012 shared tasks on coreference resolution
 
-# How to trigger?
+## Scoring logic
+
+All the `docs` in conll files will be used for calculation. In gt.conll and pred.conll, the `doc` with same `docId` are matched. If a `doc` exists only in one of the conll file, it would affect either the recall or precision (e.g. a missing `doc` in pred.conll means its corefs are all missing)
+
+## How to trigger?
 
 1. Modify any token to "1)" (at column 4). Run the following command, and you will see the error.
 2. Assign an singleton to either file (at the end of the line, press TAB and then input "(2)" or any id). Run the following command, and you will see the error from the MUC metric.
@@ -11,7 +16,7 @@ git clone https://github.com/conll/reference-coreference-scorers
 reference-coreference-scorers/scorer.pl muc err_gt.conll err_predict.conll none
 ```
 
-# Error outputs
+## Error outputs
 
 - Example 1: using `(1)`.
 
@@ -41,6 +46,6 @@ Coreference: Recall: (1 / 2) 50%        Precision: (1 / 1) 100% F1: 66.66%      
 --------------------------------------------------------------------------
 ```
 
-# How we address?
+## How we address?
 
 We replaced the () by [] (regex: `\(?[^A-Za-z]+\)?`). See i2b2_raw2conll.Token.get_conll_str() for details.

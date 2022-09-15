@@ -17,3 +17,23 @@ clinical-66	0	5	pulmonary	_	_	_	_	_	_	_	_
 clinical-66	0	6	edema	_	_	_	_	_	_	_	_
 clinical-66 0	7	.	_	_	_	_	_	_	_	_
 #end document
+
+#begin document (clinical-67); part 0
+clinical-67	0	0	A	_	_	_	_	_	_	_	_	(1
+clinical-67	0	1	chest	_	_	_	_	_	_	_	_
+clinical-67	0	2	X-Ray	_	_	_	_	_	_	_	_	1)
+clinical-67	0	3	demonstrated	_	_	_	_	_	_	_	_
+clinical-67	0	4	some	_	_	_	_	_	_	_	_
+clinical-67	0	5	pulmonary	_	_	_	_	_	_	_	_
+clinical-67	0	6	edema	_	_	_	_	_	_	_	_
+clinical-67 0	7	.	_	_	_	_	_	_	_	_  (1)
+
+clinical-67	0	0	A	_	_	_	_	_	_	_	_	(2)
+clinical-67	0	1	chest	_	_	_	_	_	_	_	_
+clinical-67	0	2	X-Ray	_	_	_	_	_	_	_	_
+clinical-67	0	3	demonstrated	_	_	_	_	_	_	_	_   (2)
+clinical-67	0	4	some	_	_	_	_	_	_	_	_
+clinical-67	0	5	pulmonary	_	_	_	_	_	_	_	_
+clinical-67	0	6	edema	_	_	_	_	_	_	_	_
+clinical-67 0	7	.	_	_	_	_	_	_	_	_
+#end document
