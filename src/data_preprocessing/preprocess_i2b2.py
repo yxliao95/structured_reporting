@@ -8,7 +8,6 @@ import os
 import shutil
 import sys
 import re
-import time
 import json
 import hydra
 from tqdm import tqdm
@@ -208,7 +207,10 @@ def batch_processing(doc_file_path, chain_file_path) -> tuple[str, str, list[lis
 
 @hydra.main(version_base=None, config_path=config_path, config_name="data_preprocessing")
 def main(config):
-    """ This pre-processing script aims to aggregrate the i2b2 raw files (.txt and .chains) for later usage. """
+    """
+    This pre-processing script aims to aggregrate the i2b2 raw files (.txt and .chains) for later usage.
+    The output of this script is an i2b2_all.jsonlines file and a ground_truth folder
+    """
     print(OmegaConf.to_yaml(config))
 
     logger.info("Pre-processing i2b2 dataset:")
