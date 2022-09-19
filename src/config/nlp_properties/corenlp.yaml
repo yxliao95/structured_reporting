@@ -3,11 +3,12 @@ corenlp:
   request_url: 'http://0.0.0.0:8802/' 
 
   server:
-    memory: 8G
-    threads: 14
+    memory: 8G # For i2b2 in the `corenlp_for_unfinished_records` loop, it will be force set to 4G automatically
+    threads: 14 # For i2b2 in the `corenlp_for_unfinished_records` loop, it will be force set to 8 automatically
     endpoint: http://localhost:8802
     outputFormat: json
     be_quiet: True
+    max_char_length: 100000
     timeout: 600000 # milliseconds. 60000ms would not be enough for batch_size = 10
 
   server_properties:

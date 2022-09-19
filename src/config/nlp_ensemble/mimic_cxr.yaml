@@ -1,3 +1,6 @@
+defaults:
+  - ../name_style/mimic_cxr_sections@name_style
+
 clear_history: false
   
 input:

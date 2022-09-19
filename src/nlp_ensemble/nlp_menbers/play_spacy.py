@@ -13,7 +13,7 @@ from tqdm import tqdm
 from omegaconf import OmegaConf
 
 # pylint: disable=import-error,wrong-import-order
-from common_utils.ensemble_utils import load_data_bySection
+from common_utils.ensemble_utils import load_mimic_cxr_bySection
 from common_utils.common_utils import check_and_create_dirs
 from common_utils.nlp_utils import align, getTokenOffset
 from nlp_ensemble.nlp_processor.spacy_process import SpacyProcess, init_spacy
@@ -24,12 +24,11 @@ config_path = os.path.join(os.path.dirname(module_path), "config")
 START_EVENT = Event()
 
 
-def batch_processing(input_text_list: list, input_sid_list: list, sectionName: str, progressId: int, config) -> tuple[int, str, int]:
+def batch_processing(input_text_list: list, input_id_list: list, sectionName: str, progressId: int, config) -> tuple[int, str, int]:
     """ The task of multiprocessing.
     Args:
         input_text_list: A batch of list of the corresponding section text
-        input_sid_list: A batch of sid list
-        input_pid_list: A batch of pid list
+        input_id_list: A batch of id list
         sectionName: The name of the section to which the input_text_list belongs.
         progressId: Start from 0
         config: hydra config
@@ -40,13 +39,13 @@ def batch_processing(input_text_list: list, input_sid_list: list, sectionName: s
         num: The number of records processed in this batch.
     """
     START_EVENT.wait()
-    batch_data = dict.fromkeys(input_sid_list, None)  # Dict: Key = sid, Value = {df_[name]:DataFrame, ...}
+    batch_data = dict.fromkeys(input_id_list, None)  # Dict: Key = sid, Value = {df_[name]:DataFrame, ...}
     try:
-        logger.debug("Batch Process [%s] started: %s", progressId, input_sid_list)
+        logger.debug("Batch Process [%s] started: %s", progressId, input_id_list)
         # We create three sub processors as below, as each of them take 3s to process a batch of 10 records
         # 1. For Spacy
         spacy_outPipe, spacy_inPipe = Pipe(False)
-        spacy_process = SpacyProcess(progressId, spacy_inPipe, input_text_list, input_sid_list)
+        spacy_process = SpacyProcess(progressId, spacy_inPipe, input_text_list, input_id_list)
         spacy_process.start()
 
         # The integration process
@@ -88,16 +87,16 @@ def batch_processing(input_text_list: list, input_sid_list: list, sectionName: s
         )
 
         # Write to the disk
-        for _sid, _df in batch_data.items():
+        for _id, _df in batch_data.items():
             df_all = _df["df_spacy"]
 
             # Output csv for later usage
             output_dir = os.path.join(config.spacy.output_dir, sectionName)
             check_and_create_dirs(output_dir)
 
-            df_all.to_csv(os.path.join(output_dir, f"{_sid}.csv"))
+            df_all.to_csv(os.path.join(output_dir, f"{_id}.csv"))
 
-            logger.debug("Batch Process [%s] output: sid:%s, df_shape:%s", progressId, _sid, df_all.shape)
+            logger.debug("Batch Process [%s] output: sid:%s, df_shape:%s", progressId, _id, df_all.shape)
         return progressId, "Done", len(batch_data)
 
     except Exception:  # pylint: disable=broad-except
@@ -107,7 +106,7 @@ def batch_processing(input_text_list: list, input_sid_list: list, sectionName: s
         return progressId, "Error occured", 0
 
 
-def run(config, sid_list, section_list):
+def run(config, id_list, section_list):
     batch_process_cfg = config.batch_process
     log_not_empty_records = {}
 
@@ -117,7 +116,7 @@ def run(config, sid_list, section_list):
         with ProcessPoolExecutor(max_workers=config.spacy.multiprocess_workers) as executor:
             logger.info("Processing section: [%s]", _sectionName)
             progressId = 0
-            input_text_list, input_sid_list = [], []
+            input_text_list, input_id_list = [], []
             not_empty_num = 0
 
             # Submit tasks
@@ -125,13 +124,13 @@ def run(config, sid_list, section_list):
                 # Construct batch data and skip empty record
                 if text_list[currentIdx]:
                     input_text_list.append(text_list[currentIdx])
-                    input_sid_list.append(sid_list[currentIdx])
+                    input_id_list.append(id_list[currentIdx])
                 # Submit task for this batch data
                 if len(input_text_list) == batch_process_cfg.batch_size or (currentIdx + 1 == batch_process_cfg.data_end_pos and input_text_list):
-                    all_task.append(executor.submit(batch_processing, input_text_list, input_sid_list, _sectionName, progressId, config))
+                    all_task.append(executor.submit(batch_processing, input_text_list, input_id_list, _sectionName, progressId, config))
                     progressId += 1
                     not_empty_num += len(input_text_list)
-                    input_text_list, input_sid_list = [], []
+                    input_text_list, input_id_list = [], []
 
             log_not_empty_records[_sectionName] = not_empty_num
 
@@ -168,7 +167,7 @@ def main(config):
     # Load data
     input_path = config.input.path
     logger.info("Loading mimic-cxr section data from %s", input_path)
-    data_size, pid_list, sid_list, section_list = load_data_bySection(input_path, output_section_cfg, section_name_cfg)
+    data_size, pid_list, sid_list, section_list = load_mimic_cxr_bySection(input_path, output_section_cfg, section_name_cfg)
 
     # Init spacy
     logger.info("Initializing spaCy")

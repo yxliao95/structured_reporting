@@ -17,3 +17,8 @@ def check_and_create_dirs(dir_path: str):
     """ Create dir if it does not exist """
     if not os.path.exists(dir_path):
         os.makedirs(dir_path)
+
+
+def check_and_remove_file(file_path: str):
+    if os.path.exists(file_path):
+        os.remove(file_path)

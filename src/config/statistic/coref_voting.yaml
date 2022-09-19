@@ -1,0 +1,2 @@
+voting:
+  algorithm: majority_voting

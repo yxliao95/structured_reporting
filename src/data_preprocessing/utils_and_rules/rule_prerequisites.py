@@ -13,7 +13,7 @@ class PrerequisiteResources:
 
     @staticmethod
     def _load_resources():
-        config = compose(config_name="mimic_cxr")
+        config = compose(config_name="data_preprocessing", overrides=["data_preprocessing@_global_=mimic_cxr"])
         with open(config.rules.heading_affiliation_map, "r", encoding="UTF-8") as f:
             headingMap_list = f.readlines()
         for rawLine in headingMap_list:
@@ -129,5 +129,5 @@ if __name__ == "__main__":
     from hydra import compose, initialize
     from omegaconf import OmegaConf
 
-    with initialize(version_base=None, config_path="../../config/data_preprocessing"):
+    with initialize(version_base=None, config_path="../../config"):
         print(PrerequisiteResources.get_heading_affiliation_map())

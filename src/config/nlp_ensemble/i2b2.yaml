@@ -1,0 +1,19 @@
+defaults:
+  - ../name_style/i2b2_gt@name_style
+
+clear_history: false
+  
+input:
+  path: ${i2b2_output_dir}/i2b2_all.jsonlines
+
+output:
+  base_dir: ${i2b2_output_dir}/nlp_ensemble
+  log_file: run.log
+
+  section:
+    all: true # A pseudo section that follows the mimic-cxr data format.
+
+batch_process:
+  data_start_pos: 0
+  data_end_pos: 424 # Max 424
+  batch_size: 1

@@ -1,0 +1,30 @@
+coref:
+  input_dir: ${output_dir}/nlp_ensemble
+  output_dir: ${output_dir}/statistic/coref
+  clear_history: true
+
+  scorer:
+    path: ${coref_scorer_dir}/scorer.pl
+    temp_data_dir: ${output_dir}/statistic/coref/scorer_input_temp
+    source:
+      in_use:
+        - ml
+        - rb
+        - fj
+      models:
+        ml:
+          column_prefix: ${name_style.corenlp.statistical_coref_prefix}
+          column_name: ${name_style.corenlp.column_name.scoref_group_conll}
+        rb:
+          column_prefix: ${name_style.corenlp.deterministic_coref_prefix}
+          column_name: ${name_style.corenlp.column_name.dcoref_group_conll}
+        nn:
+          column_prefix: ${name_style.corenlp.nerual_coref_prefix}
+          column_name: ${name_style.corenlp.column_name.ncoref_group_conll}
+        fj:
+          column_prefix: ${name_style.fastcoref_joint.prefix}
+          column_name: ${name_style.fastcoref_joint.column_name.coref_group_conll}
+    metrics:
+      - muc # MUCScorer (Vilain et al, 1995)
+      - bcub # B-Cubed (Bagga and Baldwin, 1998)
+      - ceafe # CEAF (Luo et al, 2005) using entity-based similarity

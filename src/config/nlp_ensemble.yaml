@@ -1,6 +1,5 @@
 defaults:
   - common
-  - name_style/mimic_cxr_sections
   - name_style/corenlp_output
   - name_style/spacy_output
   - name_style/fastcoref_joint_output
@@ -18,16 +17,18 @@ spacy:
 corenlp:
   output_dir: ${output.base_dir}/corenlp
   activate: false
-  multiprocess_workers: 14
+  multiprocess_workers: 14 # For i2b2, it will be force set to 1 automatically
   use_server_properties: # At least one should be true
     scoref: true # Containing the statistical (ML-based) coref annotator.
     dcoref: true # Containing the deterministic (Rule-based) coref annotator.
     ncoref: false # Containing the neural coref annotator
   unfinished_records_path: ${corenlp.output_dir}/corenlp_unfinished_records.log
+  uncompleted_dependency_parsing_records: ${corenlp.output_dir}/corenlp_uncompleted_dependency_parsing_records.log
 
 corenlp_for_unfinished_records:
   activate: false
-  multiprocess_workers: 10
+  multiprocess_workers: 1
+  max_iteration_num: 2 # How many times to re-activate the corenlp
   unfinished_records_path: ${corenlp.unfinished_records_path}
 
 fastcoref_joint:

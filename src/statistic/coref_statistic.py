@@ -7,6 +7,7 @@ from multiprocessing import Event
 import os
 import re
 import shutil
+import sys
 import time
 import subprocess
 import traceback
@@ -395,15 +396,16 @@ def main_process(config):
 def main(config):
     print(OmegaConf.to_yaml(config))
 
-    output_base_dir = config.coref.output_dir
-    check_and_remove_dirs(output_base_dir, config.coref.clear_history)
-    check_and_create_dirs(output_base_dir)
+    # output_base_dir = config.coref.output_dir
+    # check_and_remove_dirs(output_base_dir, config.coref.clear_history)
+    # check_and_create_dirs(output_base_dir)
 
-    main_process(config)
+    # main_process(config)
 
-    # check_and_remove_dir(config.coref.scorer.temp_data_dir, do_remove=True)
-    logger.info("Done. Please find the statistical output in: %s", output_base_dir)
+    # # check_and_remove_dir(config.coref.scorer.temp_data_dir, do_remove=True)
+    # logger.info("Done. Please find the statistical output in: %s", output_base_dir)
 
 
 if __name__ == "__main__":
+    sys.argv.append("statistic@_global_=coref_statistic")
     main()  # pylint: disable=no-value-for-parameter

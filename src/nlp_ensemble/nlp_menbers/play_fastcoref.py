@@ -118,15 +118,16 @@ def run(config, use_sections: list, model: EntityRankingModel, subword_tokenizer
             df_base = pd.read_csv(file_entry.path, index_col=0)
             tok_list = df_base.loc[:, spacy_nametyle.token].to_list()
             sentGroup_list = df_base.loc[:, spacy_nametyle.sentence_group].to_list()
-            basic_tokenized_doc = []
+            sent_tok_2d_list: list[list[str]] = []
             for tok, sent_id in zip(tok_list, sentGroup_list):
-                if len(basic_tokenized_doc) == sent_id:
-                    basic_tokenized_doc.append([tok])
+                tok = str(tok)  # In i2b2, some of the tokens might incorrectly be recognized as float type.
+                if len(sent_tok_2d_list) == sent_id:
+                    sent_tok_2d_list.append([tok])
                 else:
-                    basic_tokenized_doc[sent_id].append(tok)
+                    sent_tok_2d_list[sent_id].append(tok)
 
             # Using longformer tokenizer to generate subtokens and form the input data.
-            tokenized_doc = tokenize_and_segment_doc(basic_tokenized_doc, subword_tokenizer, max_segment_len=max_segment_len)
+            tokenized_doc = tokenize_and_segment_doc(sent_tok_2d_list, subword_tokenizer, max_segment_len=max_segment_len)
 
             try:
                 # Get model output

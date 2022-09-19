@@ -1,4 +1,4 @@
-# Output
+## MIMIC-CXR Output
 
 ```JSON
 {
@@ -74,3 +74,9 @@
   "Time cost": "41727.53"
 }
 ```
+
+## i2b2 output
+
+When using CoreNLP-dcoref, some of the sentences somehow failed in getting the dependencies.
+
+For example, clinical-23 will trigger an error that fails to perform dependency parsing on some of the sentences (seemly because the sentence is too long). In that case, the corresponding value in the CSV file is set to "-1" (str)
