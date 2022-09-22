@@ -7,11 +7,10 @@ import re
 import ast
 
 import hydra
-import pandas as pd
 from omegaconf import OmegaConf
 
 # pylint: disable=import-error,wrong-import-order
-from common_utils.ensemble_utils import load_i2b2
+from common_utils.data_loader_utils import load_i2b2
 from common_utils.common_utils import check_and_remove_file, remove_dirs
 from nlp_ensemble.nlp_processor.spacy_process import init_spacy
 import nlp_ensemble.nlp_menbers.play_spacy as play_spacy

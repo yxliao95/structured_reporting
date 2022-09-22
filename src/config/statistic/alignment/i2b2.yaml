@@ -1,0 +1,10 @@
+output_dir: ${i2b2_output_dir}/statistic/alignment
+clear_history: true
+
+input:
+  base_dir: ${i2b2_output_dir}/nlp_ensemble
+  section:
+    - all
+  target_dir:
+    - ${input.base_dir}/corenlp/scoref
+    - ${input.base_dir}/corenlp/dcoref

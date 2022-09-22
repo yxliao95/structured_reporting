@@ -15,7 +15,7 @@ from stanza.server import CoreNLPClient
 
 # pylint: disable=import-error,wrong-import-order
 from common_utils.common_utils import check_and_create_dirs
-from common_utils.ensemble_utils import load_i2b2, load_mimic_cxr_bySection
+from common_utils.data_loader_utils import load_i2b2, load_mimic_cxr_bySection
 from common_utils.nlp_utils import align_byIndex_individually_nestedgruop, align_byIndex_individually_withData_dictInList, align_coref_groups_in_conll_format, align_byIndex_individually_withData_noOverlap
 from nlp_ensemble.nlp_processor.corenlp_process import CorenlpUrlProcess, formatCorenlpDocument
 

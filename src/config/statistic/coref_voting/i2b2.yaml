@@ -1,0 +1,50 @@
+# defaults:
+#   - ../name_style/mimic_cxr_sections@name_style
+
+voting_strategy: majority_voting
+
+output_dir: ${i2b2_output_dir}/statistic/coref_voting
+clear_history: true
+
+input:
+  base_dir: ${i2b2_output_dir}/nlp_ensemble
+  source:
+    # For token alignment
+    baseline_model:
+      dir: ${input.base_dir}/spacy
+
+    # Which section to use
+    section:
+      - all
+
+    # Which model to use
+    in_use:
+      - ml
+      - rb
+      - fj
+    coref_models:
+      ml:
+        dir: ${input.base_dir}/corenlp/scoref
+        target_column:
+          spacy_index: ${name_style.corenlp.column_name.align_to_spacy}
+          token: ${name_style.corenlp.column_name.token}
+          coref_group: ${name_style.corenlp.column_name.scoref_group}
+          coref_group_conll: ${name_style.corenlp.column_name.scoref_group_conll}
+      rb:
+        dir: ${input.base_dir}/corenlp/dcoref
+        target_column:
+          spacy_index: ${name_style.corenlp.column_name.align_to_spacy}
+          token: ${name_style.corenlp.column_name.token}
+          coref_group: ${name_style.corenlp.column_name.dcoref_group}
+          coref_group_conll: ${name_style.corenlp.column_name.dcoref_group_conll}
+      fj:
+        dir: ${input.base_dir}/fast_coref_joint
+        target_column:
+          spacy_index: ${df_col.coref_index}
+          token: ${name_style.fastcoref_joint.column_name.token_from_spacy}
+          coref_group: ${name_style.fastcoref_joint.column_name.coref_group}
+          coref_group_conll: ${name_style.fastcoref_joint.column_name.coref_group_conll}
+
+df_col:
+  spacy_index: spacy_index
+  coref_index: coref_index

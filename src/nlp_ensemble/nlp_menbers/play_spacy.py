@@ -13,7 +13,7 @@ from tqdm import tqdm
 from omegaconf import OmegaConf
 
 # pylint: disable=import-error,wrong-import-order
-from common_utils.ensemble_utils import load_mimic_cxr_bySection
+from common_utils.data_loader_utils import load_mimic_cxr_bySection
 from common_utils.common_utils import check_and_create_dirs
 from common_utils.nlp_utils import align, getTokenOffset
 from nlp_ensemble.nlp_processor.spacy_process import SpacyProcess, init_spacy

@@ -6,5 +6,7 @@ defaults:
   - name_style/corenlp_output
   - name_style/spacy_output
   - name_style/fastcoref_joint_output
-  - statistic@_global_: coref_statistic
   - _self_
+
+# Append the necessary config group via command line:
+# e.g. sys.argv.append("+statistic/alignment@_global_=i2b2")
