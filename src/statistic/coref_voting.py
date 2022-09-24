@@ -1,4 +1,5 @@
-from email.policy import default
+from concurrent.futures import ProcessPoolExecutor, as_completed
+from multiprocessing import Event
 import json
 import logging
 import os
@@ -8,6 +9,7 @@ import re
 import ast
 import math
 from math import isnan
+from tqdm import tqdm
 
 import hydra
 import pandas as pd
@@ -22,9 +24,11 @@ module_path = os.path.dirname(__file__)
 config_path = os.path.join(os.path.dirname(module_path), "config")
 
 FILE_CHECKER = FileChecker()
-
+START_EVENT = Event()
 
 # Utils
+
+
 class SpacyToken:
     """ The token from spaCy """
 
@@ -246,13 +250,137 @@ def update_mention_and_mention_group(group_id_and_token_status_dict: dict, model
 ###
 
 
-@hydra.main(version_base=None, config_path=config_path, config_name="statistic")
-def main(config):
-    print(OmegaConf.to_yaml(config))
+def get_voting_details(config, spacy_file_path, section_name, file_name) -> DocClass:
+    """ Read a file, do statistic, and put all the necessary infomation into `DocClass` """
     source_cfg = config.input.source
     spacy_name_style_cfg = config.name_style.spacy.column_name
     # Get the info of three coref models
     candidate_coref_model_cfg_list = [(model_short_name, source_cfg.coref_models.get(model_short_name)) for model_short_name in source_cfg.in_use]
+
+    # Read spacy output as alignment base
+    df_spacy = pd.read_csv(spacy_file_path)
+
+    docObj = DocClass()
+    # Loop the models
+    for model_short_name, coref_model_cfg in candidate_coref_model_cfg_list:
+        coref_column_cfg = coref_model_cfg.target_column
+
+        # Read coref model output to be aligned
+        coref_model_output_path = os.path.join(coref_model_cfg.dir, section_name, file_name)
+        df_coref = pd.read_csv(coref_model_output_path)
+
+        # Merge and align two df. Keep the index for later use
+        df_spacy[config.df_col.spacy_index] = df_spacy.index
+        df_coref[config.df_col.coref_index] = df_coref.index
+        df_aligned = df_spacy.merge(df_coref, how="outer", left_index=True, right_on=coref_column_cfg.spacy_index).reset_index().drop(columns=["index"])
+
+        # Token level alignment. Assuming spacy has token A B C, corenlp has token A' B' C'
+        checkpoint_token_index = 0
+        many2one_spacy_token_len = 0
+        one2many_coref_token_len = 0
+        for _idx, _itemSeries in df_aligned.iterrows():
+            spacy_index = _itemSeries.get(config.df_col.spacy_index)
+            coref_index = _itemSeries.get(config.df_col.coref_index)
+
+            spacy_tokenStr = str(_itemSeries.get(spacy_name_style_cfg.token))
+            coref_tokenStr = str(_itemSeries.get(coref_column_cfg.token))
+
+            coref_group = str(_itemSeries.get(coref_column_cfg.coref_group))  # "-1", "nan", "[1, 11]"
+            coref_group_conll = str(_itemSeries.get(coref_column_cfg.coref_group_conll))  # "-1", "nan", "['(1)', '(11']"
+            assert coref_group != "-1.0" or coref_group != -1.0
+
+            group_id_and_token_status_dict: dict[int, str] = get_group_id_and_token_status(coref_group, coref_group_conll)
+
+            last_spacy_index = df_aligned.loc[checkpoint_token_index, config.df_col.spacy_index]
+            last_spacy_token = str(df_aligned.loc[checkpoint_token_index, spacy_name_style_cfg.token])
+            last_coref_token = str(df_aligned.loc[checkpoint_token_index, coref_column_cfg.token])
+
+            # TokA = TokA'
+            if spacy_tokenStr == coref_tokenStr:
+                logger.debug("%s) Identical token: %s | %s", _idx, spacy_tokenStr.encode(), coref_tokenStr.encode())
+                checkpoint_token_index = _idx
+                # Token-level
+                baseTokenObj = docObj.auto_get_token_byIndex(spacy_index, spacy_tokenStr)
+                baseTokenObj.update_token_details(model_short_name, "equal")
+                baseTokenObj.vote(model_short_name, isNot_empty_or_NaN(coref_group))
+                # Mention-level and Mention-Group-level
+                update_mention_and_mention_group(group_id_and_token_status_dict, model_short_name, docObj, coref_tokenStr, spacy_tokenStr, baseTokenObj)
+            else:
+                # TokA = TokA'+TokB'+TokC', TokA contains TokA'
+                if coref_tokenStr in spacy_tokenStr:
+                    if one2many_coref_token_len == 0:
+                        checkpoint_token_index = _idx
+                        logger.debug("%s) One2many token start: %s | %s", _idx, spacy_tokenStr.encode(), coref_tokenStr.encode())
+                        baseTokenObj = docObj.auto_get_token_byIndex(spacy_index, spacy_tokenStr)
+                        baseTokenObj.update_token_details(model_short_name, "contains")
+                        baseTokenObj.vote(model_short_name, isNot_empty_or_NaN(coref_group))
+                        update_mention_and_mention_group(group_id_and_token_status_dict, model_short_name, docObj, coref_tokenStr, spacy_tokenStr, baseTokenObj)
+                    else:
+                        logger.debug("%s) One2many token: %s | %s", _idx, spacy_tokenStr.encode(), coref_tokenStr.encode())
+                        one2many_coref_token_len += len(coref_tokenStr)
+                        baseTokenObj = docObj.get_token_byIndex(spacy_index)  # The same token generated above.
+                        # Any mention that found in TokA',TokB',TokC' will vote on TokA. Thus, vote again.
+                        baseTokenObj.update_vote(model_short_name, isNot_empty_or_NaN(coref_group))
+                        update_mention_and_mention_group(group_id_and_token_status_dict, model_short_name, docObj, coref_tokenStr, spacy_tokenStr, baseTokenObj)
+                        if one2many_coref_token_len == len(spacy_tokenStr):
+                            logger.debug("%s) One2many token end", _idx)
+                            one2many_coref_token_len = 0
+
+                # TokA+TokB+TokC = TokA', TokA is subset_of TokA'
+                # TokA of TokA+TokB+TokC
+                if spacy_tokenStr in coref_tokenStr:
+                    checkpoint_token_index = _idx
+                    many2one_spacy_token_len += len(spacy_tokenStr)
+                    logger.debug("%s) Many2one token start: %s | %s", _idx, spacy_tokenStr.encode(), coref_tokenStr.encode())
+                    baseTokenObj = docObj.auto_get_token_byIndex(spacy_index, spacy_tokenStr)
+                    baseTokenObj.update_token_details(model_short_name, "subset_of")
+                    baseTokenObj.vote(model_short_name, isNot_empty_or_NaN(coref_group))
+                    update_mention_and_mention_group(group_id_and_token_status_dict, model_short_name, docObj, coref_tokenStr, spacy_tokenStr, baseTokenObj)
+
+                # TokB,TokC of TokA+TokB+TokC
+                if isnan(coref_index) and spacy_tokenStr in last_coref_token:
+                    many2one_spacy_token_len += len(spacy_tokenStr)
+                    logger.debug("%s) Many2one token: %s | %s", _idx, spacy_tokenStr.encode(), coref_tokenStr.encode())
+                    baseTokenObj = docObj.auto_get_token_byIndex(spacy_index, spacy_tokenStr)
+                    baseTokenObj.update_token_details(model_short_name, "subset_of")
+                    checkpoint_baseTokenObj = docObj.get_token_byIndex(df_aligned.loc[checkpoint_token_index, config.df_col.spacy_index])
+                    # Inherit the voting results from TokA'
+                    baseTokenObj.inherit_vote(checkpoint_baseTokenObj.vote_details)
+                    baseTokenObj.inherit_mention(model_short_name, checkpoint_baseTokenObj, coref_tokenStr, spacy_tokenStr)
+
+                    if many2one_spacy_token_len == len(last_coref_token):
+                        many2one_spacy_token_len = 0
+                        logger.debug("%s) Many2one token end")
+
+                # TokA exist, TokA' not exist
+                if isnan(coref_index) and spacy_tokenStr not in last_coref_token:
+                    logger.debug("%s) Empty coref token: %s | %s", _idx, spacy_tokenStr.encode(), coref_tokenStr.encode())
+                    baseTokenObj = docObj.auto_get_token_byIndex(spacy_index, spacy_tokenStr)
+                    baseTokenObj.update_token_details(model_short_name, "not_found")
+                    baseTokenObj.vote(model_short_name, isNot_empty_or_NaN(coref_group))
+                    update_mention_and_mention_group(group_id_and_token_status_dict, model_short_name, docObj, coref_tokenStr, spacy_tokenStr, baseTokenObj)
+
+    return docObj
+
+
+def batch_processing(config, spacy_file_path, section_name, file_name):
+    """ Voting on one document """
+    logger.debug("Processing file %s", file_name)
+    if file_name != "clinical-682.csv":
+        return None
+
+    docObj: DocClass = get_voting_details(config, spacy_file_path, section_name, file_name)
+
+    for tokenClass in docObj.token_list:
+        # print(tok)
+
+    return docObj
+
+
+@hydra.main(version_base=None, config_path=config_path, config_name="statistic")
+def main(config):
+    print(OmegaConf.to_yaml(config))
+    source_cfg = config.input.source
 
     check_and_remove_dirs(config.output_dir, config.clear_history)
 
@@ -265,118 +393,28 @@ def main(config):
         if not os.path.exists(spacy_out_dir):
             logger.error("Could not found the target dir (the baseline for token alignment): %s", spacy_out_dir)
 
-        # Loop all files
-        docObj = DocClass()
         candidate_fileName_list = FILE_CHECKER.filter(os.listdir(spacy_out_dir))
-        for file_name in candidate_fileName_list:
-            if file_name == "clinical-682.csv":
-                # Read spacy output as alignment base
+
+        # Loop all files
+        with ProcessPoolExecutor(max_workers=config.thread.workers) as executor:
+            all_task = []
+            for file_name in candidate_fileName_list:
                 spacy_file_path = os.path.join(spacy_out_dir, file_name)
-                df_spacy = pd.read_csv(spacy_file_path)
+                all_task.append(executor.submit(batch_processing, config, spacy_file_path, section_name, file_name))
 
-                # Loop the models
-                for model_short_name, coref_model_cfg in candidate_coref_model_cfg_list:
-                    coref_column_cfg = coref_model_cfg.target_column
+            # Notify tasks to start
+            START_EVENT.set()
 
-                    # Read coref model output to be aligned
-                    coref_model_output_path = os.path.join(coref_model_cfg.dir, section_name, file_name)
-                    df_coref = pd.read_csv(coref_model_output_path)
+            # When a submitted task finished, the output is received here.
+            if all_task:
+                for future in tqdm(as_completed(all_task), total=len(all_task)):
+                    docObj = future.result()
+                logger.info("Done.")
+            else:
+                logger.info("All empty. Skipped.")
 
-                    # Merge and align two df. Keep the index for later use
-                    df_spacy[config.df_col.spacy_index] = df_spacy.index
-                    df_coref[config.df_col.coref_index] = df_coref.index
-                    df_aligned = df_spacy.merge(df_coref, how="outer", left_index=True, right_on=coref_column_cfg.spacy_index).reset_index().drop(columns=["index"])
-
-                    # Token level alignment. Assuming spacy has token A B C, corenlp has token A' B' C'
-                    checkpoint_token_index = 0
-                    many2one_spacy_token_len = 0
-                    one2many_coref_token_len = 0
-                    mention_id = 0
-                    for _idx, _itemSeries in df_aligned.iterrows():
-                        spacy_index = _itemSeries.get(config.df_col.spacy_index)
-                        coref_index = _itemSeries.get(config.df_col.coref_index)
-
-                        spacy_tokenStr = str(_itemSeries.get(spacy_name_style_cfg.token))
-                        coref_tokenStr = str(_itemSeries.get(coref_column_cfg.token))
-
-                        coref_group = str(_itemSeries.get(coref_column_cfg.coref_group))  # "-1", "nan", "[1, 11]"
-                        coref_group_conll = str(_itemSeries.get(coref_column_cfg.coref_group_conll))  # "-1", "nan", "['(1)', '(11']"
-                        assert coref_group != "-1.0" or coref_group != -1.0
-
-                        group_id_and_token_status_dict: dict[int, str] = get_group_id_and_token_status(coref_group, coref_group_conll)
-
-                        last_spacy_index = df_aligned.loc[checkpoint_token_index, config.df_col.spacy_index]
-                        last_spacy_token = str(df_aligned.loc[checkpoint_token_index, spacy_name_style_cfg.token])
-                        last_coref_token = str(df_aligned.loc[checkpoint_token_index, coref_column_cfg.token])
-
-                        # TokA = TokA'
-                        if spacy_tokenStr == coref_tokenStr:
-                            logger.debug("%s) Identical token: %s | %s", _idx, spacy_tokenStr.encode(), coref_tokenStr.encode())
-                            checkpoint_token_index = _idx
-                            # Token-level
-                            baseTokenObj = docObj.auto_get_token_byIndex(spacy_index, spacy_tokenStr)
-                            baseTokenObj.update_token_details(model_short_name, "equal")
-                            baseTokenObj.vote(model_short_name, isNot_empty_or_NaN(coref_group))
-                            # Mention-level and Mention-Group-level
-                            update_mention_and_mention_group(group_id_and_token_status_dict, model_short_name, docObj, coref_tokenStr, spacy_tokenStr, baseTokenObj)
-                        else:
-                            # TokA = TokA'+TokB'+TokC', TokA contains TokA'
-                            if coref_tokenStr in spacy_tokenStr:
-                                if one2many_coref_token_len == 0:
-                                    checkpoint_token_index = _idx
-                                    logger.debug("%s) One2many token start: %s | %s", _idx, spacy_tokenStr.encode(), coref_tokenStr.encode())
-                                    baseTokenObj = docObj.auto_get_token_byIndex(spacy_index, spacy_tokenStr)
-                                    baseTokenObj.update_token_details(model_short_name, "contains")
-                                    baseTokenObj.vote(model_short_name, isNot_empty_or_NaN(coref_group))
-                                    update_mention_and_mention_group(group_id_and_token_status_dict, model_short_name, docObj, coref_tokenStr, spacy_tokenStr, baseTokenObj)
-                                else:
-                                    logger.debug("%s) One2many token: %s | %s", _idx, spacy_tokenStr.encode(), coref_tokenStr.encode())
-                                    one2many_coref_token_len += len(coref_tokenStr)
-                                    baseTokenObj = docObj.get_token_byIndex(spacy_index)  # The same token generated above.
-                                    # Any mention that found in TokA',TokB',TokC' will vote on TokA. Thus, vote again.
-                                    baseTokenObj.update_vote(model_short_name, isNot_empty_or_NaN(coref_group))
-                                    update_mention_and_mention_group(group_id_and_token_status_dict, model_short_name, docObj, coref_tokenStr, spacy_tokenStr, baseTokenObj)
-                                    if one2many_coref_token_len == len(spacy_tokenStr):
-                                        logger.debug("%s) One2many token end", _idx)
-                                        one2many_coref_token_len = 0
-
-                            # TokA+TokB+TokC = TokA', TokA is subset_of TokA'
-                            # TokA of TokA+TokB+TokC
-                            if spacy_tokenStr in coref_tokenStr:
-                                checkpoint_token_index = _idx
-                                many2one_spacy_token_len += len(spacy_tokenStr)
-                                logger.debug("%s) Many2one token start: %s | %s", _idx, spacy_tokenStr.encode(), coref_tokenStr.encode())
-                                baseTokenObj = docObj.auto_get_token_byIndex(spacy_index, spacy_tokenStr)
-                                baseTokenObj.update_token_details(model_short_name, "subset_of")
-                                baseTokenObj.vote(model_short_name, isNot_empty_or_NaN(coref_group))
-                                update_mention_and_mention_group(group_id_and_token_status_dict, model_short_name, docObj, coref_tokenStr, spacy_tokenStr, baseTokenObj)
-
-                            # TokB,TokC of TokA+TokB+TokC
-                            if isnan(coref_index) and spacy_tokenStr in last_coref_token:
-                                many2one_spacy_token_len += len(spacy_tokenStr)
-                                logger.debug("%s) Many2one token: %s | %s", _idx, spacy_tokenStr.encode(), coref_tokenStr.encode())
-                                baseTokenObj = docObj.auto_get_token_byIndex(spacy_index, spacy_tokenStr)
-                                baseTokenObj.update_token_details(model_short_name, "subset_of")
-                                checkpoint_baseTokenObj = docObj.get_token_byIndex(df_aligned.loc[checkpoint_token_index, config.df_col.spacy_index])
-                                # Inherit the voting results from TokA'
-                                baseTokenObj.inherit_vote(checkpoint_baseTokenObj.vote_details)
-                                baseTokenObj.inherit_mention(model_short_name, checkpoint_baseTokenObj, coref_tokenStr, spacy_tokenStr)
-
-                                if many2one_spacy_token_len == len(last_coref_token):
-                                    many2one_spacy_token_len = 0
-                                    logger.debug("%s) Many2one token end")
-
-                            # TokA exist, TokA' not exist
-                            if isnan(coref_index) and spacy_tokenStr not in last_coref_token:
-                                logger.debug("%s) Empty coref token: %s | %s", _idx, spacy_tokenStr.encode(), coref_tokenStr.encode())
-                                baseTokenObj = docObj.auto_get_token_byIndex(spacy_index, spacy_tokenStr)
-                                baseTokenObj.update_token_details(model_short_name, "not_found")
-                                baseTokenObj.vote(model_short_name, isNot_empty_or_NaN(coref_group))
-                                update_mention_and_mention_group(group_id_and_token_status_dict, model_short_name, docObj, coref_tokenStr, spacy_tokenStr, baseTokenObj)
-
-                for tok in docObj.token_list:
-                    print(tok)
-                return
+            executor.shutdown(wait=True, cancel_futures=False)
+            START_EVENT.clear()
 
 
 if __name__ == "__main__":
