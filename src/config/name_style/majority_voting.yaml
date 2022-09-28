@@ -1,0 +1,7 @@
+voting:
+  prefix: "[mv]"
+  column_name:
+    token_from_spacy: ${name_style.voting.prefix}token_from_spacy
+    sentence_group: ${name_style.voting.prefix}sentence_group
+    coref_group: ${name_style.voting.prefix}coref_group
+    coref_group_conll: ${name_style.voting.prefix}coref_group_conll

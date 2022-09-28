@@ -110,12 +110,16 @@ def getTokenOffset(baseText: str, inputTokens):
     return offset
 
 
-def resolveTokenIndices_byPosition(tokenOffset, startPos, length) -> list:
+def resolveTokenIndices_byPosition(tokenOffset_base, startPos, length) -> list:
+    """ For example: ".h.s." = "." (offset=0) + "h.s." (offset=1)
+    Tok_to_be_aligned: ".h"  => tokenOffset: [0,1], startPos: 0, length: 2 -> return: [0,1]
+    Tok_to_be_aligned: ".s." => tokenOffset: [0,1], startPos: 2, length: 3 -> return: [1]
+    """
     indicesList = []
     doInsert = False
     posPointer = startPos
-    for i, currPos in enumerate(tokenOffset):
-        nextPos = tokenOffset[i + 1] if i + 1 < len(tokenOffset) else tokenOffset[i] + 99
+    for i, currPos in enumerate(tokenOffset_base):
+        nextPos = tokenOffset_base[i + 1] if i + 1 < len(tokenOffset_base) else tokenOffset_base[i] + 99
         if not doInsert and posPointer >= currPos and posPointer < nextPos:
             doInsert = True
             posPointer = startPos + length - 1

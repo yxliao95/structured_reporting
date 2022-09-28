@@ -1,9 +1,18 @@
-# defaults:
-#   - ../name_style/mimic_cxr_sections@name_style
 
-voting_strategy: majority_voting
+voting:
+  strategy: majority_voting
+  confidence: 0.66 # Mention selection threshold. 0 <= range <= 1.
+  # token_threshold: 2 # The agreement threshold that a token is valid.
+  mention_pair_threshold: 2 # The agreement threshold that a mention_pair is valid
 
-output_dir: ${i2b2_output_dir}/statistic/coref_voting
+defaults:
+  - ../../name_style/@name_style: majority_voting
+
+output:
+  base_dir: ${i2b2_output_dir}/statistic/coref_voting
+  files_dir: ${output.base_dir}/${voting.strategy}
+  log_file: ${output.base_dir}/run.log
+
 clear_history: true
 
 input:

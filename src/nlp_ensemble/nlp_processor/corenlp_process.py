@@ -38,6 +38,7 @@ def formatCorenlpDocument(tokenOffset_base, corenlp_json, debug_info):
     """Args:
         debug_info: {"config": config, "_id": _id, "section_name": section_name, "coref_server_name": coref_server_name}
     """
+    # Only keep the first item of the returned indices list
     referTo_base = [
         resolveTokenIndices_byPosition(tokenOffset_base, token['characterOffsetBegin'], token['characterOffsetEnd'] - token['characterOffsetBegin'])[0]
         for sentence in corenlp_json['sentences']

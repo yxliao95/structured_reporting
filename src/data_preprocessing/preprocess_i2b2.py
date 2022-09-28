@@ -173,7 +173,7 @@ def batch_processing(doc_file_path, chain_file_path) -> tuple[str, str, list[lis
 
     # Resolve doc file
     sentence_list: list[list[I2b2Token]] = []
-    with open(doc_file_path, "r", encoding="UTF-8") as doc:
+    with open(doc_file_path, "r", encoding="UTF-8-sig") as doc:
         tokenId_docwise = 0
         for sentence_id, doc_line in enumerate(doc.readlines()):
             token_list: list[I2b2Token] = []
@@ -183,7 +183,7 @@ def batch_processing(doc_file_path, chain_file_path) -> tuple[str, str, list[lis
             sentence_list.append(token_list)
 
     # Resolve chain file (coref cluster)
-    with open(chain_file_path, "r", encoding="UTF-8") as chain:
+    with open(chain_file_path, "r", encoding="UTF-8-sig") as chain:
         for cluster_id, cluster in enumerate(chain.readlines()):
             for coref in cluster.split("||")[0:-1]:  # Drop the last one, which is the type of the coref
                 token_range: list[str, str] = coref.split(" ")[-2:]

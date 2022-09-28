@@ -1,5 +1,5 @@
 thread:
-  workers: 15
+  workers: 8
 
 defaults:
   - common
