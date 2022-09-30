@@ -4,6 +4,10 @@
 
 All the `docs` in conll files will be used for calculation. In gt.conll and pred.conll, the `doc` with same `docId` are matched. If a `doc` exists only in one of the conll file, it would affect either the recall or precision (e.g. a missing `doc` in pred.conll means its corefs are all missing)
 
+The acutal `token string`, `token id`, `sentence segmentation` (new line) do not affect the measurement. The `empty line`, including its `number` and `position`, do not affect the result.
+
+However, the number of lines is the key and should be identical, otherwise the results would be wrong. In other words, the socrer will align every lines, then only the last column (`coref labels`) will be used for scoring. The `value of the coref label` does not affect the mention-level assesment but do affect the coref-level (group-level) assesment.
+
 ## How to trigger?
 
 1. Modify any token to "1)" (at column 4). Run the following command, and you will see the error.

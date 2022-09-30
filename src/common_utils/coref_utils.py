@@ -183,3 +183,12 @@ def load_data_bySection(input_path, target_section_cfg, section_name_cfg):
 
     return data_size, pid_list, sid_list, section_list
 # Migrated
+
+
+def auto_append_value_to_list(target_list, target_index, target_value):
+    """ Append target_value into target_list[target_index], where the initialized value is -1
+    and should be changed to a list when a target_value is provided. """
+    if target_list[target_index] == -1:
+        target_list[target_index] = [target_value]
+    else:
+        target_list[target_index].append(target_value)

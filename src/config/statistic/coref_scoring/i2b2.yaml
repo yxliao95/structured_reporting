@@ -1,0 +1,33 @@
+clear_history: true
+
+defaults:
+  - ../../name_style/@name_style: majority_voting
+  
+input:
+  base_dir: ${i2b2_output_dir}/statistic/coref_voting
+  gt_dir: ${i2b2_output_dir}/ground_truth/csv
+  
+  # Which section to use
+  section:
+    - all
+
+  source:
+    use:
+      - mv
+    models:
+      mv:
+        name: majority_voting
+        dir: ${input.base_dir}/majority_voting
+        column_prefix: ${name_style.voting.prefix}
+        conll_column_name: ${name_style.voting.column_name.coref_group_conll}
+
+output:
+  base_dir: ${i2b2_output_dir}/statistic/coref_scoring
+  temp_dir: ${output.base_dir}/scorer_input_temp
+
+scorer:
+  path: ${coref_scorer_dir}/scorer.pl
+  metrics:
+    - muc # MUCScorer (Vilain et al, 1995)
+    - bcub # B-Cubed (Bagga and Baldwin, 1998)
+    - ceafe # CEAF (Luo et al, 2005) using entity-based similarity

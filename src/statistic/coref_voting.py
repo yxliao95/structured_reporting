@@ -19,6 +19,7 @@ from omegaconf import OmegaConf
 
 # pylint: disable=import-error,wrong-import-order
 from common_utils.common_utils import check_and_create_dirs, check_and_remove_dirs
+from common_utils.coref_utils import auto_append_value_to_list
 from common_utils.file_checker import FileChecker
 
 logger = logging.getLogger()
@@ -370,7 +371,7 @@ def resolve_voting_info(config, df_spacy, section_name, file_name) -> DocClass:
 
         # Read coref model output to be aligned
         coref_model_output_path = os.path.join(coref_model_cfg.dir, section_name, file_name)
-        df_coref = pd.read_csv(coref_model_output_path, index_col=0)
+        df_coref = pd.read_csv(coref_model_output_path, index_col=0, na_filter=False)
 
         # Merge and align two df. Keep the index for later use
         df_spacy[config.df_col.spacy_index] = df_spacy.index
@@ -651,29 +652,41 @@ def compute_voting_result(config, docObj: DocClass) -> list[set[MentionClass]]:
     return valid_mention_group
 
 
-def auto_append_value_to_list(target_list, target_index, target_value):
-    """ Append target_value into target_list[target_index], where the initialized value is -1 
-    and should be changed to a list when a target_value is provided. """
-    if target_list[target_index] == -1:
-        target_list[target_index] = [target_value]
-    else:
-        target_list[target_index].append(target_value)
-
-
-def get_output_df(config, df_spacy, valid_mention_group) -> pd.DataFrame:
+def get_output_df(config, df_spacy, valid_mention_group, docObj: DocClass) -> pd.DataFrame:
     spacy_nametyle = config.name_style.spacy.column_name
     voting_namestyle = config.name_style.voting.column_name
 
     doc_tok_len = len(df_spacy)
+    tokVote = [-1] * doc_tok_len
+    tokVoteCount = [-1] * doc_tok_len
+    mention = [-1] * doc_tok_len
+    mentionConfidence = [-1] * doc_tok_len
+    for tokenObj in docObj.token_list:
+        tokVote[tokenObj.index] = [i for _, i in tokenObj.vote_details.items()]
+        tokVoteCount[tokenObj.index] = tokenObj.get_vote_count()
+        mention[tokenObj.index] = [f"{model_name}:{[mentionObj.id for mentionObj in mentionObj_list]}" for model_name, mentionObj_list in tokenObj.of_which_mentions_details.items()]
+        mentionConfidence[tokenObj.index] = [f"{mentionObj.id}:{mentionObj.confidence:.3f}" for _, mentionObj_list in tokenObj.of_which_mentions_details.items() for mentionObj in mentionObj_list]
+
+    mentionPair = [-1] * doc_tok_len
+    mentionPairVote = [-1] * doc_tok_len
+    mentionPair_voteCount = [-1] * doc_tok_len
+    for pair_id, mentionPairObj in enumerate(docObj.eligible_mention_pairs):
+        voteCount = mentionPairObj.get_vote_count()
+        for mentionObj in mentionPairObj.mention_set:
+            for tokenObj in mentionObj.spacy_tokens:
+                auto_append_value_to_list(mentionPair, tokenObj.index, pair_id)
+                auto_append_value_to_list(mentionPairVote, tokenObj.index, f"{pair_id}:{[i for _, i in mentionPairObj.vote_details.items()]}")
+                auto_append_value_to_list(mentionPair_voteCount, tokenObj.index, f"{pair_id}:{voteCount}")
+
     coref_group = [-1] * doc_tok_len
     coref_group_conll = [-1] * doc_tok_len
     for group_id, mention_set in enumerate(valid_mention_group):
-        for mention in mention_set:
+        for mentionObj in mention_set:
             mention_indices = []
             # For coref_group
-            for token in mention.spacy_tokens:
-                mention_indices.append(token.index)
-                auto_append_value_to_list(coref_group, token.index, group_id)
+            for tokenObj in mentionObj.spacy_tokens:
+                mention_indices.append(tokenObj.index)
+                auto_append_value_to_list(coref_group, tokenObj.index, group_id)
             # For coref_group_conll
             sorted_indices = sorted(mention_indices)
             if len(sorted_indices) == 1:
@@ -685,33 +698,39 @@ def get_output_df(config, df_spacy, valid_mention_group) -> pd.DataFrame:
     df_out = df_spacy.loc[:, [spacy_nametyle.token, spacy_nametyle.sentence_group]]
     df_out[voting_namestyle.coref_group] = coref_group
     df_out[voting_namestyle.coref_group_conll] = coref_group_conll
+    df_out[voting_namestyle.tok_vote] = tokVote
+    df_out[voting_namestyle.tok_vote_count] = tokVoteCount
+    df_out[voting_namestyle.mention] = mention
+    df_out[voting_namestyle.mention_confidence] = mentionConfidence
+    df_out[voting_namestyle.mention_pair] = mentionPair
+    df_out[voting_namestyle.mention_pair_vote] = mentionPairVote
+    df_out[voting_namestyle.mention_pair_vote_count] = mentionPair_voteCount
+
     return df_out
 
 
 def batch_processing(config, spacy_file_path, section_name, file_name):
     """ Voting on one document """
-    if file_name != "clinical-277.csv":
-        return None
+    # if file_name != "clinical-277.csv":
+    #     return None
 
     START_EVENT.wait()
-    logger.info("Processing file %s", file_name)
+    logger.debug("Processing file %s", file_name)
 
     # Read spacy output as alignment base
-    df_spacy = pd.read_csv(spacy_file_path, index_col=0)
+    df_spacy = pd.read_csv(spacy_file_path, index_col=0, na_filter=False)
     # Some of the i2b2 raw files are utf-8 start with DOM, but we didn't remove the DOM character, thus we fix it here.
     df_spacy.iloc[0] = df_spacy.iloc[0].apply(lambda x: x.replace("\ufeff", "").replace("\xef\xbb\xbf", "") if isinstance(x, str) else x)
 
     docObj: DocClass = resolve_voting_info(config, df_spacy, section_name, file_name)
     valid_mention_group: list[set[MentionClass]] = compute_voting_result(config, docObj)
-    df_out = get_output_df(config, df_spacy, valid_mention_group)
+    df_out = get_output_df(config, df_spacy, valid_mention_group, docObj)
 
-    output_dir = config.output.files_dir
+    output_dir = os.path.join(config.output.files_dir, section_name)
     check_and_create_dirs(output_dir)
     output_file_path = os.path.join(output_dir, file_name)
 
     df_out.to_csv(output_file_path)
-
-    logger.info("Done file %s", file_name)
 
     return f"{file_name} done."
 
@@ -722,7 +741,7 @@ def main(config):
     source_cfg = config.input.source
 
     # Remove history dir
-    check_and_remove_dirs(config.output.base_dir, config.clear_history)
+    check_and_remove_dirs(config.output.files_dir, config.clear_history)
 
     # Loop in sections
     startTime = time.time()
@@ -751,7 +770,7 @@ def main(config):
                 with tqdm(total=len(all_task)) as pbar:
                     for future in as_completed(all_task):
                         msg = future.result()
-                        # logger.info(msg)
+                        logger.debug(msg)
                         pbar.update(1)
                     logger.info("Done.")
             else:
@@ -762,7 +781,7 @@ def main(config):
 
     # Log runtime information
     check_and_create_dirs(config.output.base_dir)
-    with open(os.path.join(config.output.base_dir, config.output.log_file), "a", encoding="UTF-8") as f:
+    with open(os.path.join(config.output.base_dir, config.output.log_file), "w", encoding="UTF-8") as f:
         log_out = {
             "Using": {
                 "Voting stategy": config.voting.strategy,
