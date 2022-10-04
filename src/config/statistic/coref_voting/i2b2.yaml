@@ -11,7 +11,7 @@ defaults:
 output:
   base_dir: ${i2b2_output_dir}/statistic/coref_voting
   files_dir: ${output.base_dir}/${voting.strategy}
-  log_file: ${output.base_dir}/run.log
+  log_file_name: ${output.base_dir}/run.log
 
 clear_history: true
 

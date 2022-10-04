@@ -1,0 +1,26 @@
+scoring:
+  column_name:
+
+    doc_id: doc_id
+    
+    conll_f1_avg: conll_f1_avg
+    conll_recall_avg: conll_recall_avg
+    conll_precision_avg: conll_precision_avg
+
+    mention_f1: mention_f1
+    mention_recall: mention_recall
+    mention_precision: mention_precision
+
+    muc_f1: muc_f1
+    muc_recall: muc_recall
+    muc_precision: muc_precision
+
+    bcub_f1: bcub_f1
+    bcub_recall: bcub_recall
+    bcub_precision: bcub_precision
+
+    ceafe_f1: ceafe_f1
+    ceafe_recall: ceafe_recall
+    ceafe_precision: ceafe_precision
+
+

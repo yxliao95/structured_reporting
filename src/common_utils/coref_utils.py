@@ -15,13 +15,13 @@ class ConllToken(object):
         self.sentenceId = sentenceId
         self.tokenId = tokenId
         self.tokenStr = tokenStr
-        self.corefMark = ""
+        self.corefLabel = ""
 
-    def add_coref_mark(self, mark):
-        if not self.corefMark:
-            self.corefMark = mark
+    def add_coref_label(self, label):
+        if not self.corefLabel:
+            self.corefLabel = label
         else:
-            self.corefMark = f"{self.corefMark}|{mark}"
+            self.corefLabel = f"{self.corefLabel}|{label}"
 
     def get_conll_str(self):
         # IMPORTANT! Any tokens that trigger regex: \((\d+) or (\d+)\) will also
@@ -31,12 +31,14 @@ class ConllToken(object):
         tok_str = self.tokenStr
         if re.search(r"\(?[^A-Za-z]+\)?", tok_str):
             tok_str = tok_str.replace("(", "[").replace(")", "]")
-        if self.corefMark:
-            return f"{self.docId}\t0\t{self.tokenId}\t{tok_str}\t" + "_\t" * 8 + self.corefMark
+        if tok_str.strip() == "":
+            tok_str = ""
+        if self.corefLabel:
+            return f"{self.docId}\t0\t{self.tokenId}\t{tok_str}\t" + "_\t" * 8 + self.corefLabel
         return f"{self.docId}\t0\t{self.tokenId}\t{tok_str}\t" + "_\t" * 7 + "_"
 
     def __str__(self) -> str:
-        return f"{self.tokenStr}({self.sentenceId}:{self.tokenId})|[{self.corefMark}]"
+        return f"{self.tokenStr}({self.sentenceId}:{self.tokenId})|[{self.corefLabel}]"
 
     __repr__ = __str__
 
@@ -192,3 +194,12 @@ def auto_append_value_to_list(target_list, target_index, target_value):
         target_list[target_index] = [target_value]
     else:
         target_list[target_index].append(target_value)
+
+
+def auto_extend_value_to_list(target_list, target_index, target_value_list):
+    """ Extend target_value into target_list[target_index], where the initialized value is -1
+    and should be changed to a list when a target_value is provided. """
+    if target_list[target_index] == -1:
+        target_list[target_index] = target_value_list
+    else:
+        target_list[target_index].extend(target_value_list)

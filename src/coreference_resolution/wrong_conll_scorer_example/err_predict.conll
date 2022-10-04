@@ -1,10 +1,1094 @@
-#begin document (clinical-1); part 0
-clinical-1	0	0	1	_	_	_	_	_	_	_	_   (9)
-clinical-1	0	0	1	_	_	_	_	_	_	_	_
-clinical-1	0	0	1	_	_	_	_	_	_	_	_
-clinical-1	0	0	1	_	_	_	_	_	_	_	_
-clinical-1	0	0	1	_	_	_	_	_	_	_	_   (8)
-clinical-1	0	0	12:00:00	_	_	_	_	_	_	_	_
-clinical-1	0	0	1	_	_	_	_	_	_	_	_
+#begin document (clinical-61); part 0
+clinical-61	0	0	100469881	_	_	_	_	_	_	_	_	(0
+clinical-61	0	1	EH	_	_	_	_	_	_	_	_	0)
+clinical-61	0	3	00989464	_	_	_	_	_	_	_	_	(1)
+clinical-61	0	5	822862	_	_	_	_	_	_	_	_	(2)
+clinical-61	0	7	06/09/1998	_	_	_	_	_	_	_	_	(3)
+clinical-61	0	8	12:00:00	_	_	_	_	_	_	_	_	(4
+clinical-61	0	9	AM	_	_	_	_	_	_	_	_	4)
+clinical-61	0	11	OCCIPITAL	_	_	_	_	_	_	_	_	(5
+clinical-61	0	12	CEREBROVASCULAR	_	_	_	_	_	_	_	_
+clinical-61	0	13	ACCIDENT	_	_	_	_	_	_	_	_	5)
+clinical-61	0	15	Signed	_	_	_	_	_	_	_	_
+clinical-61	0	17	DIS	_	_	_	_	_	_	_	_
+clinical-61	0	19	Admission	_	_	_	_	_	_	_	_	(6
+clinical-61	0	20	Date	_	_	_	_	_	_	_	_	6)
+clinical-61	0	21	:	_	_	_	_	_	_	_	_
+clinical-61	0	23	06/09/1998	_	_	_	_	_	_	_	_	(3)
+clinical-61	0	25	Report	_	_	_	_	_	_	_	_	(7)|(8
+clinical-61	0	26	Status	_	_	_	_	_	_	_	_	8)
+clinical-61	0	27	:	_	_	_	_	_	_	_	_
+clinical-61	0	29	Signed	_	_	_	_	_	_	_	_
+clinical-61	0	31	Discharge	_	_	_	_	_	_	_	_	(9
+clinical-61	0	32	Date	_	_	_	_	_	_	_	_	9)
+clinical-61	0	33	:	_	_	_	_	_	_	_	_
+clinical-61	0	35	06/12/1998	_	_	_	_	_	_	_	_	(10)
+clinical-61	0	37	PRINCIPAL	_	_	_	_	_	_	_	_	(11
+clinical-61	0	38	DIAGNOSES	_	_	_	_	_	_	_	_	11)
+clinical-61	0	39	:	_	_	_	_	_	_	_	_
+clinical-61	0	41	1]	_	_	_	_	_	_	_	_
+clinical-61	0	43	EXTENSIVE	_	_	_	_	_	_	_	_
+
+clinical-61	0	44	POSTERIOR	_	_	_	_	_	_	_	_
+clinical-61	0	45	CIRCULATION	_	_	_	_	_	_	_	_
+
+clinical-61	0	46	INFARCTION	_	_	_	_	_	_	_	_
+clinical-61	0	47	.	_	_	_	_	_	_	_	_
+
+clinical-61	0	49	2]	_	_	_	_	_	_	_	_
+clinical-61	0	51	ASPIRATION	_	_	_	_	_	_	_	_	(12
+clinical-61	0	52	PNEUMONIA	_	_	_	_	_	_	_	_	12)
+clinical-61	0	53	.	_	_	_	_	_	_	_	_
+
+clinical-61	0	55	HISTORY	_	_	_	_	_	_	_	_	(13
+clinical-61	0	56	OF	_	_	_	_	_	_	_	_
+clinical-61	0	57	PRESENT	_	_	_	_	_	_	_	_	(14
+clinical-61	0	58	ILLNESS	_	_	_	_	_	_	_	_	13)|14)
+clinical-61	0	59	:	_	_	_	_	_	_	_	_
+
+clinical-61	0	61	The	_	_	_	_	_	_	_	_	(15
+clinical-61	0	62	patient	_	_	_	_	_	_	_	_	15)
+clinical-61	0	63	is	_	_	_	_	_	_	_	_
+clinical-61	0	64	an	_	_	_	_	_	_	_	_
+clinical-61	0	65	82	_	_	_	_	_	_	_	_
+clinical-61	0	66	year-old	_	_	_	_	_	_	_	_
+clinical-61	0	69	right	_	_	_	_	_	_	_	_
+clinical-61	0	70	handed	_	_	_	_	_	_	_	_
+clinical-61	0	71	gentleman	_	_	_	_	_	_	_	_
+clinical-61	0	72	who	_	_	_	_	_	_	_	_
+clinical-61	0	73	has	_	_	_	_	_	_	_	_
+clinical-61	0	74	a	_	_	_	_	_	_	_	_
+clinical-61	0	75	past	_	_	_	_	_	_	_	_
+clinical-61	0	76	medical	_	_	_	_	_	_	_	_
+clinical-61	0	77	history	_	_	_	_	_	_	_	_
+clinical-61	0	78	of	_	_	_	_	_	_	_	_
+clinical-61	0	79	hypertension	_	_	_	_	_	_	_	_	(16)|(17
+clinical-61	0	80	and	_	_	_	_	_	_	_	_
+clinical-61	0	81	tobacco	_	_	_	_	_	_	_	_	(18)|(19
+clinical-61	0	82	use	_	_	_	_	_	_	_	_	17)|19)
+clinical-61	0	83	presented	_	_	_	_	_	_	_	_
+clinical-61	0	84	to	_	_	_	_	_	_	_	_
+clinical-61	0	85	the	_	_	_	_	_	_	_	_	(20
+clinical-61	0	86	emergency	_	_	_	_	_	_	_	_	(21)
+clinical-61	0	87	room	_	_	_	_	_	_	_	_	20)
+clinical-61	0	88	with	_	_	_	_	_	_	_	_
+clinical-61	0	89	acute	_	_	_	_	_	_	_	_	(22
+clinical-61	0	90	change	_	_	_	_	_	_	_	_
+clinical-61	0	91	in	_	_	_	_	_	_	_	_
+clinical-61	0	92	mental	_	_	_	_	_	_	_	_	(23
+clinical-61	0	93	status	_	_	_	_	_	_	_	_	22)|23)
+clinical-61	0	94	.	_	_	_	_	_	_	_	_
+
+clinical-61	0	96	He	_	_	_	_	_	_	_	_	(15)
+clinical-61	0	97	was	_	_	_	_	_	_	_	_
+clinical-61	0	98	well	_	_	_	_	_	_	_	_
+clinical-61	0	99	until	_	_	_	_	_	_	_	_
+clinical-61	0	100	the	_	_	_	_	_	_	_	_
+clinical-61	0	101	evening	_	_	_	_	_	_	_	_
+clinical-61	0	102	prior	_	_	_	_	_	_	_	_
+clinical-61	0	103	to	_	_	_	_	_	_	_	_
+clinical-61	0	104	presentation	_	_	_	_	_	_	_	_
+clinical-61	0	105	to	_	_	_	_	_	_	_	_
+clinical-61	0	106	the	_	_	_	_	_	_	_	_	(20
+clinical-61	0	107	emergency	_	_	_	_	_	_	_	_	(21)
+clinical-61	0	108	room	_	_	_	_	_	_	_	_	20)
+clinical-61	0	109	when	_	_	_	_	_	_	_	_
+clinical-61	0	110	he	_	_	_	_	_	_	_	_	(15)
+clinical-61	0	111	complained	_	_	_	_	_	_	_	_
+clinical-61	0	112	of	_	_	_	_	_	_	_	_
+clinical-61	0	113	headache	_	_	_	_	_	_	_	_	(24)
+clinical-61	0	114	across	_	_	_	_	_	_	_	_
+clinical-61	0	115	the	_	_	_	_	_	_	_	_	(25
+clinical-61	0	116	forehead	_	_	_	_	_	_	_	_	25)
+clinical-61	0	117	.	_	_	_	_	_	_	_	_
+
+clinical-61	0	119	On	_	_	_	_	_	_	_	_
+clinical-61	0	120	the	_	_	_	_	_	_	_	_	(26
+clinical-61	0	121	day	_	_	_	_	_	_	_	_
+clinical-61	0	122	of	_	_	_	_	_	_	_	_
+clinical-61	0	123	presentation	_	_	_	_	_	_	_	_	26)|(27)
+clinical-61	0	124	,	_	_	_	_	_	_	_	_
+clinical-61	0	125	he	_	_	_	_	_	_	_	_	(15)
+clinical-61	0	126	was	_	_	_	_	_	_	_	_
+clinical-61	0	127	then	_	_	_	_	_	_	_	_	(28)
+clinical-61	0	128	found	_	_	_	_	_	_	_	_
+clinical-61	0	129	by	_	_	_	_	_	_	_	_
+clinical-61	0	130	his	_	_	_	_	_	_	_	_	(15)|(29
+clinical-61	0	131	daughter	_	_	_	_	_	_	_	_	29)
+clinical-61	0	132	lying	_	_	_	_	_	_	_	_
+clinical-61	0	133	on	_	_	_	_	_	_	_	_
+clinical-61	0	134	his	_	_	_	_	_	_	_	_	(15)|(30
+clinical-61	0	135	bed	_	_	_	_	_	_	_	_	30)
+clinical-61	0	136	groaning	_	_	_	_	_	_	_	_
+clinical-61	0	137	,	_	_	_	_	_	_	_	_
+clinical-61	0	138	being	_	_	_	_	_	_	_	_
+clinical-61	0	139	relatively	_	_	_	_	_	_	_	_
+clinical-61	0	140	unresponsive	_	_	_	_	_	_	_	_
+clinical-61	0	141	and	_	_	_	_	_	_	_	_
+clinical-61	0	142	unable	_	_	_	_	_	_	_	_
+clinical-61	0	143	to	_	_	_	_	_	_	_	_
+clinical-61	0	144	speak	_	_	_	_	_	_	_	_
+clinical-61	0	145	.	_	_	_	_	_	_	_	_
+
+clinical-61	0	147	The	_	_	_	_	_	_	_	_	(31
+clinical-61	0	148	family	_	_	_	_	_	_	_	_	31)
+clinical-61	0	149	reported	_	_	_	_	_	_	_	_
+clinical-61	0	150	one	_	_	_	_	_	_	_	_	(32
+clinical-61	0	151	episode	_	_	_	_	_	_	_	_
+clinical-61	0	152	of	_	_	_	_	_	_	_	_
+clinical-61	0	153	vomiting	_	_	_	_	_	_	_	_	32)|(33)
+clinical-61	0	154	at	_	_	_	_	_	_	_	_
+clinical-61	0	155	home	_	_	_	_	_	_	_	_	(34)
+clinical-61	0	156	.	_	_	_	_	_	_	_	_
+clinical-61	0	158	PHYSICAL	_	_	_	_	_	_	_	_	(35
+clinical-61	0	159	EXAMINATION	_	_	_	_	_	_	_	_	35)
+clinical-61	0	160	:	_	_	_	_	_	_	_	_
+clinical-61	0	162	The	_	_	_	_	_	_	_	_	(15
+clinical-61	0	163	patient	_	_	_	_	_	_	_	_	15)
+clinical-61	0	164	was	_	_	_	_	_	_	_	_
+clinical-61	0	165	afebrile	_	_	_	_	_	_	_	_
+clinical-61	0	166	,	_	_	_	_	_	_	_	_
+clinical-61	0	167	heart	_	_	_	_	_	_	_	_	(36)|(37
+clinical-61	0	168	rate	_	_	_	_	_	_	_	_	37)
+clinical-61	0	169	73	_	_	_	_	_	_	_	_
+clinical-61	0	170	,	_	_	_	_	_	_	_	_
+clinical-61	0	171	blood	_	_	_	_	_	_	_	_	(38)|(39
+clinical-61	0	172	pressure	_	_	_	_	_	_	_	_	39)
+clinical-61	0	173	158/53	_	_	_	_	_	_	_	_	(40)
+clinical-61	0	174	,	_	_	_	_	_	_	_	_
+clinical-61	0	175	respiratory	_	_	_	_	_	_	_	_	(41
+clinical-61	0	176	rate	_	_	_	_	_	_	_	_	41)
+clinical-61	0	177	16-20	_	_	_	_	_	_	_	_	(42)
+clinical-61	0	180	,	_	_	_	_	_	_	_	_
+clinical-61	0	181	oxygen	_	_	_	_	_	_	_	_	(43)|(44
+clinical-61	0	182	saturation	_	_	_	_	_	_	_	_	44)
+clinical-61	0	183	97%	_	_	_	_	_	_	_	_	(45)
+clinical-61	0	185	on	_	_	_	_	_	_	_	_
+clinical-61	0	186	three	_	_	_	_	_	_	_	_	(46
+clinical-61	0	187	liters	_	_	_	_	_	_	_	_	46)
+clinical-61	0	188	.	_	_	_	_	_	_	_	_
+
+clinical-61	0	190	General	_	_	_	_	_	_	_	_
+clinical-61	0	191	:	_	_	_	_	_	_	_	_
+clinical-61	0	193	The	_	_	_	_	_	_	_	_	(15
+clinical-61	0	194	patient	_	_	_	_	_	_	_	_	15)
+clinical-61	0	195	was	_	_	_	_	_	_	_	_
+clinical-61	0	196	somnolent	_	_	_	_	_	_	_	_
+clinical-61	0	197	,	_	_	_	_	_	_	_	_
+clinical-61	0	198	breathing	_	_	_	_	_	_	_	_
+clinical-61	0	199	comfortably	_	_	_	_	_	_	_	_
+clinical-61	0	200	,	_	_	_	_	_	_	_	_
+clinical-61	0	201	occasionally	_	_	_	_	_	_	_	_
+clinical-61	0	202	coughing	_	_	_	_	_	_	_	_
+clinical-61	0	203	.	_	_	_	_	_	_	_	_
+
+clinical-61	0	205	Neck	_	_	_	_	_	_	_	_	(47)
+clinical-61	0	206	was	_	_	_	_	_	_	_	_
+clinical-61	0	207	supple	_	_	_	_	_	_	_	_
+clinical-61	0	208	with	_	_	_	_	_	_	_	_
+clinical-61	0	209	full	_	_	_	_	_	_	_	_	(48
+clinical-61	0	210	range	_	_	_	_	_	_	_	_
+clinical-61	0	211	of	_	_	_	_	_	_	_	_
+clinical-61	0	212	motion	_	_	_	_	_	_	_	_	48)|(49)
+clinical-61	0	213	.	_	_	_	_	_	_	_	_
+
+clinical-61	0	215	No	_	_	_	_	_	_	_	_	(50
+clinical-61	0	216	bruits	_	_	_	_	_	_	_	_	50)
+clinical-61	0	217	were	_	_	_	_	_	_	_	_
+clinical-61	0	218	heard	_	_	_	_	_	_	_	_
+clinical-61	0	219	.	_	_	_	_	_	_	_	_
+
+clinical-61	0	221	Chest	_	_	_	_	_	_	_	_	(51)
+clinical-61	0	222	was	_	_	_	_	_	_	_	_
+clinical-61	0	223	clear	_	_	_	_	_	_	_	_
+clinical-61	0	224	to	_	_	_	_	_	_	_	_
+clinical-61	0	225	auscultation	_	_	_	_	_	_	_	_	(52)
+clinical-61	0	226	but	_	_	_	_	_	_	_	_
+clinical-61	0	227	with	_	_	_	_	_	_	_	_
+clinical-61	0	228	poor	_	_	_	_	_	_	_	_	(53
+clinical-61	0	229	air	_	_	_	_	_	_	_	_	(54)
+clinical-61	0	230	entry	_	_	_	_	_	_	_	_	53)
+clinical-61	0	231	.	_	_	_	_	_	_	_	_
+
+clinical-61	0	233	Heart	_	_	_	_	_	_	_	_	(36)|(55
+clinical-61	0	234	sounds	_	_	_	_	_	_	_	_	55)
+clinical-61	0	235	were	_	_	_	_	_	_	_	_
+clinical-61	0	236	regular	_	_	_	_	_	_	_	_
+clinical-61	0	237	with	_	_	_	_	_	_	_	_
+clinical-61	0	238	one	_	_	_	_	_	_	_	_
+clinical-61	0	239	out	_	_	_	_	_	_	_	_
+clinical-61	0	240	of	_	_	_	_	_	_	_	_
+clinical-61	0	241	six	_	_	_	_	_	_	_	_
+clinical-61	0	242	holosystolic	_	_	_	_	_	_	_	_
+clinical-61	0	243	murmur	_	_	_	_	_	_	_	_
+clinical-61	0	244	at	_	_	_	_	_	_	_	_
+clinical-61	0	245	the	_	_	_	_	_	_	_	_	(56
+clinical-61	0	246	left	_	_	_	_	_	_	_	_
+clinical-61	0	247	lower	_	_	_	_	_	_	_	_
+clinical-61	0	248	sternal	_	_	_	_	_	_	_	_
+clinical-61	0	249	border	_	_	_	_	_	_	_	_	56)
+clinical-61	0	250	.	_	_	_	_	_	_	_	_
+
+clinical-61	0	252	Abdomen	_	_	_	_	_	_	_	_	(57)
+clinical-61	0	253	was	_	_	_	_	_	_	_	_
+clinical-61	0	254	soft	_	_	_	_	_	_	_	_
+clinical-61	0	255	,	_	_	_	_	_	_	_	_
+clinical-61	0	256	non-tender	_	_	_	_	_	_	_	_
+clinical-61	0	259	,	_	_	_	_	_	_	_	_
+clinical-61	0	260	bowel	_	_	_	_	_	_	_	_	(58)|(59
+clinical-61	0	261	sounds	_	_	_	_	_	_	_	_	59)
+clinical-61	0	262	present	_	_	_	_	_	_	_	_
+clinical-61	0	263	.	_	_	_	_	_	_	_	_
+
+clinical-61	0	265	Extremities	_	_	_	_	_	_	_	_	(60)
+clinical-61	0	266	were	_	_	_	_	_	_	_	_
+clinical-61	0	267	without	_	_	_	_	_	_	_	_
+clinical-61	0	268	clubbing	_	_	_	_	_	_	_	_	(61)|(62
+clinical-61	0	269	,	_	_	_	_	_	_	_	_
+clinical-61	0	270	cyanosis	_	_	_	_	_	_	_	_	(63)
+clinical-61	0	271	or	_	_	_	_	_	_	_	_
+clinical-61	0	272	edema	_	_	_	_	_	_	_	_	62)|(64)
+clinical-61	0	273	.	_	_	_	_	_	_	_	_
+
+clinical-61	0	275	Neurological	_	_	_	_	_	_	_	_	(65
+clinical-61	0	276	examination	_	_	_	_	_	_	_	_	65)
+clinical-61	0	277	revealed	_	_	_	_	_	_	_	_
+clinical-61	0	278	a	_	_	_	_	_	_	_	_
+clinical-61	0	279	patient	_	_	_	_	_	_	_	_
+clinical-61	0	280	who	_	_	_	_	_	_	_	_
+clinical-61	0	281	was	_	_	_	_	_	_	_	_
+clinical-61	0	282	intermittently	_	_	_	_	_	_	_	_
+clinical-61	0	283	alert	_	_	_	_	_	_	_	_
+clinical-61	0	284	,	_	_	_	_	_	_	_	_
+clinical-61	0	285	opening	_	_	_	_	_	_	_	_
+clinical-61	0	286	eyes	_	_	_	_	_	_	_	_	(66)
+clinical-61	0	287	to	_	_	_	_	_	_	_	_
+clinical-61	0	288	voice	_	_	_	_	_	_	_	_	(67)
+clinical-61	0	289	,	_	_	_	_	_	_	_	_
+clinical-61	0	290	following	_	_	_	_	_	_	_	_
+clinical-61	0	291	simple	_	_	_	_	_	_	_	_	(68
+clinical-61	0	292	commands	_	_	_	_	_	_	_	_	68)
+clinical-61	0	293	,	_	_	_	_	_	_	_	_
+clinical-61	0	294	but	_	_	_	_	_	_	_	_
+clinical-61	0	295	without	_	_	_	_	_	_	_	_
+clinical-61	0	296	any	_	_	_	_	_	_	_	_	(69
+clinical-61	0	297	speech	_	_	_	_	_	_	_	_	69)
+clinical-61	0	298	.	_	_	_	_	_	_	_	_
+
+clinical-61	0	300	Pupils	_	_	_	_	_	_	_	_	(70)
+clinical-61	0	301	were	_	_	_	_	_	_	_	_
+clinical-61	0	302	4	_	_	_	_	_	_	_	_	(71
+clinical-61	0	303	mm	_	_	_	_	_	_	_	_	71)
+clinical-61	0	304	reactive	_	_	_	_	_	_	_	_
+clinical-61	0	305	to	_	_	_	_	_	_	_	_
+clinical-61	0	306	2	_	_	_	_	_	_	_	_	(72
+clinical-61	0	307	mm	_	_	_	_	_	_	_	_	72)
+clinical-61	0	308	bilaterally	_	_	_	_	_	_	_	_
+clinical-61	0	309	.	_	_	_	_	_	_	_	_
+
+clinical-61	0	311	There	_	_	_	_	_	_	_	_
+clinical-61	0	312	was	_	_	_	_	_	_	_	_
+clinical-61	0	313	no	_	_	_	_	_	_	_	_	(73
+clinical-61	0	314	pupillary	_	_	_	_	_	_	_	_
+clinical-61	0	315	defect	_	_	_	_	_	_	_	_	73)
+clinical-61	0	316	.	_	_	_	_	_	_	_	_
+
+clinical-61	0	318	Dolls	_	_	_	_	_	_	_	_	(74
+clinical-61	0	319	eye	_	_	_	_	_	_	_	_	74)
+clinical-61	0	320	was	_	_	_	_	_	_	_	_
+clinical-61	0	321	negative	_	_	_	_	_	_	_	_
+clinical-61	0	322	.	_	_	_	_	_	_	_	_
+
+clinical-61	0	324	There	_	_	_	_	_	_	_	_
+clinical-61	0	325	was	_	_	_	_	_	_	_	_
+clinical-61	0	326	a	_	_	_	_	_	_	_	_	(75
+clinical-61	0	327	possible	_	_	_	_	_	_	_	_
+clinical-61	0	328	right	_	_	_	_	_	_	_	_
+clinical-61	0	329	gaze	_	_	_	_	_	_	_	_
+clinical-61	0	330	preference	_	_	_	_	_	_	_	_	75)
+clinical-61	0	331	and	_	_	_	_	_	_	_	_
+clinical-61	0	332	the	_	_	_	_	_	_	_	_	(15
+clinical-61	0	333	patient	_	_	_	_	_	_	_	_	15)
+clinical-61	0	334	did	_	_	_	_	_	_	_	_
+clinical-61	0	335	not	_	_	_	_	_	_	_	_
+clinical-61	0	336	move	_	_	_	_	_	_	_	_
+clinical-61	0	337	his	_	_	_	_	_	_	_	_	(15)|(76
+clinical-61	0	338	eyes	_	_	_	_	_	_	_	_	76)
+clinical-61	0	339	.	_	_	_	_	_	_	_	_
+
+clinical-61	0	341	Corneals	_	_	_	_	_	_	_	_	(77)
+clinical-61	0	342	were	_	_	_	_	_	_	_	_
+clinical-61	0	343	present	_	_	_	_	_	_	_	_
+clinical-61	0	344	bilaterally	_	_	_	_	_	_	_	_
+clinical-61	0	345	.	_	_	_	_	_	_	_	_
+
+clinical-61	0	347	Gag	_	_	_	_	_	_	_	_
+clinical-61	0	348	was	_	_	_	_	_	_	_	_
+clinical-61	0	349	present	_	_	_	_	_	_	_	_
+clinical-61	0	350	weakly	_	_	_	_	_	_	_	_
+clinical-61	0	351	.	_	_	_	_	_	_	_	_
+
+clinical-61	0	353	Face	_	_	_	_	_	_	_	_	(78)
+clinical-61	0	354	was	_	_	_	_	_	_	_	_
+clinical-61	0	355	symmetrical	_	_	_	_	_	_	_	_
+clinical-61	0	356	.	_	_	_	_	_	_	_	_
+
+clinical-61	0	358	Tongue	_	_	_	_	_	_	_	_	(79)
+clinical-61	0	359	was	_	_	_	_	_	_	_	_
+clinical-61	0	360	midline	_	_	_	_	_	_	_	_
+clinical-61	0	361	.	_	_	_	_	_	_	_	_
+
+clinical-61	0	363	The	_	_	_	_	_	_	_	_	(15
+clinical-61	0	364	patient	_	_	_	_	_	_	_	_	15)
+clinical-61	0	365	was	_	_	_	_	_	_	_	_
+clinical-61	0	366	moving	_	_	_	_	_	_	_	_
+clinical-61	0	367	the	_	_	_	_	_	_	_	_	(80
+clinical-61	0	368	right	_	_	_	_	_	_	_	_
+clinical-61	0	369	side	_	_	_	_	_	_	_	_	80)
+clinical-61	0	370	spontaneously	_	_	_	_	_	_	_	_
+clinical-61	0	371	,	_	_	_	_	_	_	_	_
+clinical-61	0	372	but	_	_	_	_	_	_	_	_
+clinical-61	0	373	could	_	_	_	_	_	_	_	_
+clinical-61	0	374	not	_	_	_	_	_	_	_	_
+clinical-61	0	375	hold	_	_	_	_	_	_	_	_
+clinical-61	0	376	arm	_	_	_	_	_	_	_	_	(81)|(82
+clinical-61	0	377	or	_	_	_	_	_	_	_	_
+clinical-61	0	378	leg	_	_	_	_	_	_	_	_	82)|(83)
+clinical-61	0	379	up	_	_	_	_	_	_	_	_
+clinical-61	0	380	for	_	_	_	_	_	_	_	_
+clinical-61	0	381	any	_	_	_	_	_	_	_	_	(84
+clinical-61	0	382	length	_	_	_	_	_	_	_	_
+clinical-61	0	383	of	_	_	_	_	_	_	_	_
+clinical-61	0	384	time	_	_	_	_	_	_	_	_	84)|(85)
+clinical-61	0	385	.	_	_	_	_	_	_	_	_
+
+clinical-61	0	387	There	_	_	_	_	_	_	_	_
+clinical-61	0	388	was	_	_	_	_	_	_	_	_
+clinical-61	0	389	only	_	_	_	_	_	_	_	_
+clinical-61	0	390	minimal	_	_	_	_	_	_	_	_
+clinical-61	0	391	movement	_	_	_	_	_	_	_	_
+clinical-61	0	392	on	_	_	_	_	_	_	_	_
+clinical-61	0	393	the	_	_	_	_	_	_	_	_	(86
+clinical-61	0	394	left	_	_	_	_	_	_	_	_
+clinical-61	0	395	side	_	_	_	_	_	_	_	_	86)
+clinical-61	0	396	.	_	_	_	_	_	_	_	_
+
+clinical-61	0	398	On	_	_	_	_	_	_	_	_
+clinical-61	0	399	sensory	_	_	_	_	_	_	_	_	(87
+clinical-61	0	400	testing	_	_	_	_	_	_	_	_	87)
+clinical-61	0	401	,	_	_	_	_	_	_	_	_
+clinical-61	0	402	the	_	_	_	_	_	_	_	_	(15
+clinical-61	0	403	patient	_	_	_	_	_	_	_	_	15)
+clinical-61	0	404	withdrew	_	_	_	_	_	_	_	_
+clinical-61	0	405	all	_	_	_	_	_	_	_	_	(88
+clinical-61	0	406	extremities	_	_	_	_	_	_	_	_	88)
+clinical-61	0	407	to	_	_	_	_	_	_	_	_
+clinical-61	0	408	pain	_	_	_	_	_	_	_	_	(89)
+clinical-61	0	409	.	_	_	_	_	_	_	_	_
+
+clinical-61	0	411	Reflexes	_	_	_	_	_	_	_	_	(90)
+clinical-61	0	412	were	_	_	_	_	_	_	_	_
+clinical-61	0	413	2+	_	_	_	_	_	_	_	_
+clinical-61	0	415	and	_	_	_	_	_	_	_	_
+clinical-61	0	416	symmetrical	_	_	_	_	_	_	_	_
+clinical-61	0	417	all	_	_	_	_	_	_	_	_
+clinical-61	0	418	over	_	_	_	_	_	_	_	_
+clinical-61	0	419	.	_	_	_	_	_	_	_	_
+
+clinical-61	0	421	The	_	_	_	_	_	_	_	_	(91
+clinical-61	0	422	left	_	_	_	_	_	_	_	_
+clinical-61	0	423	toe	_	_	_	_	_	_	_	_	91)
+clinical-61	0	424	was	_	_	_	_	_	_	_	_
+clinical-61	0	425	upgoing	_	_	_	_	_	_	_	_
+clinical-61	0	426	,	_	_	_	_	_	_	_	_
+clinical-61	0	427	the	_	_	_	_	_	_	_	_	(92
+clinical-61	0	428	right	_	_	_	_	_	_	_	_
+clinical-61	0	429	toe	_	_	_	_	_	_	_	_	92)
+clinical-61	0	430	was	_	_	_	_	_	_	_	_
+clinical-61	0	431	downgoing	_	_	_	_	_	_	_	_
+clinical-61	0	432	.	_	_	_	_	_	_	_	_
+
+clinical-61	0	434	LABORATORY	_	_	_	_	_	_	_	_	(93)
+clinical-61	0	435	:	_	_	_	_	_	_	_	_
+clinical-61	0	437	Laboratory	_	_	_	_	_	_	_	_	(94)|(95
+clinical-61	0	438	data	_	_	_	_	_	_	_	_	95)
+clinical-61	0	439	revealed	_	_	_	_	_	_	_	_
+clinical-61	0	440	a	_	_	_	_	_	_	_	_	(96
+clinical-61	0	441	sodium	_	_	_	_	_	_	_	_
+clinical-61	0	442	of	_	_	_	_	_	_	_	_
+clinical-61	0	443	139	_	_	_	_	_	_	_	_	96)|(97)
+clinical-61	0	444	,	_	_	_	_	_	_	_	_
+clinical-61	0	445	potassium	_	_	_	_	_	_	_	_	(98
+clinical-61	0	446	3.4	_	_	_	_	_	_	_	_	98)
+clinical-61	0	447	,	_	_	_	_	_	_	_	_
+clinical-61	0	448	chloride	_	_	_	_	_	_	_	_	(99
+clinical-61	0	449	101	_	_	_	_	_	_	_	_	99)
+clinical-61	0	450	,	_	_	_	_	_	_	_	_
+clinical-61	0	451	bicarbonate	_	_	_	_	_	_	_	_	(100
+clinical-61	0	452	28	_	_	_	_	_	_	_	_	100)
+clinical-61	0	453	,	_	_	_	_	_	_	_	_
+clinical-61	0	454	BUN	_	_	_	_	_	_	_	_	(101)|(102
+clinical-61	0	455	11	_	_	_	_	_	_	_	_	102)
+clinical-61	0	456	,	_	_	_	_	_	_	_	_
+clinical-61	0	457	creatinine	_	_	_	_	_	_	_	_	(103
+clinical-61	0	458	1.2	_	_	_	_	_	_	_	_	103)
+clinical-61	0	459	,	_	_	_	_	_	_	_	_
+clinical-61	0	460	glucose	_	_	_	_	_	_	_	_	(104)|(105
+clinical-61	0	461	151	_	_	_	_	_	_	_	_	105)
+clinical-61	0	462	.	_	_	_	_	_	_	_	_
+
+clinical-61	0	464	AST	_	_	_	_	_	_	_	_	(106)
+clinical-61	0	465	was	_	_	_	_	_	_	_	_
+clinical-61	0	466	20	_	_	_	_	_	_	_	_	(107)
+clinical-61	0	467	,	_	_	_	_	_	_	_	_
+clinical-61	0	468	ALT	_	_	_	_	_	_	_	_	(108)|(109
+clinical-61	0	469	12	_	_	_	_	_	_	_	_	109)
+clinical-61	0	470	,	_	_	_	_	_	_	_	_
+clinical-61	0	471	alkaline	_	_	_	_	_	_	_	_	(110
+clinical-61	0	472	phosphatase	_	_	_	_	_	_	_	_
+clinical-61	0	473	80	_	_	_	_	_	_	_	_	110)
+clinical-61	0	474	,	_	_	_	_	_	_	_	_
+clinical-61	0	475	bilirubin	_	_	_	_	_	_	_	_	(111)|(112
+clinical-61	0	476	0.5.	_	_	_	_	_	_	_	_	112)
+
+clinical-61	0	478	CK	_	_	_	_	_	_	_	_	(113)
+clinical-61	0	479	was	_	_	_	_	_	_	_	_
+clinical-61	0	480	113	_	_	_	_	_	_	_	_	(114)
+clinical-61	0	481	.	_	_	_	_	_	_	_	_
+
+clinical-61	0	483	Thyroid	_	_	_	_	_	_	_	_	(115
+clinical-61	0	484	function	_	_	_	_	_	_	_	_
+clinical-61	0	485	tests	_	_	_	_	_	_	_	_	115)
+clinical-61	0	486	were	_	_	_	_	_	_	_	_
+clinical-61	0	487	normal	_	_	_	_	_	_	_	_
+clinical-61	0	488	.	_	_	_	_	_	_	_	_
+
+clinical-61	0	490	Troponin	_	_	_	_	_	_	_	_	(116
+clinical-61	0	491	I	_	_	_	_	_	_	_	_	116)
+clinical-61	0	492	was	_	_	_	_	_	_	_	_
+clinical-61	0	493	0.05	_	_	_	_	_	_	_	_	(117)
+clinical-61	0	494	.	_	_	_	_	_	_	_	_
+
+clinical-61	0	496	Total	_	_	_	_	_	_	_	_	(118
+clinical-61	0	497	protein	_	_	_	_	_	_	_	_	118)
+clinical-61	0	498	was	_	_	_	_	_	_	_	_
+clinical-61	0	499	8	_	_	_	_	_	_	_	_	(119)
+clinical-61	0	500	,	_	_	_	_	_	_	_	_
+clinical-61	0	501	albumin	_	_	_	_	_	_	_	_	(120)|(121
+clinical-61	0	502	4.3	_	_	_	_	_	_	_	_	121)
+clinical-61	0	503	,	_	_	_	_	_	_	_	_
+clinical-61	0	504	globulin	_	_	_	_	_	_	_	_	(122)|(123
+clinical-61	0	505	3.7	_	_	_	_	_	_	_	_	123)
+clinical-61	0	506	,	_	_	_	_	_	_	_	_
+clinical-61	0	507	calcium	_	_	_	_	_	_	_	_	(124)|(125
+clinical-61	0	508	9.9	_	_	_	_	_	_	_	_	125)
+clinical-61	0	509	,	_	_	_	_	_	_	_	_
+clinical-61	0	510	phosphate	_	_	_	_	_	_	_	_	(126)|(127
+clinical-61	0	511	2.7	_	_	_	_	_	_	_	_	127)
+clinical-61	0	512	,	_	_	_	_	_	_	_	_
+clinical-61	0	513	magnesium	_	_	_	_	_	_	_	_	(128)
+clinical-61	0	514	2.0.	_	_	_	_	_	_	_	_
+
+clinical-61	0	516	White	_	_	_	_	_	_	_	_	(129
+clinical-61	0	517	blood	_	_	_	_	_	_	_	_	(38)
+clinical-61	0	518	cell	_	_	_	_	_	_	_	_
+clinical-61	0	519	count	_	_	_	_	_	_	_	_	129)
+clinical-61	0	520	was	_	_	_	_	_	_	_	_
+clinical-61	0	521	7	_	_	_	_	_	_	_	_	(130)
+clinical-61	0	522	,	_	_	_	_	_	_	_	_
+clinical-61	0	523	hemoglobin	_	_	_	_	_	_	_	_	(131|(132)
+clinical-61	0	524	14.1	_	_	_	_	_	_	_	_	131)|(133)
+clinical-61	0	525	,	_	_	_	_	_	_	_	_
+clinical-61	0	526	hematocrit	_	_	_	_	_	_	_	_	(134)
+clinical-61	0	527	43.6	_	_	_	_	_	_	_	_	(135)
+clinical-61	0	528	,	_	_	_	_	_	_	_	_
+clinical-61	0	529	platelet	_	_	_	_	_	_	_	_	(136
+clinical-61	0	530	count	_	_	_	_	_	_	_	_	136)
+clinical-61	0	531	241	_	_	_	_	_	_	_	_
+clinical-61	0	532	.	_	_	_	_	_	_	_	_
+
+clinical-61	0	534	Erythrocyte	_	_	_	_	_	_	_	_	(137
+clinical-61	0	535	sedimentation	_	_	_	_	_	_	_	_
+clinical-61	0	536	rate	_	_	_	_	_	_	_	_	137)
+clinical-61	0	537	was	_	_	_	_	_	_	_	_
+clinical-61	0	538	41	_	_	_	_	_	_	_	_	(138)
+clinical-61	0	539	.	_	_	_	_	_	_	_	_
+
+clinical-61	0	541	PT	_	_	_	_	_	_	_	_	(139)
+clinical-61	0	542	was	_	_	_	_	_	_	_	_
+clinical-61	0	543	12.3	_	_	_	_	_	_	_	_	(140)
+clinical-61	0	544	,	_	_	_	_	_	_	_	_
+clinical-61	0	545	PTT	_	_	_	_	_	_	_	_	(141)
+clinical-61	0	546	27.1.	_	_	_	_	_	_	_	_	(142)
+
+clinical-61	0	548	An	_	_	_	_	_	_	_	_	(143
+clinical-61	0	549	EKG	_	_	_	_	_	_	_	_	143)
+clinical-61	0	550	showed	_	_	_	_	_	_	_	_
+clinical-61	0	551	sinus	_	_	_	_	_	_	_	_
+clinical-61	0	552	bradycardia	_	_	_	_	_	_	_	_
+clinical-61	0	553	at	_	_	_	_	_	_	_	_
+clinical-61	0	554	53	_	_	_	_	_	_	_	_	(144)
+clinical-61	0	555	with	_	_	_	_	_	_	_	_
+clinical-61	0	556	a	_	_	_	_	_	_	_	_	(145
+clinical-61	0	557	normal	_	_	_	_	_	_	_	_
+clinical-61	0	558	axis	_	_	_	_	_	_	_	_	145)
+clinical-61	0	559	,	_	_	_	_	_	_	_	_
+clinical-61	0	560	first	_	_	_	_	_	_	_	_	(146
+clinical-61	0	561	degree	_	_	_	_	_	_	_	_
+clinical-61	0	562	atrioventricular	_	_	_	_	_	_	_	_
+clinical-61	0	563	block	_	_	_	_	_	_	_	_	146)
+clinical-61	0	564	,	_	_	_	_	_	_	_	_
+clinical-61	0	565	biphasic	_	_	_	_	_	_	_	_
+clinical-61	0	566	T-waves	_	_	_	_	_	_	_	_
+clinical-61	0	569	in	_	_	_	_	_	_	_	_
+clinical-61	0	570	V1	_	_	_	_	_	_	_	_	(147)
+clinical-61	0	571	to	_	_	_	_	_	_	_	_
+clinical-61	0	572	V3	_	_	_	_	_	_	_	_	(148)
+clinical-61	0	573	without	_	_	_	_	_	_	_	_
+clinical-61	0	574	any	_	_	_	_	_	_	_	_	(149
+clinical-61	0	575	acute	_	_	_	_	_	_	_	_
+clinical-61	0	576	changes	_	_	_	_	_	_	_	_	149)
+clinical-61	0	577	.	_	_	_	_	_	_	_	_
+
+clinical-61	0	579	A	_	_	_	_	_	_	_	_	(150
+clinical-61	0	580	chest	_	_	_	_	_	_	_	_	(151)
+clinical-61	0	581	x-ray	_	_	_	_	_	_	_	_	150)
+clinical-61	0	584	shows	_	_	_	_	_	_	_	_
+clinical-61	0	585	left	_	_	_	_	_	_	_	_	(152
+clinical-61	0	586	lower	_	_	_	_	_	_	_	_
+clinical-61	0	587	lobe	_	_	_	_	_	_	_	_
+clinical-61	0	588	consolidation	_	_	_	_	_	_	_	_	152)
+clinical-61	0	589	.	_	_	_	_	_	_	_	_
+
+clinical-61	0	591	The	_	_	_	_	_	_	_	_	(153
+clinical-61	0	592	head	_	_	_	_	_	_	_	_	(154)
+clinical-61	0	593	CT	_	_	_	_	_	_	_	_	(155)
+clinical-61	0	594	scan	_	_	_	_	_	_	_	_	153)
+clinical-61	0	595	revealed	_	_	_	_	_	_	_	_
+clinical-61	0	596	a	_	_	_	_	_	_	_	_
+clinical-61	0	597	large	_	_	_	_	_	_	_	_
+clinical-61	0	598	right	_	_	_	_	_	_	_	_
+clinical-61	0	599	occipital	_	_	_	_	_	_	_	_
+clinical-61	0	600	infarct	_	_	_	_	_	_	_	_
+clinical-61	0	601	without	_	_	_	_	_	_	_	_
+clinical-61	0	602	midline	_	_	_	_	_	_	_	_	(156
+clinical-61	0	603	shift	_	_	_	_	_	_	_	_	156)
+clinical-61	0	604	,	_	_	_	_	_	_	_	_
+clinical-61	0	605	but	_	_	_	_	_	_	_	_
+clinical-61	0	606	positive	_	_	_	_	_	_	_	_
+clinical-61	0	607	mass	_	_	_	_	_	_	_	_
+clinical-61	0	608	effect	_	_	_	_	_	_	_	_
+clinical-61	0	609	on	_	_	_	_	_	_	_	_
+clinical-61	0	610	the	_	_	_	_	_	_	_	_	(157
+clinical-61	0	611	temporal	_	_	_	_	_	_	_	_
+clinical-61	0	612	horn	_	_	_	_	_	_	_	_	157)
+clinical-61	0	613	,	_	_	_	_	_	_	_	_
+clinical-61	0	614	on	_	_	_	_	_	_	_	_
+clinical-61	0	615	the	_	_	_	_	_	_	_	_	(158
+clinical-61	0	616	right	_	_	_	_	_	_	_	_
+clinical-61	0	617	ventricle	_	_	_	_	_	_	_	_	158)
+clinical-61	0	618	and	_	_	_	_	_	_	_	_
+clinical-61	0	619	some	_	_	_	_	_	_	_	_	(159
+clinical-61	0	620	effacement	_	_	_	_	_	_	_	_
+clinical-61	0	621	of	_	_	_	_	_	_	_	_
+clinical-61	0	622	the	_	_	_	_	_	_	_	_	(160
+clinical-61	0	623	sulci	_	_	_	_	_	_	_	_
+clinical-61	0	624	in	_	_	_	_	_	_	_	_
+clinical-61	0	625	the	_	_	_	_	_	_	_	_	(161
+clinical-61	0	626	right	_	_	_	_	_	_	_	_
+clinical-61	0	627	parietal	_	_	_	_	_	_	_	_
+clinical-61	0	628	area	_	_	_	_	_	_	_	_	159)|160)|161)
+clinical-61	0	629	.	_	_	_	_	_	_	_	_
+
+clinical-61	0	631	HOSPITAL	_	_	_	_	_	_	_	_	(162
+clinical-61	0	632	COURSE	_	_	_	_	_	_	_	_	162)
+clinical-61	0	633	:	_	_	_	_	_	_	_	_
+
+clinical-61	0	635	The	_	_	_	_	_	_	_	_	(15
+clinical-61	0	636	patient	_	_	_	_	_	_	_	_	15)
+clinical-61	0	637	was	_	_	_	_	_	_	_	_
+clinical-61	0	638	admitted	_	_	_	_	_	_	_	_
+clinical-61	0	639	to	_	_	_	_	_	_	_	_
+clinical-61	0	640	a	_	_	_	_	_	_	_	_	(163
+clinical-61	0	641	telemetry	_	_	_	_	_	_	_	_
+clinical-61	0	642	bed	_	_	_	_	_	_	_	_	163)
+clinical-61	0	643	and	_	_	_	_	_	_	_	_
+clinical-61	0	644	started	_	_	_	_	_	_	_	_
+clinical-61	0	645	on	_	_	_	_	_	_	_	_
+clinical-61	0	646	heparin	_	_	_	_	_	_	_	_	(164)
+clinical-61	0	647	.	_	_	_	_	_	_	_	_
+
+clinical-61	0	649	Around	_	_	_	_	_	_	_	_
+clinical-61	0	650	4:00	_	_	_	_	_	_	_	_
+clinical-61	0	651	AM	_	_	_	_	_	_	_	_
+clinical-61	0	652	the	_	_	_	_	_	_	_	_	(165
+clinical-61	0	653	next	_	_	_	_	_	_	_	_
+clinical-61	0	654	day	_	_	_	_	_	_	_	_	165)
+clinical-61	0	655	,	_	_	_	_	_	_	_	_
+clinical-61	0	656	an	_	_	_	_	_	_	_	_	(166
+clinical-61	0	657	acute	_	_	_	_	_	_	_	_
+clinical-61	0	658	decompensation	_	_	_	_	_	_	_	_
+clinical-61	0	659	in	_	_	_	_	_	_	_	_
+clinical-61	0	660	respiratory	_	_	_	_	_	_	_	_	(167
+clinical-61	0	661	status	_	_	_	_	_	_	_	_	166)|167)
+clinical-61	0	662	was	_	_	_	_	_	_	_	_
+clinical-61	0	663	noted	_	_	_	_	_	_	_	_
+clinical-61	0	664	.	_	_	_	_	_	_	_	_
+
+clinical-61	0	666	Lung	_	_	_	_	_	_	_	_	(168|(169)
+clinical-61	0	667	examination	_	_	_	_	_	_	_	_
+clinical-61	0	668	at	_	_	_	_	_	_	_	_
+clinical-61	0	669	that	_	_	_	_	_	_	_	_	(170
+clinical-61	0	670	point	_	_	_	_	_	_	_	_	168)|170)
+clinical-61	0	671	showed	_	_	_	_	_	_	_	_
+clinical-61	0	672	good	_	_	_	_	_	_	_	_	(171
+clinical-61	0	673	air	_	_	_	_	_	_	_	_	(54)
+clinical-61	0	674	entry	_	_	_	_	_	_	_	_	171)
+clinical-61	0	675	,	_	_	_	_	_	_	_	_
+clinical-61	0	676	no	_	_	_	_	_	_	_	_	(172
+clinical-61	0	677	wheezing	_	_	_	_	_	_	_	_	172)
+clinical-61	0	678	,	_	_	_	_	_	_	_	_
+clinical-61	0	679	coarse	_	_	_	_	_	_	_	_	(173
+clinical-61	0	680	breath	_	_	_	_	_	_	_	_	(174)
+clinical-61	0	681	sounds	_	_	_	_	_	_	_	_	173)
+clinical-61	0	682	throughout	_	_	_	_	_	_	_	_
+clinical-61	0	683	.	_	_	_	_	_	_	_	_
+
+clinical-61	0	685	Neurologically	_	_	_	_	_	_	_	_
+clinical-61	0	686	,	_	_	_	_	_	_	_	_
+clinical-61	0	687	the	_	_	_	_	_	_	_	_	(15
+clinical-61	0	688	patient	_	_	_	_	_	_	_	_	15)
+clinical-61	0	689	was	_	_	_	_	_	_	_	_
+clinical-61	0	690	not	_	_	_	_	_	_	_	_
+clinical-61	0	691	following	_	_	_	_	_	_	_	_
+clinical-61	0	692	commands	_	_	_	_	_	_	_	_	(175)
+clinical-61	0	693	.	_	_	_	_	_	_	_	_
+
+clinical-61	0	695	Eyes	_	_	_	_	_	_	_	_	(176)
+clinical-61	0	696	were	_	_	_	_	_	_	_	_
+clinical-61	0	697	closed	_	_	_	_	_	_	_	_
+clinical-61	0	698	.	_	_	_	_	_	_	_	_
+
+clinical-61	0	700	He	_	_	_	_	_	_	_	_	(15)
+clinical-61	0	701	was	_	_	_	_	_	_	_	_
+clinical-61	0	702	moving	_	_	_	_	_	_	_	_
+clinical-61	0	703	the	_	_	_	_	_	_	_	_	(177
+clinical-61	0	704	right	_	_	_	_	_	_	_	_
+clinical-61	0	705	arm	_	_	_	_	_	_	_	_
+clinical-61	0	706	and	_	_	_	_	_	_	_	_
+clinical-61	0	707	leg	_	_	_	_	_	_	_	_	177)
+clinical-61	0	708	spontaneously	_	_	_	_	_	_	_	_
+clinical-61	0	709	,	_	_	_	_	_	_	_	_
+clinical-61	0	710	though	_	_	_	_	_	_	_	_
+clinical-61	0	711	less	_	_	_	_	_	_	_	_
+clinical-61	0	712	than	_	_	_	_	_	_	_	_
+clinical-61	0	713	before	_	_	_	_	_	_	_	_
+clinical-61	0	714	.	_	_	_	_	_	_	_	_
+
+clinical-61	0	716	Withdrawal	_	_	_	_	_	_	_	_	(178
+clinical-61	0	717	to	_	_	_	_	_	_	_	_
+clinical-61	0	718	pain	_	_	_	_	_	_	_	_	(89)|178)
+clinical-61	0	719	was	_	_	_	_	_	_	_	_
+clinical-61	0	720	still	_	_	_	_	_	_	_	_
+clinical-61	0	721	present	_	_	_	_	_	_	_	_
+clinical-61	0	722	.	_	_	_	_	_	_	_	_
+
+clinical-61	0	724	Both	_	_	_	_	_	_	_	_	(179
+clinical-61	0	725	plantars	_	_	_	_	_	_	_	_	179)
+clinical-61	0	726	were	_	_	_	_	_	_	_	_
+clinical-61	0	727	upgoing	_	_	_	_	_	_	_	_
+clinical-61	0	728	.	_	_	_	_	_	_	_	_
+
+clinical-61	0	730	A	_	_	_	_	_	_	_	_	(180|(181
+clinical-61	0	731	blood	_	_	_	_	_	_	_	_	(38)
+clinical-61	0	732	gas	_	_	_	_	_	_	_	_	180)
+clinical-61	0	733	at	_	_	_	_	_	_	_	_
+clinical-61	0	734	this	_	_	_	_	_	_	_	_	(170
+clinical-61	0	735	point	_	_	_	_	_	_	_	_	170)|181)
+clinical-61	0	736	showed	_	_	_	_	_	_	_	_
+clinical-61	0	737	a	_	_	_	_	_	_	_	_	(182
+clinical-61	0	738	pH	_	_	_	_	_	_	_	_
+clinical-61	0	739	of	_	_	_	_	_	_	_	_
+clinical-61	0	740	7.49	_	_	_	_	_	_	_	_	182)|(183)
+clinical-61	0	741	,	_	_	_	_	_	_	_	_
+clinical-61	0	742	pO2	_	_	_	_	_	_	_	_	(184
+clinical-61	0	743	61	_	_	_	_	_	_	_	_	184)
+clinical-61	0	744	,	_	_	_	_	_	_	_	_
+clinical-61	0	745	pCO2	_	_	_	_	_	_	_	_	(185
+clinical-61	0	746	of	_	_	_	_	_	_	_	_
+clinical-61	0	747	33	_	_	_	_	_	_	_	_	185)|(186)
+clinical-61	0	748	on	_	_	_	_	_	_	_	_
+clinical-61	0	749	100%	_	_	_	_	_	_	_	_	(187
+clinical-61	0	751	non-rebreather	_	_	_	_	_	_	_	_
+clinical-61	0	754	mask	_	_	_	_	_	_	_	_	187)
+clinical-61	0	755	.	_	_	_	_	_	_	_	_
+
+clinical-61	0	757	EKG	_	_	_	_	_	_	_	_	(188)
+clinical-61	0	758	showed	_	_	_	_	_	_	_	_
+clinical-61	0	759	sinus	_	_	_	_	_	_	_	_	(189
+clinical-61	0	760	tachycardia	_	_	_	_	_	_	_	_	189)
+clinical-61	0	761	.	_	_	_	_	_	_	_	_
+
+clinical-61	0	763	The	_	_	_	_	_	_	_	_	(15|(190
+clinical-61	0	764	patient	_	_	_	_	_	_	_	_
+clinical-61	0	765	&apos;s	_	_	_	_	_	_	_	_	15)
+clinical-61	0	767	temperature	_	_	_	_	_	_	_	_	190)
+clinical-61	0	768	was	_	_	_	_	_	_	_	_
+clinical-61	0	769	102	_	_	_	_	_	_	_	_	(191
+clinical-61	0	770	degrees	_	_	_	_	_	_	_	_	191)
+clinical-61	0	771	.	_	_	_	_	_	_	_	_
+
+clinical-61	0	773	A	_	_	_	_	_	_	_	_	(192
+clinical-61	0	774	repeat	_	_	_	_	_	_	_	_
+clinical-61	0	775	CAT	_	_	_	_	_	_	_	_	(193)
+clinical-61	0	776	scan	_	_	_	_	_	_	_	_
+clinical-61	0	777	of	_	_	_	_	_	_	_	_
+clinical-61	0	778	the	_	_	_	_	_	_	_	_	(194
+clinical-61	0	779	head	_	_	_	_	_	_	_	_	192)|194)
+clinical-61	0	780	was	_	_	_	_	_	_	_	_
+clinical-61	0	781	performed	_	_	_	_	_	_	_	_
+clinical-61	0	782	.	_	_	_	_	_	_	_	_
+
+clinical-61	0	784	This	_	_	_	_	_	_	_	_	(192)
+clinical-61	0	785	showed	_	_	_	_	_	_	_	_
+clinical-61	0	786	continued	_	_	_	_	_	_	_	_
+clinical-61	0	787	evolution	_	_	_	_	_	_	_	_
+clinical-61	0	788	of	_	_	_	_	_	_	_	_
+clinical-61	0	789	the	_	_	_	_	_	_	_	_	(195
+clinical-61	0	790	right	_	_	_	_	_	_	_	_
+clinical-61	0	791	posterior	_	_	_	_	_	_	_	_
+clinical-61	0	792	cerebral	_	_	_	_	_	_	_	_
+clinical-61	0	793	artery	_	_	_	_	_	_	_	_
+clinical-61	0	794	infarction	_	_	_	_	_	_	_	_	195)
+clinical-61	0	795	now	_	_	_	_	_	_	_	_	(196)
+clinical-61	0	796	extending	_	_	_	_	_	_	_	_
+clinical-61	0	797	into	_	_	_	_	_	_	_	_
+clinical-61	0	798	the	_	_	_	_	_	_	_	_	(197
+clinical-61	0	799	right	_	_	_	_	_	_	_	_
+clinical-61	0	800	cerebellar	_	_	_	_	_	_	_	_
+clinical-61	0	801	hemisphere	_	_	_	_	_	_	_	_	197)
+clinical-61	0	802	.	_	_	_	_	_	_	_	_
+
+clinical-61	0	804	There	_	_	_	_	_	_	_	_
+clinical-61	0	805	was	_	_	_	_	_	_	_	_
+clinical-61	0	806	also	_	_	_	_	_	_	_	_
+clinical-61	0	807	a	_	_	_	_	_	_	_	_
+clinical-61	0	808	high	_	_	_	_	_	_	_	_
+clinical-61	0	809	density	_	_	_	_	_	_	_	_
+clinical-61	0	810	adjacent	_	_	_	_	_	_	_	_
+clinical-61	0	811	to	_	_	_	_	_	_	_	_
+clinical-61	0	812	the	_	_	_	_	_	_	_	_	(195
+clinical-61	0	813	right	_	_	_	_	_	_	_	_
+clinical-61	0	814	cerebellar	_	_	_	_	_	_	_	_
+clinical-61	0	815	infarction	_	_	_	_	_	_	_	_	195)
+clinical-61	0	816	suggesting	_	_	_	_	_	_	_	_
+clinical-61	0	817	the	_	_	_	_	_	_	_	_	(198
+clinical-61	0	818	presence	_	_	_	_	_	_	_	_
+clinical-61	0	819	of	_	_	_	_	_	_	_	_
+clinical-61	0	820	hemorrhage	_	_	_	_	_	_	_	_	198)|(199)
+clinical-61	0	821	.	_	_	_	_	_	_	_	_
+
+clinical-61	0	823	At	_	_	_	_	_	_	_	_
+clinical-61	0	824	this	_	_	_	_	_	_	_	_	(170
+clinical-61	0	825	point	_	_	_	_	_	_	_	_	170)
+clinical-61	0	826	,	_	_	_	_	_	_	_	_
+clinical-61	0	827	the	_	_	_	_	_	_	_	_	(15
+clinical-61	0	828	patient	_	_	_	_	_	_	_	_	15)
+clinical-61	0	829	was	_	_	_	_	_	_	_	_
+clinical-61	0	830	transferred	_	_	_	_	_	_	_	_
+clinical-61	0	831	to	_	_	_	_	_	_	_	_
+clinical-61	0	832	the	_	_	_	_	_	_	_	_	(200
+clinical-61	0	833	intensive	_	_	_	_	_	_	_	_
+clinical-61	0	834	care	_	_	_	_	_	_	_	_
+clinical-61	0	835	unit	_	_	_	_	_	_	_	_	200)
+clinical-61	0	836	.	_	_	_	_	_	_	_	_
+
+clinical-61	0	838	An	_	_	_	_	_	_	_	_	(201
+clinical-61	0	839	MRI	_	_	_	_	_	_	_	_
+clinical-61	0	840	and	_	_	_	_	_	_	_	_
+clinical-61	0	841	MRA	_	_	_	_	_	_	_	_
+clinical-61	0	842	of	_	_	_	_	_	_	_	_
+clinical-61	0	843	the	_	_	_	_	_	_	_	_	(194
+clinical-61	0	844	head	_	_	_	_	_	_	_	_	194)|201)
+clinical-61	0	845	was	_	_	_	_	_	_	_	_
+clinical-61	0	846	arranged	_	_	_	_	_	_	_	_
+clinical-61	0	847	to	_	_	_	_	_	_	_	_
+clinical-61	0	848	evaluate	_	_	_	_	_	_	_	_
+clinical-61	0	849	the	_	_	_	_	_	_	_	_	(202
+clinical-61	0	850	extent	_	_	_	_	_	_	_	_
+clinical-61	0	851	of	_	_	_	_	_	_	_	_
+clinical-61	0	852	his	_	_	_	_	_	_	_	_	(15)|(203|(204
+clinical-61	0	853	stroke	_	_	_	_	_	_	_	_	203)
+clinical-61	0	854	and	_	_	_	_	_	_	_	_
+clinical-61	0	855	the	_	_	_	_	_	_	_	_	(205
+clinical-61	0	856	posterior	_	_	_	_	_	_	_	_
+clinical-61	0	857	circulation	_	_	_	_	_	_	_	_	202)|204)|205)
+clinical-61	0	858	.	_	_	_	_	_	_	_	_
+
+clinical-61	0	860	The	_	_	_	_	_	_	_	_	(206
+clinical-61	0	861	MRI	_	_	_	_	_	_	_	_	206)
+clinical-61	0	862	showed	_	_	_	_	_	_	_	_
+clinical-61	0	863	infarct	_	_	_	_	_	_	_	_
+clinical-61	0	864	of	_	_	_	_	_	_	_	_
+clinical-61	0	865	the	_	_	_	_	_	_	_	_	(207
+clinical-61	0	866	cerebellar	_	_	_	_	_	_	_	_
+clinical-61	0	867	hemispheres	_	_	_	_	_	_	_	_	207)
+clinical-61	0	868	bilaterally	_	_	_	_	_	_	_	_
+clinical-61	0	869	,	_	_	_	_	_	_	_	_
+clinical-61	0	870	the	_	_	_	_	_	_	_	_	(208
+clinical-61	0	871	right	_	_	_	_	_	_	_	_
+clinical-61	0	872	occipital	_	_	_	_	_	_	_	_
+clinical-61	0	873	lobe	_	_	_	_	_	_	_	_	208)
+clinical-61	0	874	,	_	_	_	_	_	_	_	_
+clinical-61	0	875	the	_	_	_	_	_	_	_	_	(209
+clinical-61	0	876	right	_	_	_	_	_	_	_	_
+clinical-61	0	877	thalamus	_	_	_	_	_	_	_	_	209)
+clinical-61	0	878	and	_	_	_	_	_	_	_	_
+clinical-61	0	879	bilateral	_	_	_	_	_	_	_	_	(210
+clinical-61	0	880	pons	_	_	_	_	_	_	_	_	210)
+clinical-61	0	881	.	_	_	_	_	_	_	_	_
+
+clinical-61	0	883	The	_	_	_	_	_	_	_	_	(211
+clinical-61	0	884	MRA	_	_	_	_	_	_	_	_
+clinical-61	0	885	of	_	_	_	_	_	_	_	_
+clinical-61	0	886	the	_	_	_	_	_	_	_	_	(212
+clinical-61	0	887	intracranial	_	_	_	_	_	_	_	_
+clinical-61	0	888	circulation	_	_	_	_	_	_	_	_	211)|212)
+clinical-61	0	889	demonstrated	_	_	_	_	_	_	_	_
+clinical-61	0	890	gross	_	_	_	_	_	_	_	_	(213
+clinical-61	0	891	patency	_	_	_	_	_	_	_	_
+clinical-61	0	892	of	_	_	_	_	_	_	_	_
+clinical-61	0	893	the	_	_	_	_	_	_	_	_
+clinical-61	0	894	internal	_	_	_	_	_	_	_	_
+clinical-61	0	895	carotid	_	_	_	_	_	_	_	_
+clinical-61	0	896	arteries	_	_	_	_	_	_	_	_
+clinical-61	0	897	bilaterally	_	_	_	_	_	_	_	_
+clinical-61	0	898	and	_	_	_	_	_	_	_	_
+clinical-61	0	899	the	_	_	_	_	_	_	_	_	(214
+clinical-61	0	900	basilar	_	_	_	_	_	_	_	_
+clinical-61	0	901	arteries	_	_	_	_	_	_	_	_	213)|214)
+clinical-61	0	902	.	_	_	_	_	_	_	_	_
+
+clinical-61	0	904	The	_	_	_	_	_	_	_	_	(215
+clinical-61	0	905	left	_	_	_	_	_	_	_	_
+clinical-61	0	906	vertebral	_	_	_	_	_	_	_	_
+clinical-61	0	907	artery	_	_	_	_	_	_	_	_	215)
+clinical-61	0	908	was	_	_	_	_	_	_	_	_
+clinical-61	0	909	not	_	_	_	_	_	_	_	_
+clinical-61	0	910	visualized	_	_	_	_	_	_	_	_
+clinical-61	0	911	.	_	_	_	_	_	_	_	_
+
+clinical-61	0	913	There	_	_	_	_	_	_	_	_
+clinical-61	0	914	was	_	_	_	_	_	_	_	_
+clinical-61	0	915	a	_	_	_	_	_	_	_	_	(216
+clinical-61	0	916	dominant	_	_	_	_	_	_	_	_
+clinical-61	0	917	right	_	_	_	_	_	_	_	_
+clinical-61	0	918	vertebral	_	_	_	_	_	_	_	_
+clinical-61	0	919	artery	_	_	_	_	_	_	_	_	216)
+clinical-61	0	920	.	_	_	_	_	_	_	_	_
+
+clinical-61	0	922	There	_	_	_	_	_	_	_	_
+clinical-61	0	923	was	_	_	_	_	_	_	_	_
+clinical-61	0	924	mildly	_	_	_	_	_	_	_	_
+clinical-61	0	925	reduced	_	_	_	_	_	_	_	_
+clinical-61	0	926	flow	_	_	_	_	_	_	_	_
+clinical-61	0	927	in	_	_	_	_	_	_	_	_
+clinical-61	0	928	the	_	_	_	_	_	_	_	_	(217
+clinical-61	0	929	branches	_	_	_	_	_	_	_	_
+clinical-61	0	930	of	_	_	_	_	_	_	_	_
+clinical-61	0	931	the	_	_	_	_	_	_	_	_	(218
+clinical-61	0	932	right	_	_	_	_	_	_	_	_
+clinical-61	0	933	middle	_	_	_	_	_	_	_	_
+clinical-61	0	934	cerebral	_	_	_	_	_	_	_	_
+clinical-61	0	935	artery	_	_	_	_	_	_	_	_	217)|218)
+clinical-61	0	936	compared	_	_	_	_	_	_	_	_
+clinical-61	0	937	to	_	_	_	_	_	_	_	_
+clinical-61	0	938	the	_	_	_	_	_	_	_	_	(215
+clinical-61	0	939	left	_	_	_	_	_	_	_	_	215)
+clinical-61	0	940	.	_	_	_	_	_	_	_	_
+
+clinical-61	0	942	There	_	_	_	_	_	_	_	_
+clinical-61	0	943	was	_	_	_	_	_	_	_	_
+clinical-61	0	944	visualization	_	_	_	_	_	_	_	_
+clinical-61	0	945	of	_	_	_	_	_	_	_	_
+clinical-61	0	946	flow	_	_	_	_	_	_	_	_	(219)
+clinical-61	0	947	within	_	_	_	_	_	_	_	_
+clinical-61	0	948	both	_	_	_	_	_	_	_	_	(220
+clinical-61	0	949	posterior	_	_	_	_	_	_	_	_
+clinical-61	0	950	cerebral	_	_	_	_	_	_	_	_
+clinical-61	0	951	arteries	_	_	_	_	_	_	_	_	220)
+clinical-61	0	952	.	_	_	_	_	_	_	_	_
+
+clinical-61	0	954	Clinically	_	_	_	_	_	_	_	_
+clinical-61	0	955	,	_	_	_	_	_	_	_	_
+clinical-61	0	956	the	_	_	_	_	_	_	_	_	(15
+clinical-61	0	957	patient	_	_	_	_	_	_	_	_	15)
+clinical-61	0	958	continued	_	_	_	_	_	_	_	_
+clinical-61	0	959	to	_	_	_	_	_	_	_	_
+clinical-61	0	960	deteriorate	_	_	_	_	_	_	_	_
+clinical-61	0	961	.	_	_	_	_	_	_	_	_
+
+clinical-61	0	963	Neurosurgery	_	_	_	_	_	_	_	_	(221)
+clinical-61	0	964	was	_	_	_	_	_	_	_	_
+clinical-61	0	965	consulted	_	_	_	_	_	_	_	_
+clinical-61	0	966	,	_	_	_	_	_	_	_	_
+clinical-61	0	967	however	_	_	_	_	_	_	_	_
+clinical-61	0	968	the	_	_	_	_	_	_	_	_	(222
+clinical-61	0	969	neurosurgeons	_	_	_	_	_	_	_	_	222)
+clinical-61	0	970	felt	_	_	_	_	_	_	_	_
+clinical-61	0	971	that	_	_	_	_	_	_	_	_
+clinical-61	0	972	there	_	_	_	_	_	_	_	_
+clinical-61	0	973	was	_	_	_	_	_	_	_	_
+clinical-61	0	974	no	_	_	_	_	_	_	_	_	(223
+clinical-61	0	975	surgical	_	_	_	_	_	_	_	_
+clinical-61	0	976	option	_	_	_	_	_	_	_	_	223)
+clinical-61	0	977	,	_	_	_	_	_	_	_	_
+clinical-61	0	978	since	_	_	_	_	_	_	_	_
+clinical-61	0	979	even	_	_	_	_	_	_	_	_
+clinical-61	0	980	in	_	_	_	_	_	_	_	_
+clinical-61	0	981	the	_	_	_	_	_	_	_	_	(224
+clinical-61	0	982	case	_	_	_	_	_	_	_	_
+clinical-61	0	983	of	_	_	_	_	_	_	_	_
+clinical-61	0	984	cerebellar	_	_	_	_	_	_	_	_	(225
+clinical-61	0	985	swelling	_	_	_	_	_	_	_	_	224)|225)
+clinical-61	0	986	,	_	_	_	_	_	_	_	_
+clinical-61	0	987	there	_	_	_	_	_	_	_	_
+clinical-61	0	988	would	_	_	_	_	_	_	_	_
+clinical-61	0	989	be	_	_	_	_	_	_	_	_
+clinical-61	0	990	no	_	_	_	_	_	_	_	_	(226|(227
+clinical-61	0	991	improvement	_	_	_	_	_	_	_	_	226)
+clinical-61	0	992	from	_	_	_	_	_	_	_	_
+clinical-61	0	993	decompensation	_	_	_	_	_	_	_	_	227)|(228)
+clinical-61	0	994	.	_	_	_	_	_	_	_	_
+
+clinical-61	0	996	The	_	_	_	_	_	_	_	_	(15
+clinical-61	0	997	patient	_	_	_	_	_	_	_	_	15)
+clinical-61	0	998	was	_	_	_	_	_	_	_	_
+clinical-61	0	999	therefore	_	_	_	_	_	_	_	_
+clinical-61	0	1000	treated	_	_	_	_	_	_	_	_
+clinical-61	0	1001	conservatively	_	_	_	_	_	_	_	_
+clinical-61	0	1002	with	_	_	_	_	_	_	_	_
+clinical-61	0	1003	fluid	_	_	_	_	_	_	_	_	(229|(230
+clinical-61	0	1004	restriction	_	_	_	_	_	_	_	_	229)
+clinical-61	0	1005	and	_	_	_	_	_	_	_	_
+clinical-61	0	1006	blood	_	_	_	_	_	_	_	_	(38)|(231|(232
+clinical-61	0	1007	pressure	_	_	_	_	_	_	_	_	231)
+clinical-61	0	1008	management	_	_	_	_	_	_	_	_	230)|232)
+clinical-61	0	1009	.	_	_	_	_	_	_	_	_
+
+clinical-61	0	1011	Heparin	_	_	_	_	_	_	_	_	(233)
+clinical-61	0	1012	was	_	_	_	_	_	_	_	_
+clinical-61	0	1013	discontinued	_	_	_	_	_	_	_	_
+clinical-61	0	1014	because	_	_	_	_	_	_	_	_
+clinical-61	0	1015	of	_	_	_	_	_	_	_	_
+clinical-61	0	1016	the	_	_	_	_	_	_	_	_	(234
+clinical-61	0	1017	risk	_	_	_	_	_	_	_	_
+clinical-61	0	1018	of	_	_	_	_	_	_	_	_
+clinical-61	0	1019	intercerebral	_	_	_	_	_	_	_	_	(235
+clinical-61	0	1020	hemorrhage	_	_	_	_	_	_	_	_	234)|235)
+clinical-61	0	1021	.	_	_	_	_	_	_	_	_
+
+clinical-61	0	1023	The	_	_	_	_	_	_	_	_	(236
+clinical-61	0	1024	aspiration	_	_	_	_	_	_	_	_
+clinical-61	0	1025	pneumonia	_	_	_	_	_	_	_	_	236)
+clinical-61	0	1026	was	_	_	_	_	_	_	_	_
+clinical-61	0	1027	treated	_	_	_	_	_	_	_	_
+clinical-61	0	1028	with	_	_	_	_	_	_	_	_
+clinical-61	0	1029	Cefotaxime	_	_	_	_	_	_	_	_	(237)|(238
+clinical-61	0	1030	and	_	_	_	_	_	_	_	_
+clinical-61	0	1031	Metronidazole	_	_	_	_	_	_	_	_	238)|(239)
+clinical-61	0	1032	.	_	_	_	_	_	_	_	_
+
+clinical-61	0	1034	The	_	_	_	_	_	_	_	_	(15|(240
+clinical-61	0	1035	patient	_	_	_	_	_	_	_	_
+clinical-61	0	1036	&apos;s	_	_	_	_	_	_	_	_	15)
+clinical-61	0	1038	family	_	_	_	_	_	_	_	_	240)
+clinical-61	0	1039	was	_	_	_	_	_	_	_	_
+clinical-61	0	1040	involved	_	_	_	_	_	_	_	_
+clinical-61	0	1041	and	_	_	_	_	_	_	_	_
+clinical-61	0	1042	they	_	_	_	_	_	_	_	_	(240)
+clinical-61	0	1043	decided	_	_	_	_	_	_	_	_
+clinical-61	0	1044	to	_	_	_	_	_	_	_	_
+clinical-61	0	1045	opt	_	_	_	_	_	_	_	_
+clinical-61	0	1046	for	_	_	_	_	_	_	_	_
+clinical-61	0	1047	DNR	_	_	_	_	_	_	_	_	(241)|(242
+clinical-61	0	1048	/	_	_	_	_	_	_	_	_
+clinical-61	0	1049	DNI	_	_	_	_	_	_	_	_	242)|(243)
+clinical-61	0	1050	in	_	_	_	_	_	_	_	_
+clinical-61	0	1051	view	_	_	_	_	_	_	_	_	(244)
+clinical-61	0	1052	of	_	_	_	_	_	_	_	_
+clinical-61	0	1053	the	_	_	_	_	_	_	_	_	(245
+clinical-61	0	1054	poor	_	_	_	_	_	_	_	_
+clinical-61	0	1055	prognosis	_	_	_	_	_	_	_	_	245)
+clinical-61	0	1056	.	_	_	_	_	_	_	_	_
+
+clinical-61	0	1058	The	_	_	_	_	_	_	_	_	(15
+clinical-61	0	1059	patient	_	_	_	_	_	_	_	_	15)
+clinical-61	0	1060	passed	_	_	_	_	_	_	_	_
+clinical-61	0	1061	away	_	_	_	_	_	_	_	_
+clinical-61	0	1062	at	_	_	_	_	_	_	_	_
+clinical-61	0	1063	6:45	_	_	_	_	_	_	_	_	(246
+clinical-61	0	1064	AM	_	_	_	_	_	_	_	_	246)
+clinical-61	0	1065	on	_	_	_	_	_	_	_	_
+clinical-61	0	1066	June	_	_	_	_	_	_	_	_	(247
+clinical-61	0	1067	12	_	_	_	_	_	_	_	_
+clinical-61	0	1068	,	_	_	_	_	_	_	_	_
+clinical-61	0	1069	1998	_	_	_	_	_	_	_	_	247)
+clinical-61	0	1070	.	_	_	_	_	_	_	_	_
+
+clinical-61	0	1072	CONDITION	_	_	_	_	_	_	_	_
+
+clinical-61	0	1073	ON	_	_	_	_	_	_	_	_
+clinical-61	0	1074	DISCHARGE	_	_	_	_	_	_	_	_	(248)
+clinical-61	0	1075	:	_	_	_	_	_	_	_	_
+clinical-61	0	1077	Deceased	_	_	_	_	_	_	_	_
+clinical-61	0	1078	.	_	_	_	_	_	_	_	_
+
+clinical-61	0	1080	DISCHARGE	_	_	_	_	_	_	_	_	(249
+clinical-61	0	1081	ORDERS	_	_	_	_	_	_	_	_	249)
+clinical-61	0	1082	:	_	_	_	_	_	_	_	_
+clinical-61	0	1084	None	_	_	_	_	_	_	_	_	(250)
+clinical-61	0	1085	.	_	_	_	_	_	_	_	_
+
+clinical-61	0	1087	Dictated	_	_	_	_	_	_	_	_
+clinical-61	0	1088	By	_	_	_	_	_	_	_	_
+clinical-61	0	1089	:	_	_	_	_	_	_	_	_
+clinical-61	0	1091	GREGSIS	_	_	_	_	_	_	_	_
+clinical-61	0	1092	STREETS	_	_	_	_	_	_	_	_
+clinical-61	0	1093	,	_	_	_	_	_	_	_	_
+clinical-61	0	1094	M.D.	_	_	_	_	_	_	_	_
+clinical-61	0	1095	SQ51	_	_	_	_	_	_	_	_
+clinical-61	0	1097	Attending	_	_	_	_	_	_	_	_
+clinical-61	0	1098	:	_	_	_	_	_	_	_	_
+clinical-61	0	1100	CHLINO	_	_	_	_	_	_	_	_
+clinical-61	0	1101	B.	_	_	_	_	_	_	_	_
+clinical-61	0	1102	SHAM	_	_	_	_	_	_	_	_
+clinical-61	0	1103	,	_	_	_	_	_	_	_	_
+clinical-61	0	1104	M.D.	_	_	_	_	_	_	_	_
+clinical-61	0	1105	NI76	_	_	_	_	_	_	_	_
+clinical-61	0	1106	LN647/8356	_	_	_	_	_	_	_	_
+clinical-61	0	1108	Batch	_	_	_	_	_	_	_	_	(251)
+clinical-61	0	1109	:	_	_	_	_	_	_	_	_
+clinical-61	0	1111	57390	_	_	_	_	_	_	_	_	252)
+clinical-61	0	1113	Index	_	_	_	_	_	_	_	_	(253|(254
+clinical-61	0	1114	No.	_	_	_	_	_	_	_	_	253)
+clinical-61	0	1116	TCVBBUJ1Y	_	_	_	_	_	_	_	_	(253)|254)
+clinical-61	0	1118	D	_	_	_	_	_	_	_	_
+clinical-61	0	1119	:	_	_	_	_	_	_	_	_
+clinical-61	0	1121	07/09/98	_	_	_	_	_	_	_	_	(255)
+clinical-61	0	1123	T	_	_	_	_	_	_	_	_
+clinical-61	0	1124	:	_	_	_	_	_	_	_	_
+clinical-61	0	1126	07/10/98	_	_	_	_	_	_	_	_	(256)
+clinical-61	0	1128	CC	_	_	_	_	_	_	_	_	(257)
+clinical-61	0	1129	:	_	_	_	_	_	_	_	_
+clinical-61	0	1131	1.	_	_	_	_	_	_	_	_
+clinical-61	0	1133	NATA	_	_	_	_	_	_	_	_
+clinical-61	0	1134	NELMI	_	_	_	_	_	_	_	_
+clinical-61	0	1135	PAIN	_	_	_	_	_	_	_	_
+clinical-61	0	1136	,	_	_	_	_	_	_	_	_
+clinical-61	0	1137	M.D.	_	_	_	_	_	_	_	_
+clinical-61	0	1138	,	_	_	_	_	_	_	_	_
+clinical-61	0	1139	Sonsantna	_	_	_	_	_	_	_	_	(258)
+clinical-61	0	1140	.	_	_	_	_	_	_	_	_
 
 #end document

@@ -41,7 +41,7 @@ def convert_each(config, sectionName, input_file_path, output_file_path):
             conllToken = ConllToken(sid+"_"+sectionName, sentence_id, _idx, data[config.name_style.spacy.column_name.token])
             coref_col_cell = data[config.name_style.corenlp.column_name.coref_group_conll]
             if isinstance(coref_col_cell, str) and coref_col_cell != "-1":
-                conllToken.add_coref_mark("|".join(ast.literal_eval(coref_col_cell)))
+                conllToken.add_coref_label("|".join(ast.literal_eval(coref_col_cell)))
             token_list.append(conllToken)
         sentenc_list.append(token_list)
         sentence_id += 1

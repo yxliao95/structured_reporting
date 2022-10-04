@@ -2,11 +2,9 @@ from concurrent.futures import ProcessPoolExecutor, as_completed
 from multiprocessing import Event
 import json
 import logging
-from operator import index
 import os
 import sys
 import time
-import re
 import ast
 import math
 from math import isnan
@@ -226,6 +224,7 @@ class MentionPair(Votable):
 
 class DocClass:
     def __init__(self) -> None:
+        """ The element in token_list is SpacyToken """
         self.filename = ""
         self.token_list: list[SpacyToken] = []
         self.mention_groups_details: dict[str, dict[int, MentionGroupClass]] = {}
@@ -395,15 +394,21 @@ def resolve_voting_info(config, df_spacy, section_name, file_name) -> DocClass:
             coref_index = _itemSeries.get(config.df_col.coref_index)
             coref_index = int(coref_index) if not isnan(coref_index) else coref_index
 
-            spacy_tokenStr = str(_itemSeries.get(spacy_name_style_cfg.token))
-            coref_tokenStr = str(_itemSeries.get(coref_column_cfg.token))
+            spacy_tokenStr = _itemSeries.get(spacy_name_style_cfg.token)
+            spacy_tokenStr_isnan = False if isinstance(spacy_tokenStr, str) else isnan(spacy_tokenStr)
+            spacy_tokenStr = str(spacy_tokenStr)
+            coref_tokenStr = _itemSeries.get(coref_column_cfg.token)
+            coref_tokenStr_isnan = False if isinstance(coref_tokenStr, str) else isnan(coref_tokenStr)
+            coref_tokenStr = str(coref_tokenStr)
 
             coref_group = str(_itemSeries.get(coref_column_cfg.coref_group))  # "-1", "nan", "[1, 11]"
             coref_group_conll = str(_itemSeries.get(coref_column_cfg.coref_group_conll))  # "-1", "nan", "['(1)', '(11']"
             group_id_and_token_status_dict: dict[int, str] = get_group_id_and_token_status(coref_group, coref_group_conll)
 
             prev_spacy_tokenStr = str(df_aligned.loc[checkpoint_token_index, spacy_name_style_cfg.token])
-            prev_coref_tokenStr = str(df_aligned.loc[checkpoint_token_index, coref_column_cfg.token])
+            prev_coref_tokenStr = df_aligned.loc[checkpoint_token_index, coref_column_cfg.token]
+            prev_coref_tokenStr_isnan = False if isinstance(prev_coref_tokenStr, str) else isnan(prev_coref_tokenStr)
+            prev_coref_tokenStr = str(prev_coref_tokenStr)
             # TokA = TokA'
             try:
                 if spacy_tokenStr == coref_tokenStr:
@@ -425,7 +430,7 @@ def resolve_voting_info(config, df_spacy, section_name, file_name) -> DocClass:
                     # .h    h.s.    |   .h.s    h.s.    |   .h      h.      (many2many)
                     # .s    NaN     |   .       NaN     |   .s      s.      (many2many)
                     # .     NaN     |                   |   .       NaN     (many2many)
-                    if coref_tokenStr in spacy_tokenStr:
+                    if coref_tokenStr in spacy_tokenStr and not spacy_tokenStr_isnan and not coref_tokenStr_isnan:
                         if not one2many_flag:
                             logger.debug("%s) One2many token start: %s | %s", _idx, spacy_tokenStr.encode(), coref_tokenStr.encode())
                             baseTokenObj = docObj.auto_get_token_byIndex(spacy_index, spacy_tokenStr)
@@ -449,7 +454,7 @@ def resolve_voting_info(config, df_spacy, section_name, file_name) -> DocClass:
                     # Or Many2one -> One2many
                     # '     's  (Many2one)
                     # s.    .   (One2many)
-                    elif spacy_tokenStr in coref_tokenStr:
+                    elif spacy_tokenStr in coref_tokenStr and not spacy_tokenStr_isnan and not coref_tokenStr_isnan:
                         logger.debug("%s) Many2one token start: %s | %s", _idx, spacy_tokenStr.encode(), coref_tokenStr.encode())
                         baseTokenObj = docObj.auto_get_token_byIndex(spacy_index, spacy_tokenStr)
                         baseTokenObj.update_token_details(model_short_name, "subset_of")
@@ -472,7 +477,6 @@ def resolve_voting_info(config, df_spacy, section_name, file_name) -> DocClass:
                         left_str += spacy_tokenStr
 
                     # TokA exist, TokA' not exist, not many2one, and not many2many
-                    # elif isnan(coref_index) and spacy_tokenStr not in prev_coref_tokenStr and not many2many_token_flag:
                     elif isnan(coref_index) and spacy_tokenStr not in prev_coref_tokenStr and not many2many_flag:
                         logger.debug("%s) Empty coref token: %s | %s", _idx, spacy_tokenStr.encode(), coref_tokenStr.encode())
                         baseTokenObj = docObj.auto_get_token_byIndex(spacy_index, spacy_tokenStr)
@@ -564,6 +568,7 @@ def resolve_voting_info(config, df_spacy, section_name, file_name) -> DocClass:
                 logger.error("Error occured in %s", docObj.filename)
                 logger.error(traceback.format_exc())
                 raise
+
     return docObj
 
 
@@ -781,7 +786,7 @@ def main(config):
 
     # Log runtime information
     check_and_create_dirs(config.output.base_dir)
-    with open(os.path.join(config.output.base_dir, config.output.log_file), "w", encoding="UTF-8") as f:
+    with open(os.path.join(config.output.base_dir, config.output.log_file_name), "w", encoding="UTF-8") as f:
         log_out = {
             "Using": {
                 "Voting stategy": config.voting.strategy,

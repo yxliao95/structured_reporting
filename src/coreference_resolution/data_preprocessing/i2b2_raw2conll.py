@@ -60,15 +60,15 @@ def convert_each(doc_file_path, chain_file_path, output_file_path):
                 if start == end:
                     sentId, tokId = start.split(":")
                     mark = f"({cluster_id})"
-                    sentenc_list[int(sentId) - 1][int(tokId)].add_coref_mark(mark)
+                    sentenc_list[int(sentId) - 1][int(tokId)].add_coref_label(mark)
                 else:
                     sentId, tokId = start.split(":")
                     startMark = f"({cluster_id}"
-                    sentenc_list[int(sentId) - 1][int(tokId)].add_coref_mark(startMark)
+                    sentenc_list[int(sentId) - 1][int(tokId)].add_coref_label(startMark)
 
                     sentId, tokId = end.split(":")
                     endMark = f"{cluster_id})"
-                    sentenc_list[int(sentId) - 1][int(tokId)].add_coref_mark(endMark)
+                    sentenc_list[int(sentId) - 1][int(tokId)].add_coref_label(endMark)
 
     # Write .conll file
     with open(output_file_path, "a") as out:

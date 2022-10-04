@@ -1,11 +1,12 @@
 thread:
-  workers: 12
+  workers: 13
 
 defaults:
   - common
   - name_style/corenlp_output
   - name_style/spacy_output
   - name_style/fastcoref_joint_output
+  - name_style/scoring_output
   - _self_
 
 # Append the necessary config group via command line:

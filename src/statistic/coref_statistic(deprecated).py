@@ -109,9 +109,9 @@ def convert_to_conll_format(config, df: pd.DataFrame,  conll_colName: str, sid: 
                         del conll_corefGroup_list[_idx]
 
                     if conll_corefGroup_list:
-                        conllToken.add_coref_mark("|".join(conll_corefGroup_list))
+                        conllToken.add_coref_label("|".join(conll_corefGroup_list))
                 else:
-                    conllToken.add_coref_mark("|".join(ast.literal_eval(conll_corefGroup_list_str)))
+                    conllToken.add_coref_label("|".join(ast.literal_eval(conll_corefGroup_list_str)))
             token_list.append(conllToken)
         sentence_list.append(token_list)
         sentence_id += 1

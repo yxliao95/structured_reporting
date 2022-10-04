@@ -51,6 +51,8 @@ class I2b2Token(object):
         tokenStr_for_conll = tokenStr
         if re.search(r"\(?[^A-Za-z]+\)?", tokenStr):
             tokenStr_for_conll = tokenStr.replace("(", "[").replace(")", "]")
+        if tokenStr.strip() == "":
+            tokenStr_for_conll = ""
         return tokenStr_for_conll
 
     def get_conll_str(self):
