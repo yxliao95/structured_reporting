@@ -1,9 +1,12 @@
+import ast
+from collections import Counter
 import logging
 import os
 import random
 import re
 import shutil
-import pandas
+import pandas as pd
+import numpy as np
 from natsort import natsorted
 
 logger = logging.getLogger()
@@ -152,7 +155,7 @@ def load_data(file_path, section_name_cfg):
     """Load data from ``input_path``.
     ``section_name_cfg`` is the config load from ``config/name_style/mimic_cxr_section.yaml``
     """
-    df = pandas.read_json(file_path, orient="records", lines=True)
+    df = pd.read_json(file_path, orient="records", lines=True)
     df = df.sort_values(by=[section_name_cfg.PID, section_name_cfg.SID])
     pid_list = df.loc[:, section_name_cfg.PID].to_list()
     sid_list = df.loc[:, section_name_cfg.SID].to_list()
@@ -203,3 +206,27 @@ def auto_extend_value_to_list(target_list, target_index, target_value_list):
         target_list[target_index] = target_value_list
     else:
         target_list[target_index].extend(target_value_list)
+
+# For statistic
+
+
+def resolve_mention_and_group_num(df: pd.DataFrame, conll_colName: str, omit_singleton=True) -> tuple[int, int]:
+    """Args:
+        df: The dataframe resolved from csv file.
+        conll_colName: The name of the column with conll format elements.
+        omit_singleton: Omit singleton mention and the corresponding coref group.
+
+    Return:
+        The number of coreference mentions and coreference groups.
+    """
+    corefGroup_counter = Counter()
+    for conll_corefGroup_list_str in df[~df.loc[:, conll_colName].isin(["-1", -1.0, np.nan])].loc[:, conll_colName].to_list():
+        for conll_corefGroup_str in ast.literal_eval(conll_corefGroup_list_str):
+            result = re.search(r"(\d+)\)", conll_corefGroup_str)  # An coref mention always end with "number)"
+            if result:
+                corefGroup_counter.update([int(result.group(1))])
+    if omit_singleton:
+        non_singletone_counter: list[tuple] = list(filter(lambda item: item[1] > 1, corefGroup_counter.items()))
+        coref_mention_num = sum([v for k, v in non_singletone_counter])
+        coref_group_num = len([k for k, v in non_singletone_counter])
+        return coref_mention_num, coref_group_num
