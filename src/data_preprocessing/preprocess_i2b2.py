@@ -171,6 +171,8 @@ def output_conll(output_file_path, doc_id, sentence_list: list[list[I2b2Token]],
 
 def batch_processing(doc_file_path, chain_file_path) -> tuple[str, str, list[list[I2b2Token]]]:
     """ Resolve a single i2b2 document, including a .txt file and a .chains file. """
+    START_EVENT.wait()
+
     doc_id = get_file_name_prefix(doc_file_path, ".txt")
 
     # Resolve doc file
@@ -272,7 +274,7 @@ def main(config):
                     check_and_create_dirs(config.conll.output_dir)
                     output_singlefile_path = os.path.join(config.conll.output_dir, f"{doc_id}.conll")
                     output_conll(output_singlefile_path, doc_id, sentence_list, mode="w")
-
+        START_EVENT.clear()
     logger.info("Removing temp dir: %s", temp_dir)
     check_and_remove_dirs(temp_dir, True)
 
