@@ -37,6 +37,7 @@ class I2b2Token(object):
         self.tokenStr = tokenStr
         self.tokenStr_for_conll = self._adapt_token_for_conll_(tokenStr)
         self.conll_corefMark = ""
+        self.offset = 0
 
     def add_coref_conllmark(self, conllmark):
         if not self.conll_corefMark:
