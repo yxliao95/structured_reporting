@@ -9,3 +9,7 @@ cd /coref
 git clone git@github.com:liaoooyx/fast-coref.git
 python format_dataset/process_i2b2.py
 ```
+
+## Understand the fast-coref
+
+fast-coref would only takes the top n docs if specify the num_of_docs. Therefore, for mimic-cxr, we need to properly design a sampling approach if we want the sample a limited number of docs.

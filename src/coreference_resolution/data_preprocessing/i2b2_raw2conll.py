@@ -1,15 +1,17 @@
 import os
 import shutil
-import hydra
 import logging
-
-import random
-from tqdm import tqdm
 import re
+import random
 
+from tqdm import tqdm
+
+# pylint: disable=import-error,wrong-import-order
 from common_utils.coref_utils import get_data_split, get_file_name_prefix, shuffle_list, split_and_shuffle_list, get_porportion_and_name, check_and_make_dir, remove_all, ConllToken
+from common_utils.file_checker import FileChecker
 
 logger = logging.getLogger()
+FILE_CHECKER = FileChecker()
 
 
 def clean_and_split_line(sentence: str, debug_doc="", debug_sent=""):
@@ -98,8 +100,9 @@ def convert_all(config, data_split, docs_dir, chains_dir, output_dir_next):
 
 def convert_to_conll(config, output_dir, docs_dir, chains_dir):
     # Check that the files are matched.
-    doc_files = os.listdir(docs_dir)
-    chain_files = os.listdir(chains_dir)
+    doc_files = FILE_CHECKER.filter(os.listdir(docs_dir))
+    chain_files = FILE_CHECKER.filter(os.listdir(chains_dir))
+    
     assert len(doc_files) == len(chain_files)
     logger.info("Detected %s documents in total.", len(chain_files))
 
@@ -178,7 +181,7 @@ def aggregrate_files(config, temp_dir):
 
 def invoke(config):
     # Copy files from source folders to temp directory. Only the files under /docs and /chains will be copied
-    temp_dir = os.path.join(config.dataset_dir, config.output.temp_dir_name)
+    temp_dir = os.path.join(config.output.base_dir, config.output.temp_dir_name)
     if not config.safe_mode:
         remove_all(temp_dir)
     check_and_make_dir(
@@ -189,7 +192,7 @@ def invoke(config):
     docs_dir, chains_dir = aggregrate_files(config, temp_dir)
 
     # Convert source files to .conll files
-    conll_dir = os.path.join(config.output_dir, config.output.root_dir_name)
+    conll_dir = os.path.join(config.output.base_dir, config.output.root_dir_name)
     if not config.safe_mode:
         remove_all(conll_dir)
     check_and_make_dir(
@@ -206,12 +209,3 @@ def invoke(config):
     logger.info("Done.")
 
     return conll_dir
-
-
-@hydra.main(version_base=None, config_path="config", config_name="config")
-def main(config):
-    invoke(config)
-
-
-if __name__ == "__main__":
-    main()  # pylint: disable=no-value-for-parameter

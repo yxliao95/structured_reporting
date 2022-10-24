@@ -1,51 +1,50 @@
-i2b2:
-  # Should not contain space symbol in the path.
+# 0 to use random seed to shuffle the dataset; -1 to disable the shuffle; Or any int value as static seed.
+shuffle_seed: 42
+# In safe mode, the conflict dirs during the raw2conll processing need to be removed manually.
+safe_mode: false
+# If true, then the history output dir will be deleted and created again.
+clear_history: true
+
+output:
+  base_dir: ${i2b2_output_dir}/coref
+  root_dir_name: conll
+  temp_dir_name: temp
+  suffix: .conll
+
+input:
   # /Users/liao/Desktop/DBMI_c2b2_2011_coref
-  dataset_dir: /home/yuxiangliao/PhD/DBMI_c2b2_2011_coref
-  output_dir: ${output_dir}/coref/data/i2b2
-  # 0 to use random seed to shuffle the dataset; -1 to disable the shuffle; Or any int value as static seed.
-  shuffle_seed: 0
-  # In safe mode, the conflict dirs during the raw2conll processing need to be removed manually.
-  safe_mode: false
-  # If true, then the history output dir will be deleted and created again.
-  clear_history: true
+  dataset_dir: /home/yuxiangliao/PhD/DBMI_c2b2_2011_coref # Should not contain space symbol in the path.
+  chain_suffix: .chains
+  doc_dir_name: docs
+  chain_dir_name: chains
 
-  output:
-    root_dir_name: conll
-    temp_dir_name: temp
-    suffix: .conll
 
-  input:
-    chain_suffix: .chains
-    doc_dir_name: docs
-    chain_dir_name: chains
-    
+paths:
+  beth_train: ${input.dataset_dir}/Beth_Train
+  beth_test: ${input.dataset_dir}/i2b2_Test/i2b2_Beth_Test
+  beth_test_ground_truth: ${input.dataset_dir}/Tack_1C_to_be_released_10_02_2011/i2b2_Beth_Test
+  partners_train: ${input.dataset_dir}/Partners_Train
+  partners_test: ${input.dataset_dir}/i2b2_Test/i2b2_Partners_Test
+  partners_test_ground_truth: ${input.dataset_dir}/Tack_1C_to_be_released_10_02_2011/i2b2_Partners_Test
 
-  data_split:
-    # It will create datasets for 10-folds cross-validation. The source files will be *split* into ${data_split.if_split.proportion}.
-    # The source files will be shuffled after spliting the tran+dev and test sets, which means the test set of each fold will not overlap.
-    cross_validation: true
-    if_cross_validation:
-      folds: 10 # The dir_name will be the index of the folds
-      output_name_prefix: train,dev,test # Should match to the length of ${data_split.if_split.proportion}
-      proportion: 7,2,1 # In which proportion to split the source files.
-    # It will create a dataset that shuffle the source files across all split. The source files will be *split* into ${data_split.if_split.proportion}.
-    random_shuffle: true
-    if_random_shuffle:
-      dir_name: random
-      output_name_prefix: train,dev,test # Should match to the length of ${data_split.if_split.proportion}
-      proportion: 7,2,1 # In which proportion to split the source files.
-    # It will only create one file with prefix "all" without spliting the source files. The source files will NOT be *split*.
-    unsplit: true
-    if_unsplit:
-      dir_name: all
-      output_name_prefix: test
-      proportion: null
 
-  paths:
-    beth_train: ${coref_data_preprocessing.i2b2.dataset_dir}/Beth_Train
-    beth_test: ${coref_data_preprocessing.i2b2.dataset_dir}/i2b2_Test/i2b2_Beth_Test
-    beth_test_ground_truth: ${coref_data_preprocessing.i2b2.dataset_dir}/Tack_1C_to_be_released_10_02_2011/i2b2_Beth_Test
-    partners_train: ${coref_data_preprocessing.i2b2.dataset_dir}/Partners_Train
-    partners_test: ${coref_data_preprocessing.i2b2.dataset_dir}/i2b2_Test/i2b2_Partners_Test
-    partners_test_ground_truth: ${coref_data_preprocessing.i2b2.dataset_dir}/Tack_1C_to_be_released_10_02_2011/i2b2_Partners_Test
+data_split:
+  # It will create datasets for 10-folds cross-validation. The source files will be *split* into ${data_split.if_split.proportion}.
+  # The source files will be shuffled after spliting the tran+dev and test sets, which means the test set of each fold will not overlap.
+  cross_validation: true
+  if_cross_validation:
+    folds: 10 # The dir_name will be the index of the folds
+    output_name_prefix: train,dev,test # Should match to the length of ${data_split.if_split.proportion}
+    proportion: 7,2,1 # In which proportion to split the source files.
+  # It will create a dataset that shuffle the source files across all split. The source files will be *split* into ${data_split.if_split.proportion}.
+  random_shuffle: true
+  if_random_shuffle:
+    dir_name: random
+    output_name_prefix: train,dev,test # Should match to the length of ${data_split.if_split.proportion}
+    proportion: 7,2,1 # In which proportion to split the source files.
+  # It will only create one file with prefix "all" without spliting the source files. The source files will NOT be *split*.
+  unsplit: true
+  if_unsplit:
+    dir_name: all
+    output_name_prefix: test
+    proportion: null

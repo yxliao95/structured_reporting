@@ -9,11 +9,7 @@ import json
 
 # pylint: disable=import-error
 from coref_utils import conll
-from data_processing.utils import (
-    split_into_segments,
-    parse_args,
-    normalize_word,
-)
+from data_processing.utils import split_into_segments, parse_args, normalize_word
 from data_processing.process_ontonotes import OntoNotesDocumentState
 from common_utils.file_checker import FileChecker
 
@@ -114,12 +110,9 @@ def minimize_split(args):
 
 
 def invoke(conll_dir):
+    # Remove the previous sys.argv for Hydra
+    while len(sys.argv) > 1:
+        sys.argv.pop()
     sys.argv.append(conll_dir)
     output_dir = minimize_split(parse_args())
     return output_dir
-
-
-# if __name__ == "__main__":
-#     input_dir = "/Users/liao/Desktop/DBMI_c2b2_2011_coref/conll"
-#     sys.argv.append(input_dir)
-#     minimize_split(parse_args())

@@ -5,6 +5,7 @@ import logging
 import re
 import sys
 import os
+import shutil
 
 import hydra
 # pylint: disable=import-error
@@ -16,6 +17,7 @@ from data_processing.utils import (
 )
 from data_processing.process_ontonotes import OntoNotesDocumentState
 from common_utils.file_checker import FileChecker
+from common_utils.common_utils import check_and_create_dirs, check_and_remove_dirs
 
 
 logger = logging.getLogger()
@@ -97,39 +99,27 @@ def minimize_partition(input_path, output_path, tokenizer, seg_len):
 
 
 def minimize_split(config, args):
-    for subdir_entry in os.scandir(args.input_dir):
-        # Ignore temp and hidden dirs
-        if FILE_CHECKER.ignore(subdir_entry.name) or subdir_entry.path == config.coref_data_preprocessing.mimic_cxr.temp_dir:
-            continue
-        output_dir = os.path.join(subdir_entry.path, os.path.basename(args.output_dir))
-        if not os.path.exists(output_dir):
-            os.makedirs(output_dir)
-        for file_entry in os.scandir(os.path.join(subdir_entry.path, config.coref_data_preprocessing.mimic_cxr.output.root_dir_name)):
-            input_path = file_entry.path
-            output_path = os.path.join(
-                output_dir, f"{file_entry.name.removesuffix(config.coref_data_preprocessing.mimic_cxr.output.suffix)}.{args.seg_len}.jsonlines"
-            )
+    output_dir_longformer = os.path.join(config.output.base_dir, os.path.basename(args.output_dir))
+    check_and_create_dirs(output_dir_longformer)
+    output_dir_conll = os.path.join(config.output.base_dir, "conll")
+    check_and_create_dirs(output_dir_conll)
+
+    for element in config.longformer.source:  # [{'train': 'train_dev_3k'}, {'dev': 'train_dev_3k'}, {'test': 'test_only'}]
+        for key, val in element.items():
+            # Copy to conll dir
+            input_path = os.path.join(args.input_dir, config.data_split.get(val).dir_name, f"{key}{config.output.suffix}")
+            shutil.copyfile(input_path, os.path.join(output_dir_conll, f"{key}{config.output.suffix}"))
+
+            # Generate to longformer dir
+            output_path = os.path.join(output_dir_longformer, f"{key}.{args.seg_len}.jsonlines")
             minimize_partition(input_path, output_path, args.tokenizer, args.seg_len)
-    logger.info("Done.")
-    return output_dir
 
 
-def invoke(config, input_dir):
-    sys.argv.append(input_dir)
+def invoke(config):
+    # Remove the previous sys.argv for Hydra
+    while len(sys.argv) > 1:
+        sys.argv.pop()
+    conll_base_dir = os.path.join(config.output.base_dir, config.output.conll_dir_name)
+    sys.argv.append(conll_base_dir)
     args = parse_args()
-    output_dir = minimize_split(config, args)
-    # We dont output the files to ``args.output_dir``. Here, the ``args.output_dir`` folder is empty and safe to delete.
-    if os.path.exists(args.output_dir):
-        os.removedirs(args.output_dir)
-
-    return output_dir
-
-
-@hydra.main(version_base=None, config_path=config_path, config_name="coreference_resolution")
-def main(config):
-    input_dir = "/home/yuxiangliao/PhD/workspace/VSCode_workspace/structured_reporting/output/coref/data/mimic_cxr/"
-    invoke(config, input_dir)
-
-
-if __name__ == "__main__":
-    main()  # pylint: disable=no-value-for-parameter
+    minimize_split(config, args)

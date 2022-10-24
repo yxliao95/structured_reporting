@@ -1,11 +1,15 @@
-import logging
 import os
+import sys
 import time
+import logging
 
 import hydra
-from common_utils.coref_utils import remove_all
-from coreference_resolution.data_preprocessing import i2b2_conll2jsonlines
+from omegaconf import OmegaConf
+
+# pylint: disable=import-error,wrong-import-order
 from coreference_resolution.data_preprocessing import i2b2_raw2conll
+from coreference_resolution.data_preprocessing import i2b2_conll2jsonlines
+from common_utils.common_utils import check_and_remove_dirs
 
 logger = logging.getLogger()
 pkg_path = os.path.dirname(__file__)
@@ -15,11 +19,10 @@ config_path = os.path.join(os.path.dirname(coref_module_path), "config")
 
 @hydra.main(version_base=None, config_path=config_path, config_name="coreference_resolution")
 def main(config):
+    print(OmegaConf.to_yaml(config))
 
     # The history output dir will be deleted and created again.
-    config = config.coref_data_preprocessing.i2b2
-    if config.clear_history:
-        remove_all(config.output_dir)
+    check_and_remove_dirs(config.output.base_dir, config.clear_history)
 
     logger.info("*" * 60)
     logger.info("Stage 1: Convert i2b2 data to .conll files")
@@ -43,4 +46,5 @@ def main(config):
 
 
 if __name__ == "__main__":
+    sys.argv.append("coref_data_preprocessing@_global_=i2b2")
     main()  # pylint: disable=no-value-for-parameter

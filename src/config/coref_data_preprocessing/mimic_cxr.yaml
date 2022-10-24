@@ -1,53 +1,68 @@
-mimic_cxr:
-  dataset_path: ${output_dir}/mimic_cxr_sections.jsonlines
-  output_dir: ${output_dir}/coref/data/mimic_cxr
-  temp_dir: ${output_dir}/coref/data/mimic_cxr/temp
+defaults:
+  - /name_style/spacy_output
+  - /name_style/majority_voting
 
-  # 0 to use random seed to shuffle the dataset; -1 to disable the shuffle; Or any int value as static seed.
-  shuffle_seed: -1
+# dataset_path: ${output_dir}/mimic_cxr_sections.jsonlines
+# output_dir: ${output_dir}/coref/data/mimic_cxr
+# temp_dir: ${output_dir}/coref/data/mimic_cxr/temp
 
-  # If true, then the history output dir (except for the temp_dir) will be deleted and created again.
-  clear_history: true
-  # The .csv files are stored in ``temp_dir``. To generate the all .csv files required 15 hours for 6 workers.
-  # If false, the `temp_dir`` will not be removed in any case.
-  remove_temp: false
+# 0 to use random seed to shuffle the dataset; -1 to disable the shuffle; Or any int value as static seed.
+shuffle_seed: 42
 
-  # Assuming we already have ``temp_dir``, we skip stage 1 and reuse the existing .csv them.
-  reload_from_temp: true
+# If true, then the history output dir (include the temp.base_dir) will be deleted and created again.
+clear_history: False
 
-  output:
-    root_dir_name: conll
-    suffix: .conll
+output:
+  base_dir: ${mimic_cxr_output_dir}/coref
+  run_statistic: ${output.base_dir}/coref_count.statistic
+  log_file: ${output.base_dir}/run.log
+  conll_dir_name: aggregrate_conll
+  suffix: .conll
 
-  input:
-    suffix: .csv
+# Save individual conll files. Later when we need to sample and aggregrate conll files, we can copy from here.
+temp:
+  base_dir: ${output.base_dir}/individual_conll
+  detail_file_suffix: .dict
 
-  multiprocessing:
-    workers_in_pool: 10
-    # The number of records to process in a batch.
-    batch_size: 10
+input:
+  base_dir: ${mimic_cxr_output_dir}/statistic/coref_voting/majority_voting
+  suffix: .csv
+  section:
+    - findings
+    - impression
+    - provisional_findings_impression
+    - findings_and_impression
+  column_name:
+    token: ${name_style.spacy.column_name.token}
+    coref_group_conll: ${name_style.voting.column_name.coref_group_conll}
 
-    data_start_pos: 0
-    data_end_pos: 227835
 
-    target_section:
-      findings: true
-      impression: true
-      provisional_findings_impression: true
-      findings_and_impression: true
+thread:
+  workers: 14
 
-  data_split:
-    # Will be used when either ${data_split.cross_validation} or ${data_split.random_shuffle} is true, as files need to be *split*.
-    split: true
-    if_split:
-      log_hint: For_Finetuning
-      dir_name_suffix: null
-      output_name_prefix: train,dev,test # Should match to the length of ${data_split.if_split.proportion}
-      proportion: 7,2,1 # In which proportion to split the source files.
-    # It will only create one file with prefix "all" without spliting the source files. The source files will NOT be *split*.
-    unsplit: true
-    if_unsplit:
-      log_hint: For_Testing
-      dir_name_suffix: all
-      output_name_prefix: test
-      proportion: null
+data_split:
+  activate:
+    - train_dev
+    - test
+  train_dev:
+    # The test set are manually annotated and saved in different dir. We will exclude the testset docs from train and dev, 
+    # then construct the testset in an individual method
+    dir_name: random_train_dev_2k
+    samle_total: 2000
+    sample_detail:
+      # 3-8: 412
+      - findings: "{1: 294, 2: 294, 3: 295, 4: 83, 5: 25, 6: 6, 7: 2, 8: 1}"
+      # 3-7: 252
+      - impression: "{1: 374, 2: 374, 3: 194, 4: 43, 5: 7, 6: 6, 7: 2}"
+    output_name_prefix: train,dev # Should match to the length of ${data_split.if_split.proportion}
+    proportion: 8,2 # 0.8 train, 0.2 dev. But not exactly the same as some of the doc might be used in the test set.
+    test_docs_dir: ${mimic_cxr_output_dir}/statistic/for_brat_annotation
+  test:
+    dir_name: test
+    source_dir: ${mimic_cxr_output_dir}/statistic/for_brat_annotation
+
+longformer:
+  source:
+    - train: train_dev
+    - dev: train_dev
+    - test: test

@@ -1,12 +1,6 @@
 defaults:
   - common
-  - coref_data_preprocessing/i2b2
-  - coref_data_preprocessing/mimic_cxr
-  - name_style/mimic_cxr_sections
-  - name_style/corenlp_output
-  - name_style/spacy_output
-  - nlp_properties/corenlp
-  - coref/ensemble
+  - coref_data_preprocessing@_global_: mimic_cxr # The correct config file be chosen in the scripts. No need to modify here.
   - _self_
 
 module_dir_name: coreference_resolution

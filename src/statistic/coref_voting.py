@@ -407,7 +407,6 @@ def resolve_voting_info(config, df_spacy, section_name, file_name) -> DocClass:
 
             prev_spacy_tokenStr = str(df_aligned.loc[checkpoint_token_index, spacy_name_style_cfg.token])
             prev_coref_tokenStr = df_aligned.loc[checkpoint_token_index, coref_column_cfg.token]
-            prev_coref_tokenStr_isnan = False if isinstance(prev_coref_tokenStr, str) else isnan(prev_coref_tokenStr)
             prev_coref_tokenStr = str(prev_coref_tokenStr)
             # TokA = TokA'
             try:
@@ -487,7 +486,7 @@ def resolve_voting_info(config, df_spacy, section_name, file_name) -> DocClass:
                         left_str, right_str = "", ""
 
                     # Many2many: rest of the tokens.
-                    # Three example of (spacy_tok  coref_tok) in row 2-4
+                    # Three examples: (spacy_tok  coref_tok) in row 2-4
                     # .h    .       |   .h.s    .       |   .h      .
                     # .h    h.s.    |   .h.s    h.s.    |   .h      h.      (many2many)
                     # .s    NaN     |   .       NaN     |   .s      s.      (many2many)
@@ -784,20 +783,21 @@ def main(config):
             executor.shutdown(wait=True, cancel_futures=False)
             START_EVENT.clear()
 
-    # Log runtime information
-    check_and_create_dirs(config.output.base_dir)
-    with open(os.path.join(config.output.base_dir, config.output.log_file_name), "w", encoding="UTF-8") as f:
-        log_out = {
-            "Using": {
-                "Voting stategy": config.voting.strategy,
-            },
-            "Number of processed records": len(all_task),
-            "Time cost": f"{time.time() - startTime:.2f}s"
-        }
-        f.write(json.dumps(log_out, indent=2))
-        f.write("\n\n")
+        # Log runtime information
+        check_and_create_dirs(config.output.base_dir)
+        with open(os.path.join(config.output.base_dir, config.output.log_file_name), "a", encoding="UTF-8") as f:
+            log_out = {
+                "Using": {
+                    "Voting stategy": config.voting.strategy,
+                },
+                "Section": section_name,
+                "Number of processed records": len(all_task),
+                "Time cost": f"{time.time() - startTime:.2f}s"
+            }
+            f.write(json.dumps(log_out, indent=2))
+            f.write("\n\n")
 
 
 if __name__ == "__main__":
-    sys.argv.append("+statistic/coref_voting@_global_=i2b2")
+    sys.argv.append("+statistic/coref_voting@_global_=mimic_cxr")
     main()  # pylint: disable=no-value-for-parameter
