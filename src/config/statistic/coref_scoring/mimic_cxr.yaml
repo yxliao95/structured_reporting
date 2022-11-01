@@ -1,0 +1,90 @@
+clear_history: false
+
+defaults:
+  - ../../name_style/i2b2_gt@name_style
+  - ../../name_style/@name_style: majority_voting
+  
+output:
+  base_dir: ${mimic_cxr_output_dir}/statistic/coref_scoring
+  base_temp_dir_name: scorer_input_temp
+  log_file_name: run.log
+
+scorer:
+  path: ${coref_scorer_dir}/scorer.pl
+  metrics:
+    - muc # MUCScorer (Vilain et al, 1995)
+    - bcub # B-Cubed (Bagga and Baldwin, 1998)
+    - ceafe # CEAF (Luo et al, 2005) using entity-based similarity
+
+input:
+  base_dir: ${mimic_cxr_output_dir}/statistic/coref_voting
+  base_dir2: ${mimic_cxr_output_dir}/nlp_ensemble
+
+  spacy:
+    csv_dir: ${mimic_cxr_output_dir}/nlp_ensemble/spacy
+    target_column:
+      token: ${name_style.spacy.column_name.token}
+      sentence_group: ${name_style.spacy.column_name.sentence_group}
+  
+  ground_truth:
+    csv_dir: ${mimic_cxr_output_dir}/ground_truth
+    target_column:
+      token_for_alignment: ${name_style.spacy.column_name.token}
+      token: ${name_style.spacy.column_name.token}
+      sentence_group: ${name_style.spacy.column_name.sentence_group}
+      coref_group_conll: ${name_style.mimic_cxr_gt.column_name.coref_group_conll}
+  
+  # Which section to use
+  section:
+    - findings
+    - impression
+
+  source:
+    use:
+      - ml
+      - rb
+      - fj
+      - mv
+    models:
+      mv:
+        name: majority_voting
+        dir: ${input.base_dir}/majority_voting
+        align_to_spacy: False
+        target_column:
+          token: ${name_style.spacy.column_name.token}
+          sentence_group: ${name_style.spacy.column_name.sentence_group}
+          coref_group_conll: ${name_style.voting.column_name.coref_group_conll}
+      ml:
+        name: scoref
+        dir: ${input.base_dir2}/corenlp/scoref
+        align_to_spacy: True
+        target_column:
+          token: ${name_style.corenlp.column_name.token}
+          sentence_group: ${name_style.corenlp.column_name.sentence_group}
+          coref_group_conll: ${name_style.corenlp.column_name.scoref_group_conll}
+          coref_group: ${name_style.corenlp.column_name.scoref_group}
+          spacy_index: ${name_style.corenlp.column_name.align_to_spacy}
+      rb:
+        name: dcoref
+        dir: ${input.base_dir2}/corenlp/dcoref
+        align_to_spacy: True
+        target_column:
+          token: ${name_style.corenlp.column_name.token}
+          sentence_group: ${name_style.corenlp.column_name.sentence_group}
+          coref_group_conll: ${name_style.corenlp.column_name.dcoref_group_conll}
+          coref_group: ${name_style.corenlp.column_name.dcoref_group}
+          spacy_index: ${name_style.corenlp.column_name.align_to_spacy}
+      fj:
+        name: fast_coref_joint
+        dir: ${input.base_dir2}/fast_coref_joint
+        align_to_spacy: False
+        target_column:
+          token: ${name_style.fastcoref_joint.column_name.token_from_spacy}
+          sentence_group: ${name_style.fastcoref_joint.column_name.sentence_group}
+          coref_group_conll: ${name_style.fastcoref_joint.column_name.coref_group_conll}
+          coref_group: ${name_style.fastcoref_joint.column_name.coref_group}
+          spacy_index: ${df_col.coref_index}
+
+df_col:
+  spacy_index: spacy_index
+  coref_index: coref_index

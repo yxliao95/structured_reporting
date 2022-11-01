@@ -1,6 +1,8 @@
 defaults:
   - common
-  - coref_data_preprocessing@_global_: mimic_cxr # The correct config file be chosen in the scripts. No need to modify here.
+  - name_style/corenlp_output
+  - name_style/spacy_output
+  - name_style/fastcoref_joint_output
   - _self_
 
-module_dir_name: coreference_resolution
+  # The correct config file be chosen in the scripts. No need to modify here.

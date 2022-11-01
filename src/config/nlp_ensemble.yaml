@@ -32,9 +32,9 @@ corenlp_for_unfinished_records:
   unfinished_records_path: ${corenlp.unfinished_records_path}
 
 fastcoref_joint:
-  output_dir: ${output.base_dir}/fast_coref_joint
+  output_dir: ${output.base_dir}/fast_coref_onto_i2b2
   activate: true
-  model_dir: ${fast_coref_dir}/models/joint_best
+  model_dir: ${fast_coref_dir}/models/coref_joint_train_onto_i2b2_301
   doc_encoder_dir: ${fast_coref_dir}/models/longformer_coreference_joint
   unfinished_records_path: ${fastcoref_joint.output_dir}/fastcoref_unfinished_records.log
 

@@ -9,14 +9,14 @@ defaults:
   - ../../name_style/@name_style: majority_voting
 
 output:
-  base_dir: ${i2b2_output_dir}/statistic/coref_voting
+  base_dir: ${mimic_cxr_output_dir}/coref_voting
   files_dir: ${output.base_dir}/${voting.strategy}
   log_file_name: ${output.base_dir}/run.log
 
 clear_history: true
 
 input:
-  base_dir: ${i2b2_output_dir}/nlp_ensemble
+  base_dir: ${mimic_cxr_output_dir}/nlp_ensemble
   source:
     # For token alignment
     baseline_model:
@@ -24,7 +24,10 @@ input:
 
     # Which section to use
     section:
-      - all
+      - findings
+      - impression
+      - provisional_findings_impression
+      - findings_and_impression
 
     # Which model to use
     in_use:

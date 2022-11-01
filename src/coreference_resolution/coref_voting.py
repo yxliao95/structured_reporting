@@ -739,7 +739,7 @@ def batch_processing(config, spacy_file_path, section_name, file_name):
     return f"{file_name} done."
 
 
-@ hydra.main(version_base=None, config_path=config_path, config_name="statistic")
+@ hydra.main(version_base=None, config_path=config_path, config_name="coreference_resolution")
 def main(config):
     print(OmegaConf.to_yaml(config))
     source_cfg = config.input.source
@@ -799,5 +799,5 @@ def main(config):
 
 
 if __name__ == "__main__":
-    sys.argv.append("+statistic/coref_voting@_global_=mimic_cxr")
+    sys.argv.append("+coreference_resolution/coref_voting@_global_=mimic_cxr")
     main()  # pylint: disable=no-value-for-parameter

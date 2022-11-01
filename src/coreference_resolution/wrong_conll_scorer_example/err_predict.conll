@@ -1,11 +1,15 @@
 #begin document (clinical-61); part 0
-clinical-61	0	0	100469881	_	_	_	_	_	_	_	_   (1)
-clinical-61	0	1	EH	_	_	_	_	_	_	_	_
+clinical-61	0	0	100469881	_	_	_	_	_	_	_	_
+clinical-61	0	1	EH	_	_	_	_	_	_	_	_   (0)
 clinical-61	0	3	00989464	_	_	_	_	_	_	_	_
-clinical-61	0	5	822862	_	_	_	_	_	_	_	_
+clinical-61	0	5	822862	_	_	_	_	_	_	_	_   (0)
 clinical-61	0	7	06/09/1998	_	_	_	_	_	_	_	_
 clinical-61	0	8	12:00:00	_	_	_	_	_	_	_	_
 clinical-61	0	9	AM	_	_	_	_	_	_	_	_
-
-
+#end document
+#begin document (clinical-666); part 0
+clinical-666	0	5	822862	_	_	_	_	_	_	_	_
+clinical-666	0	7	06/09/1998	_	_	_	_	_	_	_	_
+clinical-666	0	8	12:00:00	_	_	_	_	_	_	_	_   (1)
+clinical-666	0	9	AM	_	_	_	_	_	_	_	_
 #end document

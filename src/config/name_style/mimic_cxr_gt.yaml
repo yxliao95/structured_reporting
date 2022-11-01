@@ -1,0 +1,6 @@
+mimic_cxr_gt:
+  prefix: "[gt]"
+  column_name:
+    # "token" and "sentence_group" columns are directly copied from spacy
+    coref_group: ${name_style.mimic_cxr_gt.prefix}coref_group
+    coref_group_conll: ${name_style.mimic_cxr_gt.prefix}coref_group_conll

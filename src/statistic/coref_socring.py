@@ -317,7 +317,7 @@ def align_spacy_to_ground_truth(gt_token_list, spacy_toekn_list, df_spacy=None, 
             else:
                 curr_spacy_token_pointer += 1
 
-    assert spacy_toekn_list[curr_spacy_token_pointer].strip() == ""
+    # assert spacy_toekn_list[curr_spacy_token_pointer].strip() == "" # For i2b2?
     assert len(spacy2gt_tok_indices) == len(gt_token_list)
     return spacy2gt_tok_indices, empty_token_idx_with_conll_label_dict
 

@@ -73,19 +73,19 @@ def inference(model, tokenized_doc):
     return pred_mentions, pred_actions
 
 
-def resolve_output(tokenized_doc, pred_mentions, pred_actions) -> list[list[int]]:
+def resolve_output(tokenized_doc, pred_mentions, pred_actions, ignore_singleton=False) -> list[list[int]]:
     """Returns:
-        A list of coreference groups. Each group has one or more coref mentions. 
+        A list of coreference groups. Each group has one or more coref mentions.
         Each of the mentions consist of a list of indices refering to the corresponding token position.
     """
     idx_clusters = action_sequences_to_clusters(pred_actions, pred_mentions)
-    subtoken_map = tokenized_doc["subtoken_map"]  # THe elements in subtoken_map is the indices of the input token.
+    subtoken_map = tokenized_doc["subtoken_map"]  # The elements in subtoken_map is the indices of the input token.
     coref_group_list = []
     for idx_cluster in idx_clusters:
         coref_group = []
-        # # Ignore singleton
-        # if len(idx_cluster) == 1:
-        #     break
+        # Ignore singleton
+        if ignore_singleton and len(idx_cluster) == 1:
+            continue
         for (ment_start, ment_end) in idx_cluster:
             coref_group.append(list(range(subtoken_map[ment_start], subtoken_map[ment_end] + 1)))
         coref_group_list.append(coref_group)

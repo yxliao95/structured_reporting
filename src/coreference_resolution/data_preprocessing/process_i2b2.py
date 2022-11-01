@@ -46,5 +46,5 @@ def main(config):
 
 
 if __name__ == "__main__":
-    sys.argv.append("coref_data_preprocessing@_global_=i2b2")
+    sys.argv.append("+coreference_resolution/data_preprocessing@_global_=i2b2")
     main()  # pylint: disable=no-value-for-parameter

@@ -1,0 +1,98 @@
+defaults:
+  - /name_style/spacy_output
+  - /name_style/majority_voting
+  - /name_style/mimic_cxr_gt
+
+# 0 to use random seed to shuffle the dataset; -1 to disable the shuffle; Or any int value as static seed.
+shuffle_seed: 42
+
+# If true, then the history output dir (include the temp.base_dir) will be deleted and created again.
+clear_history: False
+
+thread:
+  workers: 14
+
+output:
+  base_dir: ${mimic_cxr_output_dir}/coref
+  run_statistic: ${output.base_dir}/coref_count.statistic
+  log_file: ${output.base_dir}/run.log
+  conll_dir_name: aggregrate_conll
+  suffix: .conll
+
+# Save individual conll files. Later when we need to sample and aggregrate conll files, we can copy from here.
+temp:
+  base_dir: ${output.base_dir}/individual_conll
+  test_base_dir: ${output.base_dir}/individual_conll_test
+  detail_file_suffix: .dict
+
+input:
+  base_dir: ${mimic_cxr_output_dir}/coref_voting/majority_voting
+  suffix: .csv
+  section:
+    - findings
+    - impression
+    - provisional_findings_impression
+    - findings_and_impression
+  column_name:
+    token: ${name_style.spacy.column_name.token}
+    sentence_group: ${name_style.spacy.column_name.sentence_group}
+    coref_group_conll: ${name_style.voting.column_name.coref_group_conll}
+
+# Replace the previous two hierarchies with the following two to generate individual test conll files
+temp_for_test:
+  force_run: true # If True, then the history output will be deleted
+  base_dir: ${output.base_dir}/individual_conll_ground_truth
+  detail_file_suffix: .dict
+
+input_for_test:
+  base_dir: ${mimic_cxr_output_dir}/ground_truth
+  suffix: .csv
+  section:
+    - findings
+    - impression
+  column_name:
+    token: ${name_style.spacy.column_name.token}
+    sentence_group: ${name_style.spacy.column_name.sentence_group}
+    coref_group_conll: ${name_style.mimic_cxr_gt.column_name.coref_group_conll}
+
+data_split:
+  activate:
+    # - train_dev
+    # - train_dev_1k
+    - test
+  train_dev:
+    # The test set are manually annotated and saved in different dir. We will exclude the testset docs from train and dev, 
+    # then construct the testset in an individual method
+    dir_name: random_train_dev_2k
+    samle_total: 2000
+    sample_detail:
+      # 3-8: 412, 4-8: 117
+      - findings: "{1: 294, 2: 294, 3: 295, 4: 83, 5: 25, 6: 6, 7: 2, 8: 1}"
+      # 3-7: 252, 4-7: 58
+      - impression: "{1: 374, 2: 374, 3: 194, 4: 43, 5: 7, 6: 6, 7: 2}"
+    output_name_prefix: train,dev # Should match to the length of ${data_split.if_split.proportion}
+    proportion: 8,2 # 0.8 train, 0.2 dev. But not exactly the same as some of the doc might be used in the test set.
+    test_docs_dir: ${mimic_cxr_output_dir}/ground_truth
+  train_dev_1k:
+    # The test set are manually annotated and saved in different dir. We will exclude the testset docs from train and dev, 
+    # then construct the testset in an individual method
+    dir_name: random_train_dev_1k
+    samle_total: 1250
+    sample_detail:
+      # 3-8: 412, 4-8: 117
+      - findings: "{1: 170, 2: 170, 3: 170, 4: 83, 5: 25, 6: 6, 7: 2, 8: 1}"
+      # 3-7: 252, 4-7: 58
+      - impression: "{1: 189, 2: 189, 3: 189, 4: 43, 5: 7, 6: 6, 7: 2}"
+    output_name_prefix: train,dev # Should match to the length of ${data_split.if_split.proportion}
+    proportion: 8,2 # 0.8 train, 0.2 dev. But not exactly the same as some of the doc might be used in the test set.
+    test_docs_dir: ${mimic_cxr_output_dir}/ground_truth
+  test:
+    dir_name: test
+    source_dir: ${temp_for_test.base_dir}
+    source_file_suffix: .conll
+
+longformer:
+  source:
+    - train: train_dev_1k
+    - dev: train_dev
+    - test: test

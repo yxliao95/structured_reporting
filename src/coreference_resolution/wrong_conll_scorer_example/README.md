@@ -6,7 +6,7 @@ All the `docs` in conll files will be used for calculation. In gt.conll and pred
 
 The acutal `token string`, `token id`, `sentence segmentation` (new line) do not affect the measurement. The `empty line`, including its `number` and `position`, do not affect the result.
 
-However, the number of lines is the key and should be identical, otherwise the results would be wrong. In other words, the socrer will align every lines, then only the last column (`coref labels`) will be used for scoring. The `value of the coref label` does not affect the mention-level assesment and the coref-level (group-level) assesment (e.g. gt use value `0` and pred use value `1`).
+However, the position of the coref label (i.e. at which row) is the key and should be identical, otherwise the results would be wrong. In other words, the socrer will align every lines (e.g. gt row1 <-> pred row1, gt row_n <-> pred row_n). Then only the last column (`coref labels`) will be used for scoring. The `value of the coref label` does not affect the mention-level assesment and the coref-level (group-level) assesment (e.g. gt use value `0` and pred use value `1`).
 
 ## How to trigger?
 

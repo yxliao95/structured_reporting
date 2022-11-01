@@ -25,38 +25,38 @@ coref_module_path = os.path.dirname(pkg_path)
 config_path = os.path.join(os.path.dirname(coref_module_path), "config")
 
 
-def batch_processing(config, section_name, input_file_path) -> int:
+def batch_processing(input_cfg, temp_cfg, section_name, input_file_path) -> int:
     """ All whitespces like "\n", "\n " and " " are skipped. 
     Return:
         True if this doc has at least one coref group. Otherwise False
     """
     START_EVENT.wait()
 
-    doc_id = get_file_name_prefix(input_file_path, config.input.suffix)
+    doc_id = get_file_name_prefix(input_file_path, input_cfg.suffix)
     BEGIN = f"#begin document ({doc_id}_{section_name}); part 0\n"
     SENTENCE_SEPARATOR = "\n"
     END = "#end document\n"
-    output_file_path = os.path.join(config.temp.base_dir, section_name, f"{doc_id}.conll")
+    output_file_path = os.path.join(temp_cfg.base_dir, section_name, f"{doc_id}.conll")
 
     # Resolve CSV file
     sentenc_list: list[list[ConllToken]] = []
     df = pd.read_csv(input_file_path, index_col=0, na_filter=False)
-    _, coref_group_num = resolve_mention_and_group_num(df, config.input.column_name.coref_group_conll)
+    _, coref_group_num = resolve_mention_and_group_num(df, input_cfg.column_name.coref_group_conll)
 
     # Write .conll file only if doc has at least one coref group
     if coref_group_num > 0:
         sentence_id = 0
         while True:
             token_list: list[ConllToken] = []
-            df_sentence = df[df.loc[:, config.name_style.spacy.column_name.sentence_group] == sentence_id].reset_index()
+            df_sentence = df[df.loc[:, input_cfg.column_name.sentence_group] == sentence_id].reset_index()
             if df_sentence.empty:
                 break
             for _idx, data in df_sentence.iterrows():
                 # Skip all whitespces like "\n", "\n " and " ".
-                if str(data[config.input.column_name.token]).strip() == "":
+                if str(data[input_cfg.column_name.token]).strip() == "":
                     continue
-                conllToken = ConllToken(doc_id+"_"+section_name, sentence_id, _idx, data[config.input.column_name.token])
-                coref_col_cell = data[config.input.column_name.coref_group_conll]
+                conllToken = ConllToken(doc_id+"_"+section_name, sentence_id, _idx, data[input_cfg.column_name.token])
+                coref_col_cell = data[input_cfg.column_name.coref_group_conll]
                 if isinstance(coref_col_cell, str) and coref_col_cell != "-1":
                     conllToken.add_coref_label("|".join(ast.literal_eval(coref_col_cell)))
                 token_list.append(conllToken)
@@ -77,9 +77,9 @@ def batch_processing(config, section_name, input_file_path) -> int:
     return doc_id, coref_group_num
 
 
-def convert_to_individual_conll(config, section_name, section_docs_dir) -> tuple[Counter, dict]:
+def convert_to_individual_conll(config, input_cfg, temp_cfg, section_name, section_docs_dir) -> tuple[Counter, dict]:
 
-    section_temp_conll_dir = os.path.join(config.temp.base_dir, section_name)
+    section_temp_conll_dir = os.path.join(temp_cfg.base_dir, section_name)
     check_and_make_dir(section_temp_conll_dir)
     logger.debug("Generating individual conll files to: %s", section_temp_conll_dir)
 
@@ -91,7 +91,7 @@ def convert_to_individual_conll(config, section_name, section_docs_dir) -> tuple
             # if len(all_task) > 100:
             #     break
             input_file_path = os.path.join(section_docs_dir, file_name)
-            all_task.append(executor.submit(batch_processing, config, section_name, input_file_path))
+            all_task.append(executor.submit(batch_processing, input_cfg, temp_cfg, section_name, input_file_path))
 
         # Notify tasks to start
         START_EVENT.set()
@@ -112,16 +112,16 @@ def convert_to_individual_conll(config, section_name, section_docs_dir) -> tuple
     return doc_coref_counter, corefGroupNum_docId_dict
 
 
-def prepare_conll(config):
+def prepare_conll(config, input_cfg, temp_cfg):
 
     # Process each sections
     log_out = []
-    for section_name in config.input.section:
+    for section_name in input_cfg.section:
         logger.info("Processing section: [%s]", section_name)
-        docs_dir = os.path.join(config.input.base_dir, section_name)
-        doc_coref_counter, corefGroupNum_docId_dict = convert_to_individual_conll(config, section_name, docs_dir)
+        docs_dir = os.path.join(input_cfg.base_dir, section_name)
+        doc_coref_counter, corefGroupNum_docId_dict = convert_to_individual_conll(config, input_cfg, temp_cfg, section_name, docs_dir)
 
-        dict_file = os.path.join(config.temp.base_dir, f"{section_name}{config.temp.detail_file_suffix}")
+        dict_file = os.path.join(temp_cfg.base_dir, f"{section_name}{temp_cfg.detail_file_suffix}")
         with open(dict_file, "w", encoding="UTF-8") as f:
             f.write(json.dumps(corefGroupNum_docId_dict))
 
@@ -186,7 +186,7 @@ def aggregrate_conll(config) -> defaultdict[str, int]:
 
                         # Get the acutal doc ids. Remove the doc_ids that used in testset. Then shuffle.
                         docId_list = groupNum_allDocId_dict[str(groupNum)]
-                        docId_testset_list = [i.rstrip(".txt") for i in FILE_CHECKER.filter(os.listdir(os.path.join(split_cfg.test_docs_dir, section_name)))]
+                        docId_testset_list = [i.rstrip(".csv") for i in FILE_CHECKER.filter(os.listdir(os.path.join(split_cfg.test_docs_dir, section_name)))]
                         docId_list_exclude = [x for x in docId_list if x not in docId_testset_list]
                         docId_list_shuffle = shuffle_list(docId_list_exclude, config.shuffle_seed)
                         logger.debug("len(docId_list): before removing: %s, after removing %s", len(docId_list), len(docId_list_exclude))
@@ -214,51 +214,29 @@ def aggregrate_conll(config) -> defaultdict[str, int]:
                 log_out[split_cfg.dir_name][f"{split_name} (actual all)"] = temp_dict[split_name]
 
         else:  # For the test split
+            split_name = "test"
             for section_entry in os.scandir(split_cfg.source_dir):
+                if section_entry.is_file():
+                    continue
                 section_name = section_entry.name
-                split_name = "test"
 
                 # Get the actual doc (all) ids for each corefGroupNum. {"0": ["sid1, sid2, ...."], "1": [], ....}. Then remove the keys.
                 groupNum_allDocId_dict: dict[str, list[str]] = get_actural_doc_ids(os.path.join(config.temp.base_dir, f"{section_name}{config.temp.detail_file_suffix}"))
                 allDocId_list = [docId for groupNum, docIds in groupNum_allDocId_dict.items() if groupNum != "0" for docId in docIds]
 
                 docId_list = FILE_CHECKER.filter(os.listdir(section_entry.path))
-                docId_list = [i.rstrip(".txt") for i in docId_list]
-                docId_list_hasCoref = [x for x in docId_list if x in allDocId_list]
-                log_out[split_cfg.dir_name][section_name] = {"expect_all": len(docId_list), split_name: len(docId_list_hasCoref)}
+                docId_list = [i.rstrip(".conll") for i in docId_list]
+                log_out[split_cfg.dir_name][section_name] = {"expect_all": len(docId_list), split_name: len(docId_list)}
 
                 output_dir = os.path.join(config.output.base_dir, config.output.conll_dir_name, split_cfg.dir_name)
                 check_and_make_dir(output_dir)
                 output_conll_file = os.path.join(output_dir, f"{split_name}{config.output.suffix}")
 
                 # Aggregrate one by one
-                for doc_id in docId_list_hasCoref:
-                    input_conll_file = os.path.join(config.temp.base_dir, section_name, f"{doc_id}{config.output.suffix}")
+                for doc_id in docId_list:
+                    input_conll_file = os.path.join(section_entry.path, f"{doc_id}{config.output.suffix}")
                     copy_and_paste_conll(input_conll_file, output_conll_file)
 
             log_out[split_cfg.dir_name][split_name] = sum([val_dict[split_name] for _, val_dict in log_out[split_cfg.dir_name].items()])
 
     return log_out
-
-    # # Generate datasets with correspondingh split configs
-    # for cfg in cfg_list:
-    #     test_docs_base_dir = cfg.get("test_docs_dir", None)
-    #     if test_docs_base_dir:
-    #         test_docs_dir = os.path.join(test_docs_base_dir, section_name)
-    #         if os.path.exists(test_docs_dir):
-    #             test_files = FILE_CHECKER.filter(os.listdir(test_docs_base_dir))
-    #             doc_files = [x for x in doc_files if x not in test_files]
-
-    #     data_split_name, data_split_num = get_porportion_and_name(cfg, doc_files)
-    #     doc_files_shuffle = shuffle_list(doc_files, config.shuffle_seed)  # Shuffle the file list
-
-    #     data_split = get_data_split(doc_files_shuffle, data_split_name, data_split_num)  # Split the files
-
-    #     output_dataset_dir = os.path.join(config.output.base_dir, cfg.dir_name, section_name)
-    #     # The history output dir will be deleted and created again.
-    #     if config.clear_history:
-    #         remove_all(output_dataset_dir)
-
-    #     logger.info("*** Creating an [%s] dataset at: %s", cfg.log_hint, output_dataset_dir)
-    #     output_conll_dir = os.path.join(output_dataset_dir, config.output.root_dir_name)
-    #     check_and_make_dir(output_conll_dir)
