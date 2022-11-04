@@ -168,7 +168,7 @@ def aggregrate_conll(config) -> defaultdict[str, int]:
                     log_out[split_cfg.dir_name][section_name] = {}
 
                     # Get the actual doc (all) ids for each corefGroupNum. {"0": ["sid1, sid2, ...."], "1": [], ....}
-                    groupNum_allDocId_dict: dict[str, list[str]] = get_actural_doc_ids(os.path.join(config.temp.base_dir, f"{section_name}{config.temp.detail_file_suffix}"))
+                    groupNum_allDocId_dict: dict[str, list[str]] = get_actural_doc_ids(os.path.join(config.temp_pred.base_dir, f"{section_name}{config.temp_pred.detail_file_suffix}"))
 
                     # Get the actual split number according the config.
                     data_split_proportion = [int(i) for i in split_cfg.proportion.split(",")]  # [8, 2]
@@ -199,7 +199,7 @@ def aggregrate_conll(config) -> defaultdict[str, int]:
 
                             # Aggregrate one by one
                             for doc_id in docId_list_shuffle[0:split_num]:
-                                input_conll_file = os.path.join(config.temp.base_dir, section_name, f"{doc_id}{config.output.suffix}")
+                                input_conll_file = os.path.join(config.temp_pred.base_dir, section_name, f"{doc_id}{config.output.suffix}")
                                 copy_and_paste_conll(input_conll_file, output_conll_file)
                                 log_out[split_cfg.dir_name][section_name][groupNum][split_name] += 1
                                 log_out[split_cfg.dir_name][section_name][groupNum]["actual_all"] += 1
@@ -215,17 +215,19 @@ def aggregrate_conll(config) -> defaultdict[str, int]:
 
         else:  # For the test split
             split_name = "test"
-            for section_entry in os.scandir(split_cfg.source_dir):
+            for section_entry in os.scandir(split_cfg.target_doc_dir):
                 if section_entry.is_file():
                     continue
                 section_name = section_entry.name
 
                 # Get the actual doc (all) ids for each corefGroupNum. {"0": ["sid1, sid2, ...."], "1": [], ....}. Then remove the keys.
-                groupNum_allDocId_dict: dict[str, list[str]] = get_actural_doc_ids(os.path.join(config.temp.base_dir, f"{section_name}{config.temp.detail_file_suffix}"))
+                groupNum_allDocId_dict: dict[str, list[str]] = get_actural_doc_ids(os.path.join(config.temp_pred.base_dir, f"{section_name}{config.temp_pred.detail_file_suffix}"))
                 allDocId_list = [docId for groupNum, docIds in groupNum_allDocId_dict.items() if groupNum != "0" for docId in docIds]
+                docId_testset_list = [i.rstrip(".csv") for i in FILE_CHECKER.filter(os.listdir(os.path.join(split_cfg.target_doc_dir, section_name)))]
+                docId_list = [x for x in docId_testset_list if x in allDocId_list]
 
-                docId_list = FILE_CHECKER.filter(os.listdir(section_entry.path))
-                docId_list = [i.rstrip(".conll") for i in docId_list]
+                # docId_list = FILE_CHECKER.filter(os.listdir(section_entry.path))
+                # docId_list = [i.rstrip(".conll") for i in docId_list]
                 log_out[split_cfg.dir_name][section_name] = {"expect_all": len(docId_list), split_name: len(docId_list)}
 
                 output_dir = os.path.join(config.output.base_dir, config.output.conll_dir_name, split_cfg.dir_name)
@@ -234,7 +236,7 @@ def aggregrate_conll(config) -> defaultdict[str, int]:
 
                 # Aggregrate one by one
                 for doc_id in docId_list:
-                    input_conll_file = os.path.join(section_entry.path, f"{doc_id}{config.output.suffix}")
+                    input_conll_file = os.path.join(split_cfg.source_dir, section_name, f"{doc_id}{config.output.suffix}")
                     copy_and_paste_conll(input_conll_file, output_conll_file)
 
             log_out[split_cfg.dir_name][split_name] = sum([val_dict[split_name] for _, val_dict in log_out[split_cfg.dir_name].items()])

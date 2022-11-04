@@ -10,13 +10,17 @@ defaults:
 
 output:
   base_dir: ${mimic_cxr_output_dir}/coref_voting
-  files_dir: ${output.base_dir}/${voting.strategy}
+  files_dir: ${output.base_dir}/majority_voting_mrf2
   log_file_name: ${output.base_dir}/run.log
 
-clear_history: true
+clear_history: false
+
+thread:
+  workers: 14
 
 input:
   base_dir: ${mimic_cxr_output_dir}/nlp_ensemble
+  base_dir2: ${mimic_cxr_output_dir}/ground_truth
   source:
     # For token alignment
     baseline_model:
@@ -33,7 +37,9 @@ input:
     in_use:
       - ml
       - rb
-      - fj
+      # - fj
+      - fj2
+      # - gt
     coref_models:
       ml:
         dir: ${input.base_dir}/corenlp/scoref
@@ -56,7 +62,23 @@ input:
           token: ${name_style.fastcoref_joint.column_name.token_from_spacy}
           coref_group: ${name_style.fastcoref_joint.column_name.coref_group}
           coref_group_conll: ${name_style.fastcoref_joint.column_name.coref_group_conll}
+      fj2:
+        dir: ${input.base_dir}/fast_coref_onto_i2b2
+        target_column:
+          spacy_index: ${df_col.coref_index}
+          token: ${name_style.fastcoref_joint.column_name.token_from_spacy}
+          coref_group: ${name_style.fastcoref_joint.column_name.coref_group}
+          coref_group_conll: ${name_style.fastcoref_joint.column_name.coref_group_conll}
+      gt:
+        dir: ${input.base_dir2}
+        target_column:
+          spacy_index: ${df_col.coref_index}
+          token: ${name_style.spacy.column_name.token}
+          coref_group: ${name_style.mimic_cxr_gt.column_name.coref_group}
+          coref_group_conll: ${name_style.mimic_cxr_gt.column_name.coref_group_conll}
 
 df_col:
   spacy_index: spacy_index
   coref_index: coref_index
+
+

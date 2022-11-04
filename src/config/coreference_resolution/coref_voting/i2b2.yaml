@@ -15,6 +15,9 @@ output:
 
 clear_history: true
 
+thread:
+  workers: 14
+
 input:
   base_dir: ${i2b2_output_dir}/nlp_ensemble
   source:

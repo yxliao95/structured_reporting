@@ -3,6 +3,7 @@ defaults:
   - name_style/corenlp_output
   - name_style/spacy_output
   - name_style/fastcoref_joint_output
+  - name_style/mimic_cxr_gt
   - _self_
 
   # The correct config file be chosen in the scripts. No need to modify here.

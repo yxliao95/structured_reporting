@@ -6,6 +6,7 @@ import os
 import sys
 import time
 import ast
+from datetime import datetime
 import math
 from math import isnan
 import traceback
@@ -371,6 +372,9 @@ def resolve_voting_info(config, df_spacy, section_name, file_name) -> DocClass:
         # Read coref model output to be aligned
         coref_model_output_path = os.path.join(coref_model_cfg.dir, section_name, file_name)
         df_coref = pd.read_csv(coref_model_output_path, index_col=0, na_filter=False)
+        # Comment out this line to prevent error when we want to use gt for ensemble majority voting.
+        # It should not affect the normal procedure as only gt csv files use [sp]token and [sp]sentence_group
+        df_coref = df_coref.rename(columns={"[sp]token": "[gt]token", "[sp]sentence_group": "[gt]sentence_group"})
 
         # Merge and align two df. Keep the index for later use
         df_spacy[config.df_col.spacy_index] = df_spacy.index
@@ -771,12 +775,10 @@ def main(config):
 
             # When a submitted task finished, the output is received here.
             if all_task:
-                with tqdm(total=len(all_task)) as pbar:
-                    for future in as_completed(all_task):
-                        msg = future.result()
-                        logger.debug(msg)
-                        pbar.update(1)
-                    logger.info("Done.")
+                for future in tqdm(as_completed(all_task), total=len(all_task)):
+                    msg = future.result()
+                    logger.debug(msg)
+                logger.info("Done.")
             else:
                 logger.info("All empty. Skipped.")
 
@@ -785,6 +787,7 @@ def main(config):
 
         # Log runtime information
         check_and_create_dirs(config.output.base_dir)
+
         with open(os.path.join(config.output.base_dir, config.output.log_file_name), "a", encoding="UTF-8") as f:
             log_out = {
                 "Using": {
@@ -792,7 +795,8 @@ def main(config):
                 },
                 "Section": section_name,
                 "Number of processed records": len(all_task),
-                "Time cost": f"{time.time() - startTime:.2f}s"
+                "Time cost": f"{time.time() - startTime:.2f}s",
+                "Datetime": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
             }
             f.write(json.dumps(log_out, indent=2))
             f.write("\n\n")

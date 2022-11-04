@@ -26,25 +26,25 @@ def main(config):
     check_and_remove_dirs(config.output.base_dir, config.clear_history)
 
     logger.info("*" * 60)
-    logger.info("Stage 1-1: Convert mimic-cxr .csv files to individual .conll files")
-    if os.path.exists(config.temp.base_dir):
+    logger.info("Stage 1-1: Convert all mimic-cxr .csv files to individual .conll files")
+    if os.path.exists(config.temp_pred.base_dir):
         logger.info("Individual conll files found and will be reused.")
     else:
-        log_out = mimic_cxr_csv2conll.prepare_conll(config, config.input, config.temp)
+        log_out = mimic_cxr_csv2conll.prepare_conll(config, config.input_pred, config.temp_pred)
         with open(config.output.run_statistic, "a", encoding="UTF-8") as f:
-            f.write(f"Source: {config.temp.base_dir} \n")
+            f.write(f"Source: {config.temp_pred.base_dir} \n")
             f.write(json.dumps(log_out, indent=2))
             f.write("\n")
 
     logger.info("*" * 60)
     logger.info("Stage 1-2: Convert mimic-cxr .csv files (manual annotated testset) to individual .conll files")
-    check_and_remove_dirs(config.temp_for_test.base_dir, config.temp_for_test.force_run)
-    if os.path.exists(config.temp_for_test.base_dir):
+    check_and_remove_dirs(config.temp_gt.base_dir, config.temp_gt.force_run)
+    if os.path.exists(config.temp_gt.base_dir):
         logger.info("Individual test conll files found and will be reused.")
     else:
-        log_out = mimic_cxr_csv2conll.prepare_conll(config, config.input_for_test, config.temp_for_test)
+        log_out = mimic_cxr_csv2conll.prepare_conll(config, config.input_gt, config.temp_gt)
         with open(config.output.run_statistic, "a", encoding="UTF-8") as f:
-            f.write(f"Source: {config.temp_for_test.base_dir} \n")
+            f.write(f"Source: {config.temp_gt.base_dir} \n")
             f.write(json.dumps(log_out, indent=2))
             f.write("\n")
 
