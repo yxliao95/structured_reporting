@@ -10,7 +10,7 @@ defaults:
 
 output:
   base_dir: ${mimic_cxr_output_dir}/coref_voting
-  files_dir: ${output.base_dir}/majority_voting_mrf2
+  files_dir: ${output.base_dir}/majority_voting_temp
   log_file_name: ${output.base_dir}/run.log
 
 clear_history: false
@@ -35,10 +35,12 @@ input:
 
     # Which model to use
     in_use:
-      - ml
-      - rb
-      # - fj
-      - fj2
+      # - ml
+      # - rb
+      - fj
+      - fj301
+      # - fj209
+      - fj214
       # - gt
     coref_models:
       ml:
@@ -62,8 +64,22 @@ input:
           token: ${name_style.fastcoref_joint.column_name.token_from_spacy}
           coref_group: ${name_style.fastcoref_joint.column_name.coref_group}
           coref_group_conll: ${name_style.fastcoref_joint.column_name.coref_group_conll}
-      fj2:
-        dir: ${input.base_dir}/fast_coref_onto_i2b2
+      fj301:
+        dir: ${input.base_dir}/fast_coref_301
+        target_column:
+          spacy_index: ${df_col.coref_index}
+          token: ${name_style.fastcoref_joint.column_name.token_from_spacy}
+          coref_group: ${name_style.fastcoref_joint.column_name.coref_group}
+          coref_group_conll: ${name_style.fastcoref_joint.column_name.coref_group_conll}
+      fj202:
+        dir: ${input.base_dir}/fast_coref_202
+        target_column:
+          spacy_index: ${df_col.coref_index}
+          token: ${name_style.fastcoref_joint.column_name.token_from_spacy}
+          coref_group: ${name_style.fastcoref_joint.column_name.coref_group}
+          coref_group_conll: ${name_style.fastcoref_joint.column_name.coref_group_conll}
+      fj214:
+        dir: ${input.base_dir}/fast_coref_214
         target_column:
           spacy_index: ${df_col.coref_index}
           token: ${name_style.fastcoref_joint.column_name.token_from_spacy}

@@ -19,6 +19,7 @@ output:
   conll_dir_name: aggregrate_conll
   suffix: .conll
 
+### For step 1-1
 # Save individual conll files. Later when we need to sample and aggregrate conll files, we can copy from here.
 temp_pred:
   base_dir: ${output.base_dir}/individual_conll
@@ -37,14 +38,15 @@ input_pred:
     sentence_group: ${name_style.spacy.column_name.sentence_group}
     coref_group_conll: ${name_style.voting.column_name.coref_group_conll}
 
+### For step 1-2
 # Replace the previous two hierarchies with the following two to generate individual test conll files
 temp_gt:
   force_run: False # If True, then the history output will be deleted
-  base_dir: ${output.base_dir}/individual_conll_ground_truth
+  base_dir: ${output.base_dir}/individual_conll_ground_truth/round4_100_1
   detail_file_suffix: .dict
 
 input_gt:
-  base_dir: ${mimic_cxr_output_dir}/ground_truth
+  base_dir: ${mimic_cxr_output_dir}/manual_training_set/round4_100_1
   suffix: .csv
   section:
     - findings
@@ -54,21 +56,22 @@ input_gt:
     sentence_group: ${name_style.spacy.column_name.sentence_group}
     coref_group_conll: ${name_style.mimic_cxr_gt.column_name.coref_group_conll}
 
+### For step 3
 # Will copy aggregrated conll files to /conll dir and generate .jsonlines files
 longformer:
   source:
-    - train: train_dev_4k
-    - dev: train_dev_2k
-    - test: test_pred
+    - train: train_manual_100_1
+    - dev: train_manual_100_1
+    - test: test_gt
 
+### For step 2
 # Will generate aggregrate conll files to /aggregrate_conll dir 
 data_split:
   activate:
-    - train_dev_4k
-    - test_pred
+    - train_manual_100_1
+  
+  # The test set are manually annotated and saved in different dir. We will exclude the testset docs from train and dev, then construct the testset in an individual method
   train_dev_2k:
-    # The test set are manually annotated and saved in different dir. We will exclude the testset docs from train and dev, 
-    # then construct the testset in an individual method
     dir_name: random_train_dev_2k
     samle_total: 2000
     sample_detail:
@@ -80,8 +83,6 @@ data_split:
     proportion: 8,2 # 0.8 train, 0.2 dev. But not exactly the same as some of the doc might be used in the test set.
     test_docs_dir: ${mimic_cxr_output_dir}/ground_truth # Used to exclude the test docs from train and dev set.
   train_dev_1k:
-    # The test set are manually annotated and saved in different dir. We will exclude the testset docs from train and dev, 
-    # then construct the testset in an individual method
     dir_name: random_train_dev_1k
     samle_total: 1250
     sample_detail:
@@ -93,8 +94,6 @@ data_split:
     proportion: 8,2 # 0.8 train, 0.2 dev. But not exactly the same as some of the doc might be used in the test set.
     test_docs_dir: ${mimic_cxr_output_dir}/ground_truth
   train_dev_4k:
-    # The test set are manually annotated and saved in different dir. We will exclude the testset docs from train and dev, 
-    # then construct the testset in an individual method
     dir_name: random_train_dev_4k
     samle_total: 4000
     sample_detail:
@@ -105,13 +104,23 @@ data_split:
     output_name_prefix: train,dev # Should match to the length of ${data_split.if_split.proportion}
     proportion: 8,2 # 0.8 train, 0.2 dev. But not exactly the same as some of the doc might be used in the test set.
     test_docs_dir: ${mimic_cxr_output_dir}/ground_truth
+  
+  # The docs in `target_doc_dir` dir is the docs we want to get from the `source_dir`
   test_gt:
     dir_name: test_gt
-    target_doc_dir: ${mimic_cxr_output_dir}/ground_truth # The docs in this dir is the docs we want to get from the source dir
-    source_dir: ${temp_gt.base_dir}
+    target_doc_dir: ${mimic_cxr_output_dir}/manual_test_set/round1x2
+    source_dir: ${output.base_dir}/individual_conll_ground_truth/round1x2
     source_file_suffix: .conll
   test_pred:
     dir_name: test_pred
-    target_doc_dir: ${mimic_cxr_output_dir}/ground_truth
-    source_dir: ${temp_pred.base_dir}
+    target_doc_dir: ${mimic_cxr_output_dir}/ground_truth_old
+    source_dir: ${output.base_dir}/individual_conll
     source_file_suffix: .conll
+
+  train_manual_100_1:
+    dir_name: train_manual_100_1
+    target_doc_dir: ${mimic_cxr_output_dir}/manual_training_set/round4_100_1 
+    source_dir: ${output.base_dir}/individual_conll_ground_truth/round4_100_1
+    source_file_suffix: .conll
+    output_name_prefix: train,dev # Should match to the length of ${data_split.if_split.proportion}
+    proportion: 8,2 # 0.8 train, 0.2 dev. But not exactly the same as some of the doc might be used in the test set.

@@ -161,6 +161,7 @@ def aggregrate_conll(config) -> defaultdict[str, int]:
         log_out[split_cfg.dir_name] = {}
         # For the train and dev split
         logger.info("Processing [%s] split", split_cfg.dir_name)
+        #  split_cfg such as train_dev_2k
         if split_cfg.get("sample_detail", None):
             data_split_name_list = [i.strip() for i in split_cfg.output_name_prefix.split(",")]
             for sectionName_sampleNum_dict in split_cfg.sample_detail:
@@ -213,7 +214,52 @@ def aggregrate_conll(config) -> defaultdict[str, int]:
             for split_name in data_split_name_list:
                 log_out[split_cfg.dir_name][f"{split_name} (actual all)"] = temp_dict[split_name]
 
-        else:  # For the test split
+        # split_cfg such as train_manual_100_1
+        elif split_cfg.get("proportion", None):
+            # Get the actual split number according the config.
+            data_split_proportion = [int(i) for i in split_cfg.proportion.split(",")]  # [8, 2]
+            data_split_proportion_norm = [i / sum(data_split_proportion) for i in data_split_proportion]  # [0.8, 0.2]
+            # Split to train and dev
+            data_split_name_list = [i.strip() for i in split_cfg.output_name_prefix.split(",")]
+
+            for section_entry in os.scandir(split_cfg.target_doc_dir):
+                if section_entry.is_file():
+                    continue
+                section_name = section_entry.name
+                log_out[split_cfg.dir_name][section_name] = defaultdict(int)
+
+                # Get the actual doc (all) ids for each corefGroupNum. {"0": ["sid1, sid2, ...."], "1": [], ....}. Then remove the keys.
+                groupNum_allDocId_dict: dict[str, list[str]] = get_actural_doc_ids(os.path.join(split_cfg.source_dir, f"{section_name}{config.temp_pred.detail_file_suffix}"))
+                allDocId_list = [docId for groupNum, docIds in groupNum_allDocId_dict.items() if groupNum != "0" for docId in docIds]
+                # Remove docs that have 0_coref
+                docId_trainset_list = [i.rstrip(".csv") for i in FILE_CHECKER.filter(os.listdir(os.path.join(split_cfg.target_doc_dir, section_name)))]
+                docId_list = [x for x in docId_trainset_list if x in allDocId_list]
+                docId_list_shuffle = shuffle_list(docId_list, config.shuffle_seed)
+
+                log_out[split_cfg.dir_name][section_name]["expect_all"] = len(docId_trainset_list)
+
+                # Get doc num for train and dev splits
+                sampleDocNum = len(docId_list)
+                data_split_num_list = [int(i * sampleDocNum) for i in data_split_proportion_norm]  # [247.33..., 141.33...]
+                if sampleDocNum == 1:  # Assign to the train set first.
+                    data_split_num_list[0] = 1
+                data_split_num_list[-1] = sampleDocNum - sum(data_split_num_list[0:-1])  # [247, 141] (train, dev)
+
+                for split_name, split_num in zip(data_split_name_list, data_split_num_list):
+                    output_dir = os.path.join(config.output.base_dir, config.output.conll_dir_name, split_cfg.dir_name)
+                    check_and_make_dir(output_dir)
+                    output_conll_file = os.path.join(output_dir, f"{split_name}{config.output.suffix}")
+
+                    # Aggregrate one by one
+                    for doc_id in docId_list_shuffle[0:split_num]:
+                        input_conll_file = os.path.join(split_cfg.source_dir, section_name, f"{doc_id}{config.output.suffix}")
+                        copy_and_paste_conll(input_conll_file, output_conll_file)
+                        log_out[split_cfg.dir_name][section_name][split_name] += 1
+                        log_out[split_cfg.dir_name][section_name]["actual_all"] += 1
+                    docId_list_shuffle = docId_list_shuffle[split_num:]
+
+        # split_cfg such as test_gt test_pred
+        else:
             split_name = "test"
             for section_entry in os.scandir(split_cfg.target_doc_dir):
                 if section_entry.is_file():
@@ -221,7 +267,8 @@ def aggregrate_conll(config) -> defaultdict[str, int]:
                 section_name = section_entry.name
 
                 # Get the actual doc (all) ids for each corefGroupNum. {"0": ["sid1, sid2, ...."], "1": [], ....}. Then remove the keys.
-                groupNum_allDocId_dict: dict[str, list[str]] = get_actural_doc_ids(os.path.join(config.temp_pred.base_dir, f"{section_name}{config.temp_pred.detail_file_suffix}"))
+                groupNum_allDocId_dict: dict[str, list[str]] = get_actural_doc_ids(os.path.join(split_cfg.source_dir, f"{section_name}{config.temp_pred.detail_file_suffix}"))
+                # Remove docs that have 0_coref
                 allDocId_list = [docId for groupNum, docIds in groupNum_allDocId_dict.items() if groupNum != "0" for docId in docIds]
                 docId_testset_list = [i.rstrip(".csv") for i in FILE_CHECKER.filter(os.listdir(os.path.join(split_cfg.target_doc_dir, section_name)))]
                 docId_list = [x for x in docId_testset_list if x in allDocId_list]

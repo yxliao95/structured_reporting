@@ -51,7 +51,7 @@ def main(config):
     logger.info("*" * 60)
     logger.info("Stage 2: Aggregrate required conll files for model training.")
     log_out = mimic_cxr_csv2conll.aggregrate_conll(config)
-    with open(config.output.log_file, "w", encoding="UTF-8") as f:
+    with open(config.output.log_file, "a", encoding="UTF-8") as f:
         for split_mode, details in log_out.items():
             f.write(json.dumps({
                 "output_folder": split_mode,
