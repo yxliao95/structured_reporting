@@ -4,12 +4,14 @@ Please register and download the 2011 - Coreference (Clinical) dataset from [her
 
 ## Usage
 
-```bash
-cd /coref
-git clone git@github.com:liaoooyx/fast-coref.git
-python format_dataset/process_i2b2.py
-```
+### Create BRAT data for annotation
 
-## Understand the fast-coref
+Follow the instructions in ``create_brat_ann_data.ipynb``.
 
-fast-coref would only takes the top n docs if specify the num_of_docs. Therefore, for mimic-cxr, we need to properly design a sampling approach if we want the sample a limited number of docs.
+## Create training data for fast-coref
+
+1. Put the annotated data to ``../output/brat_annotation``.
+2. Follow the instruction in ``resolve_brat_ann_data.ipynb``.
+   - It would output csv files with resolved conll labels
+3. Follow the instruction in `convert_conll&jsonlines.ipynb`
+   - It would output a `conll` dir and a `longformer` dir for fast-coref model training

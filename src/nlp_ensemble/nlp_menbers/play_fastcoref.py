@@ -69,8 +69,8 @@ def init_coref_model(config):
 
 @torch.no_grad()
 def inference(model, tokenized_doc):
-    pred_mentions, _, _, pred_actions = model(tokenized_doc)
-    return pred_mentions, pred_actions
+    pred_mentions, mention_scores, gt_actions, pred_actions = model(tokenized_doc)
+    return pred_mentions, mention_scores, gt_actions, pred_actions
 
 
 def resolve_output(tokenized_doc, pred_mentions, pred_actions, ignore_singleton=False) -> list[list[int]]:
@@ -90,6 +90,42 @@ def resolve_output(tokenized_doc, pred_mentions, pred_actions, ignore_singleton=
             coref_group.append(list(range(subtoken_map[ment_start], subtoken_map[ment_end] + 1)))
         coref_group_list.append(coref_group)
     return coref_group_list
+
+
+def format_input_tok_same_as_traingset(df_base, spacy_nametyle):
+    """ 
+    Format the input token by using the same approach as creating training sets for fast-coref models 
+    For example, we skipped all whitespces like "\n", "\n " and " ".
+    """
+    sent_tok_2d_list: list[list[str]] = []
+    sentence_id = 0
+    index_map = []  # map the input token index to the spacy token index.
+    curr_spacy_index = 0
+    while True:
+        token_list2: list[str] = []
+        df_sentence = df_base[df_base.loc[:, spacy_nametyle.sentence_group] == sentence_id].reset_index()
+        if df_sentence.empty:
+            break
+        for _idx, data in df_sentence.iterrows():
+            # Skip all whitespces like "\n", "\n " and " ".
+            curr_spacy_index += 1
+            if str(data[spacy_nametyle.token]).strip() == "":
+                continue
+            conllToken = data[spacy_nametyle.token]
+            token_list2.append(conllToken)
+            index_map.append(curr_spacy_index-1)
+
+        sent_tok_2d_list.append(token_list2)
+        sentence_id += 1
+    return sent_tok_2d_list, index_map
+
+
+def align_to_spacy(tok_indices_in_spacy, label_aligned_to_input, input_tok_list, spacy_tok_list):
+    aligned_to_spacy_tok = [-1] * len(spacy_tok_list)
+    for idx_in_spacy, label, input_tok in zip(tok_indices_in_spacy, label_aligned_to_input, input_tok_list):
+        assert input_tok == spacy_tok_list[idx_in_spacy]
+        aligned_to_spacy_tok[idx_in_spacy] = label
+    return aligned_to_spacy_tok
 
 
 def run(config, use_sections: list, model: EntityRankingModel, subword_tokenizer, max_segment_len):
@@ -116,33 +152,37 @@ def run(config, use_sections: list, model: EntityRankingModel, subword_tokenizer
 
             # Load preprocessed tokens from csv files.
             df_base = pd.read_csv(file_entry.path, index_col=0)
-            tok_list = df_base.loc[:, spacy_nametyle.token].to_list()
-            sentGroup_list = df_base.loc[:, spacy_nametyle.sentence_group].to_list()
-            sent_tok_2d_list: list[list[str]] = []
-            for tok, sent_id in zip(tok_list, sentGroup_list):
-                tok = str(tok)  # In i2b2, some of the tokens might incorrectly be recognized as float type.
-                if len(sent_tok_2d_list) == sent_id:
-                    sent_tok_2d_list.append([tok])
-                else:
-                    sent_tok_2d_list[sent_id].append(tok)
+            # For example, we skipped all whitespces like "\n", "\n " and " ". This will affect the model prediction.
+            # If use spacy output directly, the f1 is 60. If we strip the input, the f1 is 66.
+            sent_tok_2d_list, tok_indices_in_spacy = format_input_tok_same_as_traingset(df_base, spacy_nametyle)
 
             # Using longformer tokenizer to generate subtokens and form the input data.
             tokenized_doc = tokenize_and_segment_doc(sent_tok_2d_list, subword_tokenizer, max_segment_len=max_segment_len)
 
             try:
                 # Get model output
-                pred_mentions, pred_actions = inference(model, tokenized_doc)
+                pred_mentions, mention_scores, gt_actions, pred_actions = inference(model, tokenized_doc)
 
                 # Resolve model output
-                coref_group_list = resolve_output(tokenized_doc, pred_mentions, pred_actions)
+                coref_group_list = resolve_output(tokenized_doc, pred_mentions, pred_actions, ignore_singleton=True)
 
                 # To dataframe
+                spacy_tok_list = df_base.loc[:, spacy_nametyle.token].to_list()
+                spacy_sentGroup_list = df_base.loc[:, spacy_nametyle.sentence_group].to_list()
+                input_tok_list = [tok for sent in sent_tok_2d_list for tok in sent]
+
+                coref_group_aligned_to_input_tok = align_byIndex_individually_nestedgruop(len(input_tok_list), coref_group_list)
+                coref_group_aligned_to_spacy_tok = align_to_spacy(tok_indices_in_spacy, coref_group_aligned_to_input_tok, input_tok_list, spacy_tok_list)
+
+                coref_group_conll_aligned_to_input_tok = align_coref_groups_in_conll_format(len(input_tok_list), coref_group_list)
+                coref_group_conll_aligned_to_spacy_tok = align_to_spacy(tok_indices_in_spacy, coref_group_conll_aligned_to_input_tok, input_tok_list, spacy_tok_list)
+
                 df_fastcoref_joint = pd.DataFrame(
                     {
-                        fastcoref_joint_nametyle["token_from_spacy"]: [str(i) for i in tok_list],
-                        fastcoref_joint_nametyle["sentence_group"]: [int(i) for i in sentGroup_list],
-                        fastcoref_joint_nametyle["coref_group"]: [str(i) for i in align_byIndex_individually_nestedgruop(len(tok_list), coref_group_list)],
-                        fastcoref_joint_nametyle["coref_group_conll"]: [str(i) for i in align_coref_groups_in_conll_format(len(tok_list), coref_group_list)],
+                        fastcoref_joint_nametyle["token_from_spacy"]: [str(i) for i in spacy_tok_list],
+                        fastcoref_joint_nametyle["sentence_group"]: [int(i) for i in spacy_sentGroup_list],
+                        fastcoref_joint_nametyle["coref_group"]: [str(i) for i in coref_group_aligned_to_spacy_tok],
+                        fastcoref_joint_nametyle["coref_group_conll"]: [str(i) for i in coref_group_conll_aligned_to_spacy_tok],
                     },
                 )
 

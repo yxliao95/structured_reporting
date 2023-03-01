@@ -96,6 +96,7 @@ def minimize_partition(input_path, output_path, tokenizer, seg_len):
             output_file.write("\n")
             count += 1
     logger.info("Wrote %s documents to %s", count, output_path)
+    return f"Wrote {count} documents to {output_path}"
 
 
 def minimize_split(config, args):
@@ -104,6 +105,7 @@ def minimize_split(config, args):
     output_dir_conll = os.path.join(config.output.base_dir, "conll")
     check_and_create_dirs(output_dir_conll)
 
+    log_msg = []
     for element in config.longformer.source:  # [{'train': 'train_dev_3k'}, {'dev': 'train_dev_3k'}, {'test': 'test_only'}]
         for key, val in element.items():
             # Copy to conll dir
@@ -112,7 +114,9 @@ def minimize_split(config, args):
 
             # Generate to longformer dir
             output_path = os.path.join(output_dir_longformer, f"{key}.{args.seg_len}.jsonlines")
-            minimize_partition(input_path, output_path, args.tokenizer, args.seg_len)
+            msg = minimize_partition(input_path, output_path, args.tokenizer, args.seg_len)
+            log_msg.append(msg)
+    return log_msg
 
 
 def invoke(config):
@@ -122,4 +126,5 @@ def invoke(config):
     conll_base_dir = os.path.join(config.output.base_dir, config.output.conll_dir_name)
     sys.argv.append(conll_base_dir)
     args = parse_args()
-    minimize_split(config, args)
+    log_msg = minimize_split(config, args)
+    return log_msg

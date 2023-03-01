@@ -76,7 +76,7 @@ input:
           spacy_index: ${name_style.corenlp.column_name.align_to_spacy}
       fj:
         name: fast_coref_joint
-        dir: ${input.base_dir2}/fast_coref_joint
+        dir: ${input.base_dir2}/fast_coref_joint_(stripped_input)
         align_to_spacy: False
         target_column:
           token: ${name_style.fastcoref_joint.column_name.token_from_spacy}

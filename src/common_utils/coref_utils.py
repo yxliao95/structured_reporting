@@ -221,7 +221,11 @@ def resolve_mention_and_group_num(df: pd.DataFrame, conll_colName: str, omit_sin
     """
     corefGroup_counter = Counter()
     for conll_corefGroup_list_str in df[~df.loc[:, conll_colName].isin(["-1", -1.0, np.nan])].loc[:, conll_colName].to_list():
-        for conll_corefGroup_str in ast.literal_eval(conll_corefGroup_list_str):
+        if isinstance(conll_corefGroup_list_str, list):
+            conll_corefGroup_str_list = conll_corefGroup_list_str
+        else:
+            conll_corefGroup_str_list = ast.literal_eval(conll_corefGroup_list_str)
+        for conll_corefGroup_str in conll_corefGroup_str_list:
             result = re.search(r"(\d+)\)", conll_corefGroup_str)  # An coref mention always end with "number)"
             if result:
                 corefGroup_counter.update([int(result.group(1))])
