@@ -1,8 +1,8 @@
-data_dir: /home/yuxiangliao/PhD/mimic-cxr
+data_dir: /Users/liao/Desktop/mimic-cxr
 
 output:
   json: true
-  mysql: false
+  mysql: true
 
 json:
   output_dir: ${mimic_cxr_output_dir}
@@ -14,13 +14,13 @@ mysql:
   user: root
   password: 1121
   db: radiology_datasets
-  table_name: mimic_cxr_manual
+  table_name: mimic_cxr_new
 
 in_process:
-  use_artefact: true # It requires ${rules.manually_processed_records} exist if True.
+  use_artefact: true # It requires ${rules.manually_processed_records} existing if True.
 
 rules:
-  base_dir: ${work_dir}/resources/preprocessing_rules
+  base_dir: ${resource_dir}/preprocessing_rules
   heading_affiliation_map: ${rules.base_dir}/HeadingAffiliationMapping_slim.txt
   technique_procedureinfo: ${rules.base_dir}/Technique_ProcedureInfo.txt
   ignore_heading: ${rules.base_dir}/IgnoreHeading.txt

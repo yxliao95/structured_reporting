@@ -1,0 +1,7 @@
+# The config is in the files under the data_preprocessing/ folder
+
+
+defaults:
+  - common
+  # The correct config file will be chosen in scripts. No need to modify here.
+  - the_designing_process@_global_: radgraph

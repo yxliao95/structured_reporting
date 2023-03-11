@@ -2,6 +2,7 @@
 /output
 /outputs
 tests/
+/resources/radgraph
 
 logs/
 cim-misspelling/

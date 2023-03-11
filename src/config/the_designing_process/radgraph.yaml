@@ -1,0 +1,8 @@
+input:
+  base_dir: ${resource_dir}/radgraph
+  train_file: ${input.base_dir}/train.json
+  dev_file: ${input.base_dir}/dev.json
+  test_file: ${input.base_dir}/test.json
+
+output:
+  base_dir: ${radgraph_output_dir}/brat_ann_converted_from_json

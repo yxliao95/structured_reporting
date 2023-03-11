@@ -1,22 +1,21 @@
 ###
 # This pre-processing script aims to identify and extract the sections (findings, impression, etc.) content from raw mimic-cxr reports.
 ###
-import logging
+from data_preprocessing.utils_and_rules.utils import isComparison, isTechnique
+from data_preprocessing.utils_and_rules.rules import finalReportSection_concatenateRule, noTitleSection_identifyRule, nonFinalReportSection_concatenateRule
+from data_preprocessing.utils_and_rules.rules import finalAddendum_identifyRule, finalReport_identifyRule
+from data_preprocessing.utils_and_rules.rule_prerequisites import check_and_get_manual_record, eqToPredefinedTechniqueContent
+from data_preprocessing.utils_and_rules.data_holder_class import MetaReport, StructuredReport
+from common_utils.common_utils import check_and_create_dirs
+from common_utils.file_checker import FileChecker
+from omegaconf import OmegaConf
+from tqdm import tqdm
 import os
 import sys
+import logging
 import time
 import json
 import hydra
-from tqdm import tqdm
-from omegaconf import OmegaConf
-# pylint: disable=import-error
-from common_utils.file_checker import FileChecker
-from common_utils.common_utils import check_and_create_dirs
-from data_preprocessing.utils_and_rules.data_holder_class import MetaReport, StructuredReport
-from data_preprocessing.utils_and_rules.rule_prerequisites import check_and_get_manual_record, eqToPredefinedTechniqueContent
-from data_preprocessing.utils_and_rules.rules import finalAddendum_identifyRule, finalReport_identifyRule
-from data_preprocessing.utils_and_rules.rules import finalReportSection_concatenateRule, noTitleSection_identifyRule, nonFinalReportSection_concatenateRule
-from data_preprocessing.utils_and_rules.utils import isComparison, isTechnique
 
 
 logger = logging.getLogger()
@@ -77,7 +76,6 @@ def resolve(dataList):
                 nonFinalReportSection_concatenateRule(metaReport, structuredReport)
             handler(contentRow, metaReport, structuredReport)
         finalReportSection_concatenateRule(metaReport, structuredReport)
-
     logger.info("Time cost: %.2fs", time.time()-start0)
     return dataList
 
