@@ -5,7 +5,7 @@ defaults:
   - name_style/fastcoref_joint_output
   - nlp_properties/spacy
   - nlp_properties/corenlp
-  - nlp_ensemble@_global_: mimic_cxr # The correct config file be chosen in the scripts. No need to modify here.
+  - linguistic_preprocessing@_global_: mimic_cxr # The correct config file be chosen in the scripts. No need to modify here.
   - _self_
 
 # This is the alignment base. It means that any model/library/tool outputs are aligned to the spaCy outputs (tokens).

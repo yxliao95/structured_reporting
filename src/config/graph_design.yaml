@@ -4,4 +4,4 @@
 defaults:
   - common
   # The correct config file will be chosen in scripts. No need to modify here.
-  - the_designing_process@_global_: radgraph
+  - graph_design@_global_: radgraph
