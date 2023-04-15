@@ -5,4 +5,6 @@ input:
   test_file: ${input.base_dir}/test.json
 
 output:
-  base_dir: ${radgraph_output_dir}/brat_ann_converted_from_json
+  base_dir: ${radgraph_output_dir}
+  for_inspection_dir: ${output.base_dir}/originalData_bratFormatted
+  for_ann_dir: ${output.base_dir}/brat_data_for_annotation
