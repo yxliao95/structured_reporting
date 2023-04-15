@@ -7,7 +7,7 @@ input:
   path: ${mimic_cxr_output_dir}/mimic_cxr_sections.jsonlines
 
 output:
-  base_dir: ${mimic_cxr_output_dir}/nlp_ensemble
+  base_dir: ${mimic_cxr_output_dir}/linguistic_preprocessing
   log_file: run.log
 
   section:
