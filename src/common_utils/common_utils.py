@@ -22,3 +22,7 @@ def check_and_create_dirs(dir_path: str):
 def check_and_remove_file(file_path: str):
     if os.path.exists(file_path):
         os.remove(file_path)
+
+def check_and_move_file(file_source_path:str, file_destination_path:str):
+    check_and_create_dirs(os.path.dirname(file_destination_path))
+    shutil.move(file_source_path, file_destination_path)

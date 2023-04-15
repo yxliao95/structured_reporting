@@ -17,7 +17,7 @@ from stanza.server import CoreNLPClient
 from common_utils.common_utils import check_and_create_dirs
 from common_utils.data_loader_utils import load_i2b2, load_mimic_cxr_bySection
 from common_utils.nlp_utils import align_byIndex_individually_nestedgruop, align_byIndex_individually_withData_dictInList, align_coref_groups_in_conll_format, align_byIndex_individually_withData_noOverlap
-from nlp_ensemble.nlp_processor.corenlp_process import CorenlpUrlProcess, formatCorenlpDocument
+from linguistic_preprocessing.nlp_processor.corenlp_process import CorenlpUrlProcess, formatCorenlpDocument
 
 logger = logging.getLogger()
 module_path = os.path.dirname(os.path.dirname(__file__))
@@ -128,24 +128,24 @@ def batch_processing(input_text_list: list, input_id_list: list, section_name: s
         time6 = time.time()
         logger.debug("Batch Process [%s] finished processing CoreNLP [%s], cost: %ss", progressId, corenlp_processId, time6-time5)
 
-        # # Write to the disk
-        # for _id, _df in batch_data.items():
-        #     try:
-        #         df_corenlp = _df["df_corenlp"]
+        # Write to the disk
+        for _id, _df in batch_data.items():
+            try:
+                df_corenlp = _df["df_corenlp"]
 
-        #         # Output csv for later usage
-        #         output_dir = os.path.join(config.corenlp.output_dir, coref_server_name, section_name)
-        #         check_and_create_dirs(output_dir)
+                # Output csv for later usage
+                output_dir = os.path.join(config.corenlp.output_dir, coref_server_name, section_name)
+                check_and_create_dirs(output_dir)
 
-        #         df_corenlp.to_csv(os.path.join(output_dir, f"{_id}.csv"))
-        #         logger.debug("Batch Process [%s] output: sid:%s, df_shape:%s", progressId, _id, df_corenlp.shape)
-        #     except Exception:
-        #         logger.error("Failed when saving the DataFrame")
-        #         logger.error("Section: %s, coref-component: %s, sid: %s", section_name, coref_server_name, _id)
-        #         logger.error("_df list: %s", _df)
-        #         logger.error(traceback.format_exc())
-        #         raise
-        # return progressId, "Done", len(batch_data)
+                df_corenlp.to_csv(os.path.join(output_dir, f"{_id}.csv"))
+                logger.debug("Batch Process [%s] output: sid:%s, df_shape:%s", progressId, _id, df_corenlp.shape)
+            except Exception:
+                logger.error("Failed when saving the DataFrame")
+                logger.error("Section: %s, coref-component: %s, sid: %s", section_name, coref_server_name, _id)
+                logger.error("_df list: %s", _df)
+                logger.error(traceback.format_exc())
+                raise
+        return progressId, "Done", len(batch_data)
 
     except Exception:  # pylint: disable=broad-except
         logger.error("Error occured in batch Process [%s]:", progressId)

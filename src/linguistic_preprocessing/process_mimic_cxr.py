@@ -12,10 +12,10 @@ from omegaconf import OmegaConf
 # pylint: disable=import-error,wrong-import-order
 from common_utils.data_loader_utils import load_mimic_cxr_bySection
 from common_utils.common_utils import check_and_remove_file, remove_dirs
-from nlp_ensemble.nlp_processor.spacy_process import init_spacy
-import nlp_ensemble.nlp_menbers.play_spacy as play_spacy
-import nlp_ensemble.nlp_menbers.play_corenlp as play_corenlp
-import nlp_ensemble.nlp_menbers.play_fastcoref as play_fastcoref
+from linguistic_preprocessing.nlp_processor.spacy_process import init_spacy
+import linguistic_preprocessing.nlp_menbers.play_spacy as play_spacy
+import linguistic_preprocessing.nlp_menbers.play_corenlp as play_corenlp
+import linguistic_preprocessing.nlp_menbers.play_fastcoref as play_fastcoref
 
 logger = logging.getLogger()
 module_path = os.path.dirname(__file__)
@@ -193,7 +193,7 @@ def run_fastcoref_joint(config):
         f.write("\n\n")
 
 
-@hydra.main(version_base=None, config_path=config_path, config_name="nlp_ensemble")
+@hydra.main(version_base=None, config_path=config_path, config_name="linguistic_preprocessing")
 def main(config):
     print(OmegaConf.to_yaml(config))
 
@@ -244,5 +244,5 @@ def main(config):
 
 
 if __name__ == "__main__":
-    sys.argv.append("nlp_ensemble@_global_=mimic_cxr")
+    sys.argv.append("linguistic_preprocessing@_global_=mimic_cxr")
     main()  # pylint: disable=no-value-for-parameter

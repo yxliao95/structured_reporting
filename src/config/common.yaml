@@ -20,5 +20,5 @@ coref_scorer_dir: ${machine.fast_coref_dir}/coref_resources/reference-coreferenc
 
 defaults:
   - hydra/custom_logging
-  - machine: mac
+  - machine: linux
   - _self_
