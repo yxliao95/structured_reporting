@@ -3,6 +3,8 @@
 /outputs
 tests/
 /resources/radgraph
+/resources/radgraph_plus
+/resources/brat_annotation
 
 logs/
 cim-misspelling/

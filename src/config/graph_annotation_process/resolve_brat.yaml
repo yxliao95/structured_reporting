@@ -1,0 +1,11 @@
+# Resolve ann files collected from the brat server
+input:
+  base_dir: ${resource_dir}/radgraph_plus
+  annotator_L: ${input.base_dir}/annotator_L
+  annotator_X: ${input.base_dir}/annotator_X
+
+output:
+  base_dir: ${base_output_dir}/radgraph_plus
+
+brat_source:
+  for_ann_dir: ${base_output_dir}/radgraph/brat_data_for_annotation

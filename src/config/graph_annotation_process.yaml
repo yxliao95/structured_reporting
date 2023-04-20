@@ -4,4 +4,4 @@
 defaults:
   - common
   # The correct config file will be chosen in scripts. No need to modify here.
-  - graph_annotation_process@_global_: radgraph
+  - graph_annotation_process@_global_: radgraph_to_brat

@@ -7,8 +7,6 @@ resource_dir: ${work_dir}/resources
 
 base_output_dir: ${work_dir}/output
 mimic_cxr_output_dir: ${base_output_dir}/mimic_cxr
-i2b2_output_dir: ${base_output_dir}/i2b2
-radgraph_output_dir: ${base_output_dir}/radgraph
 
 log_dir: ${work_dir}/logs/${hydra.job.config_name}
 logging_level: INFO # DEBUG, INFO

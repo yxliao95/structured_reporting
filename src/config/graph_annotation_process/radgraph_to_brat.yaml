@@ -1,3 +1,4 @@
+# Generate ann files for annotation in the brat server
 input:
   base_dir: ${resource_dir}/radgraph
   train_file: ${input.base_dir}/train.json
@@ -5,6 +6,6 @@ input:
   test_file: ${input.base_dir}/test.json
 
 output:
-  base_dir: ${radgraph_output_dir}
+  base_dir: ${base_output_dir}/radgraph
   for_inspection_dir: ${output.base_dir}/originalData_bratFormatted
   for_ann_dir: ${output.base_dir}/brat_data_for_annotation
